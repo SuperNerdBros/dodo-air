@@ -217,8 +217,8 @@
               <Box class="flex items-start gap-2 bg-[#FAF8F2] p-2 border rounded-xl" onclick={() => dalStore.formGate = num} style={dalStore.formGate === num ? `border-color: ${theme.color}; background-color: ${theme.bg};` : 'border-color: #E6DFC7;'}>
                 <input type="radio" checked={dalStore.formGate === num} class="mt-1" />
                 <Box>
-                  <Text tag="span" class="font-bold text-xs" style={dalStore.formGate === num ? `color: ${theme.color};` : 'color: #4A4A4A;'}>{theme.icon} {theme.name}</Text>
-                  <Text tag="span" class="text-[10px] text-slate-500 block leading-normal">{theme.desc}</Text>
+                  <span class="font-bold text-xs" style={dalStore.formGate === num ? `color: ${theme.color};` : 'color: #4A4A4A;'}>{theme.icon} {theme.name}</span>
+                  <span class="text-[10px] text-slate-500 block leading-normal">{theme.desc}</span>
                 </Box>
               </Box>
             {/each}

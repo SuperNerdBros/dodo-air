@@ -57,7 +57,7 @@
   });
 
   function getProfile(villagerName: string, islandName: string | undefined): UserProfile | undefined {
-    return Object.values(profiles).find(
+    return (Object.values(profiles) as UserProfile[]).find(
       prof => prof.villagerName.toLowerCase() === villagerName.toLowerCase() && 
               (islandName ? prof.islandName.toLowerCase() === islandName.toLowerCase() : true)
     );

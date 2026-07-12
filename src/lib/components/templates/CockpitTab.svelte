@@ -46,10 +46,10 @@
 
   let activeGateTheme = $derived(GATE_THEMES[formGate] || GATE_THEMES[1]);
 
-  function getProfile(villagerName: string, islandName: string) {
-    return Object.values(profiles).find(
-      p => p.villagerName.toLowerCase() === villagerName.toLowerCase() &&
-           p.islandName.toLowerCase() === islandName.toLowerCase()
+  function getPassengerProfile(name: string, island: string) {
+    return (Object.values(profiles) as UserProfile[]).find(
+      p => p.villagerName.toLowerCase() === name.toLowerCase() && 
+           p.islandName.toLowerCase() === island.toLowerCase()
     );
   }
 </script>
@@ -332,7 +332,7 @@
             </div>
 
             <!-- Search standby requests that match host's flight gate -->
-            {#if requests.filter(r => r.gateType === myFlight.gate).length === 0}
+            {#if requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate).length === 0}
               <div class="text-center py-8 text-slate-400 font-mono text-xs space-y-2">
                 <Compass class="w-8 h-8 text-slate-300 mx-auto animate-spin" />
                 <p class="uppercase font-bold">Scanning Airwaves...</p>
@@ -344,7 +344,7 @@
                   💡 <strong>Orville:</strong> "Look! We have standby passengers looking to match your flight's category! Clear them for immediate boarding!"
                 </div>
 
-                {#each requests.filter(r => r.gateType === myFlight.gate) as match (match.id)}
+                {#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match (match.id)}
                   <div class="bg-white p-3 rounded-2xl border-2 border-[#0084CC]/20 shadow-xs space-y-2 text-left">
                     <div class="flex items-start gap-2">
                       <span class="text-xl">{match.avatar}</span>
@@ -353,7 +353,7 @@
                         <!-- svelte-ignore a11y_no_static_element_interactions -->
                         <span 
                           onclick={() => {
-                            const p = getProfile(match.name, match.island);
+                            const p = getPassengerProfile(match.name, match.island);
                             openProfileModal(p ? p.friendCode : match.friendCode || `SW-TEMP-${match.name}-${match.island}`);
                           }}
                           class="font-display font-black text-xs block text-[#0084CC] hover:underline cursor-pointer font-bold"

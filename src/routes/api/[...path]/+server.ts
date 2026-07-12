@@ -67,7 +67,7 @@ export async function POST({ url, request }) {
       return json({ success: true, message: "AI review completed (mock)" });
     }
     return json({ error: 'Not found' }, { status: 404 });
-  } catch (err) {
+  } catch (err: any) {
     return json({ error: err.message }, { status: 500 });
   }
 }

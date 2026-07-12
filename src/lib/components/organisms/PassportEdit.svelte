@@ -64,7 +64,7 @@
 
         <Box>
           <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">SWITCH FRIEND CODE</Text>
-          <Input type="text" value={dalStore.passportForm.friendCode} oninput={(e) => {
+          <Input type="text" value={dalStore.passportForm.friendCode} oninput={(e: Event) => {
             let val = (e.target as HTMLInputElement).value;
             if (!val.toUpperCase().startsWith('SW-')) val = 'SW-' + val.replace(/^SW-?/i, '');
             dalStore.passportForm.friendCode = val;

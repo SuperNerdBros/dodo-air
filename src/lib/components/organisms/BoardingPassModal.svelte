@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Ticket, X, AlertCircle } from '@lucide/svelte';
-  import type { Flight, Passport } from '$lib/studio-types';
+  import type { Flight, Passport, Passenger } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { PLANE_COLORS } from '$lib/utils/constants';
   import { scale, fade } from 'svelte/transition';
@@ -27,7 +27,7 @@
   }>();
 
   let passengersList = $derived(selectedFlight?.passengers || []);
-  let passengerIndex = $derived(passengersList.findIndex(p => 
+  let passengerIndex = $derived(passengersList.findIndex((p: Passenger) => 
     p.friendCode 
       ? p.friendCode === passport.friendCode 
       : p.name.toLowerCase() === passport.villagerName.toLowerCase()
@@ -138,7 +138,7 @@
                 <div class="flex gap-2">
                   <button
                     onclick={() => {
-                      const p = passengersList.find(pass => 
+                      const p = passengersList.find((pass: Passenger) => 
                         pass.friendCode 
                           ? pass.friendCode === passport.friendCode 
                           : pass.name.toLowerCase() === passport.villagerName.toLowerCase()

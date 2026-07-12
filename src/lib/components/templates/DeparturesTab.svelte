@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ChevronRight, Plane, PlusCircle, X } from '@lucide/svelte';
-  import type { Flight, StandbyRequest, Passport, UserProfile } from '$lib/studio-types';
+  import type { Flight, StandbyRequest, Passport, UserProfile, Passenger } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { GATE_THEMES, PLANE_COLORS } from '$lib/utils/constants';
   import { slide, fade } from 'svelte/transition';
@@ -31,14 +31,14 @@
   let showStatusGuide = $state(false);
 
   function getHostProfile(hostName: string, islandName: string) {
-    return Object.values(profiles).find(
+    return (Object.values(profiles) as UserProfile[]).find(
       p => p.villagerName.toLowerCase() === hostName.toLowerCase() && 
            p.islandName.toLowerCase() === islandName.toLowerCase()
     );
   }
 
   function getPassengerProfile(name: string, island: string) {
-    return Object.values(profiles).find(
+    return (Object.values(profiles) as UserProfile[]).find(
       p => p.villagerName.toLowerCase() === name.toLowerCase() && 
            p.islandName.toLowerCase() === island.toLowerCase()
     );
@@ -148,7 +148,7 @@
       <div class="space-y-3.5 max-h-[600px] overflow-y-auto pr-1">
         {#each flights as flight (flight.id)}
           {@const isSelected = selectedFlightId === flight.id}
-          {@const hasBoarded = flight.passengers.some(p => 
+          {@const hasBoarded = flight.passengers.some((p: Passenger) => 
             p.friendCode 
               ? p.friendCode === passport.friendCode 
               : p.name.toLowerCase() === passport.villagerName.toLowerCase()
