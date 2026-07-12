@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
-  import { slide, fade } from 'svelte/transition';
+  import { slide, fade, fly } from 'svelte/transition';
   import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users, Moon, CloudMoon } from '@lucide/svelte';
   import type { Flight, FlightStatus, Passport, StandbyRequest, UserProfile, FeedbackReview, ChatterMessage } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
@@ -12,6 +12,7 @@
   import OnboardingOverlay from '$lib/components/organisms/OnboardingOverlay.svelte';
   import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
   import PassportBadgeDropdown from '$lib/components/molecules/PassportBadgeDropdown.svelte';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import FuelDepotModal from '$lib/components/organisms/FuelDepotModal.svelte';
   import StandbyTicketModal from '$lib/components/molecules/StandbyTicketModal.svelte';
   import BoardingPassModal from '$lib/components/organisms/BoardingPassModal.svelte';
@@ -785,56 +786,49 @@
 
     <!-- ORVILLE'S COZY GUIDANCE SPEECH BALLOON -->
     {#if showOrvilleIntro}
-      <div
-        transition:slide={{ duration: 300 }}
-        class="bg-[#FFFCEF] rounded-[28px] border-4 border-[#FFEAA7] p-4 shadow-sm text-[#4A4A4A] relative overflow-hidden flex flex-col sm:flex-row gap-4 items-start text-left"
-      >
-        <div class="absolute right-0 bottom-0 opacity-5 text-8xl pointer-events-none select-none">🦤</div>
-        
-        <!-- Orville Character Avatar -->
-        <div class="w-16 h-16 bg-[#0084CC] rounded-full border-2 border-white flex items-center justify-center text-4xl shadow-md shrink-0 self-center sm:self-start">
-          🦤
-        </div>
-
-        <!-- Speech bubble copy -->
-        <div class="flex-1 space-y-1.5 min-w-0">
-          <!-- Name Tag -->
-          <span class="bg-[#FFCC00] text-[#006094] text-xs font-system font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider font-bold">
-            Orville [DAL Dispatch]
-          </span>
-          
-          <!-- Message Body -->
-          <p class="text-xs font-sans leading-relaxed text-slate-700 font-semibold text-left">
-            {#if currentTab === 'book'}
-              Welcome to the Departure Gates! Under this tab, you can search for active pilot runways or register as a Standby Passenger so online pilots can spot you on their radar. Booking a flight lets you boarding card check-in and get the Dodo Code™!
-            {:else if currentTab === 'hub'}
-              This is your Private Flight Hangar control console! File a Flight Plan to register your island as an active destination and open your gate. Correctly categorizing your Gate theme helps passengers find the perfect flight, and we'll scan the airwaves to match you with matching standby passengers!
-            {:else if currentTab === 'radio'}
-              This is terminal tower radio! Chat with other passengers and pilots, swap turnip prices, or arrange cozy trades in real-time. Drop a friendly callsign message to say hello!
-            {:else if currentTab === 'directory'}
-              Welcome to the DAL Registered Flyers Directory! Here you can search through all registered travelers' and pilots' customized passports in real-time. You can also click on any passport card to inspect their trust ratings and vouch for them with a Good Apple!
-            {/if}
-          </p>
-
-          <!-- Quick actions inside the bubble -->
-          <div class="pt-1 flex flex-wrap gap-2 text-left">
-            <button
-              onclick={() => { playSound('beep', isMuted); showMilesModal = true; }}
-              class="bg-[#FF9F43] hover:bg-[#ff8f24] text-white font-system font-black text-xs px-2.5 py-0.5 rounded-full uppercase transition-all shadow-xs cursor-pointer font-bold border-none"
-            >
-              🎯 Open Stamp Book
-            </button>
-            <button
-              onclick={() => {
-                playSound('beep', isMuted);
-                showOrvilleIntro = false;
-                localStorage.setItem('dal_orville_intro', 'hidden');
-              }}
-              class="bg-[#85806B]/20 hover:bg-[#85806B]/30 text-[#85806B] font-system font-bold text-xs px-2.5 py-0.5 rounded-full uppercase transition-all cursor-pointer font-bold border-none"
-            >
-              Dismiss Guide
-            </button>
-          </div>
+      <div class="fixed inset-0 z-[100] pointer-events-none flex flex-col justify-end p-4 pb-8 sm:p-8">
+        <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
+          <AcnhBubble title="Orville">
+            <div class="flex gap-4 items-start relative z-10">
+              <!-- Character Icon -->
+              <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
+              
+              <!-- Text Content -->
+              <div class="flex-1 space-y-4">
+                <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
+                  {#if currentTab === 'book'}
+                    Welcome to the Departure Gates! Under this tab, you can search for active pilot runways or register as a Standby Passenger so online pilots can spot you on their radar. Booking a flight lets you boarding card check-in and get the Dodo Code™!
+                  {:else if currentTab === 'hub'}
+                    This is your Private Flight Hangar control console! File a Flight Plan to register your island as an active destination and open your gate. Correctly categorizing your Gate theme helps passengers find the perfect flight, and we'll scan the airwaves to match you with matching standby passengers!
+                  {:else if currentTab === 'radio'}
+                    This is terminal tower radio! Chat with other passengers and pilots, swap turnip prices, or arrange cozy trades in real-time. Drop a friendly callsign message to say hello!
+                  {:else if currentTab === 'directory'}
+                    Welcome to the DAL Registered Flyers Directory! Here you can search through all registered travelers' and pilots' customized passports in real-time. You can also click on any passport card to inspect their trust ratings and vouch for them with a Good Apple!
+                  {/if}
+                </p>
+                
+                <!-- Quick actions inside the bubble -->
+                <div class="flex flex-wrap gap-3 justify-end pt-2 hidden">
+                  <button
+                    onclick={() => { playSound('beep', isMuted); showMilesModal = true; }}
+                    class="btn-acnh btn-acnh-secondary px-6 py-2 text-sm rounded-full"
+                  >
+                    🎯 Open Stamp Book
+                  </button>
+                  <button
+                    onclick={() => {
+                      playSound('beep', isMuted);
+                      showOrvilleIntro = false;
+                      localStorage.setItem('dal_orville_intro', 'hidden');
+                    }}
+                    class="btn-acnh btn-acnh-outline px-6 py-2 text-sm rounded-full"
+                  >
+                    Dismiss Guide
+                  </button>
+                </div>
+              </div>
+            </div>
+          </AcnhBubble>
         </div>
       </div>
     {/if}
@@ -1023,3 +1017,18 @@
   />
 
 </div>
+
+<svg class="hidden" xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <defs>
+    <filter id="old-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo" />
+      <feBlend in="SourceGraphic" in2="goo" />
+    </filter>
+    <filter id="fancy-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+    </filter>
+  </defs>
+</svg>
