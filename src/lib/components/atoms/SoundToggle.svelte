@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Volume2, VolumeX } from '@lucide/svelte';
   import { playSound } from '$lib/utils/audio';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let { isMuted = $bindable(false), onToggle } = $props<{
     isMuted: boolean;
@@ -20,12 +21,12 @@
       playSound('success', false);
     }
   }}
-  class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all text-[#FFCC00] cursor-pointer"
+  class="w-10 h-10 rounded-2xl flex items-center justify-center border border-white/20 bg-white/10 hover:bg-white/25 transition-all text-white cursor-pointer active:scale-95 shadow-md"
   title={isMuted ? 'Unmute' : 'Mute'}
 >
   {#if isMuted}
-    <VolumeX class="w-4 h-4" />
+    <VolumeX class="w-4 h-4 text-red-400" />
   {:else}
-    <Volume2 class="w-4 h-4" />
+    <Volume2 class="w-4 h-4 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
   {/if}
 </button>

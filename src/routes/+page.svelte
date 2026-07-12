@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
   import { slide, fade, fly } from 'svelte/transition';
-  import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users, Moon, CloudMoon } from '@lucide/svelte';
+  import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users, Moon, CloudMoon, BookOpen } from '@lucide/svelte';
   import type { Flight, FlightStatus, Passport, StandbyRequest, UserProfile, FeedbackReview, ChatterMessage } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { STAMP_CHALLENGES, generateRandomFriendCode } from '$lib/utils/constants';
@@ -9,9 +9,10 @@
 
   import SoundToggle from '$lib/components/atoms/SoundToggle.svelte';
   import TerminalHeader from '$lib/components/organisms/TerminalHeader.svelte';
-  import OnboardingOverlay from '$lib/components/organisms/OnboardingOverlay.svelte';
+  import InteractiveWelcome from '$lib/components/organisms/InteractiveWelcome.svelte';
   import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
   import PassportBadgeDropdown from '$lib/components/molecules/PassportBadgeDropdown.svelte';
+  import PassportTopsheet from '$lib/components/organisms/PassportTopsheet.svelte';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import FuelDepotModal from '$lib/components/organisms/FuelDepotModal.svelte';
   import StandbyTicketModal from '$lib/components/molecules/StandbyTicketModal.svelte';
@@ -22,9 +23,13 @@
   import CockpitTab from '$lib/components/templates/CockpitTab.svelte';
   import RadioTab from '$lib/components/templates/RadioTab.svelte';
   import DirectoryTab from '$lib/components/templates/DirectoryTab.svelte';
+  import ScheduledTab from '$lib/components/templates/ScheduledTab.svelte';
+  import PassportTab from '$lib/components/templates/PassportTab.svelte';
+  import TrafficControlModal from '$lib/components/organisms/TrafficControlModal.svelte';
 
   // Navigation
-  let currentTab = $state<'book' | 'hub' | 'radio' | 'directory'>('book');
+  let currentTab = $state<'passport' | 'book' | 'hub' | 'directory'>('passport');
+  let isTrafficModalOpen = $state(false);
 
   // State variables
   let flights = $state<Flight[]>([]);
@@ -32,6 +37,7 @@
   let requests = $state<StandbyRequest[]>([]);
   let chatter = $state<ChatterMessage[]>([]);
   let selectedFlightId = $state<string | null>(null);
+  let mySchedules = $state<any[]>([]);
 
   let isMuted = $state(false);
   let isSyncing = $state(false);
@@ -110,15 +116,7 @@
       await fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(updated.friendCode)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          villagerName: updated.villagerName,
-          islandName: updated.islandName,
-          avatarIcon: updated.avatarIcon,
-          title: `${updated.titlePart1} ${updated.titlePart2}`,
-          signature: updated.signature,
-          colorIndex: updated.colorIndex,
-          dreamAddress: updated.dreamAddress
-        })
+        body: JSON.stringify(updated)
       });
       // Refresh the system state immediately to update the counter
       await fetchState(false);
@@ -132,6 +130,7 @@
   let formHemisphere = $state<'Northern' | 'Southern'>('Northern');
   let formGate = $state<number>(1);
   let formDesc = $state('');
+  let formPlaneType = $state<'Switch' | 'Switch 2'>('Switch');
   let formError = $state('');
   let isSubmittingHost = $state(false);
 
@@ -202,9 +201,16 @@
         if (data.aiFuel) {
           aiFuel = data.aiFuel;
         }
+        if (data.mySchedules) {
+          mySchedules = data.mySchedules;
+        }
         if (data.analytics) {
           views = data.analytics.views || 0;
           visitors = data.analytics.visitors || 0;
+        }
+        if (data.myPassport && (!passport.hasCreated || data.myPassport.hasCreated)) {
+          passport = { ...passport, ...data.myPassport };
+          localStorage.setItem('dal_passport', JSON.stringify(passport));
         }
       }
     } catch (err) {
@@ -217,6 +223,8 @@
   }
 
   onMount(() => {
+    dalStore.initAuth();
+    
     try {
       const saved = localStorage.getItem('dal_passport');
       if (saved) {
@@ -307,6 +315,39 @@
     localStorage.setItem('dal_chat_sender', chatSender);
     localStorage.setItem('dal_chat_island', chatIsland);
   });
+
+  async function handleAddSchedule(schedule: any) {
+    try {
+      const res = await fetch('/wp-json/dodo-air/v1/schedules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(schedule)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        mySchedules = [...mySchedules, data];
+      } else {
+        throw new Error('Failed to save schedule');
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async function handleDeleteSchedule(id: string) {
+    try {
+      const res = await fetch(`/wp-json/dodo-air/v1/schedules/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        mySchedules = mySchedules.filter(s => s.id !== id);
+      } else {
+        throw new Error('Failed to delete schedule');
+      }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 
   async function openProfileModal(friendCode: string) {
     playSound('beep', isMuted);
@@ -410,7 +451,7 @@
           hemisphere: formHemisphere,
           gate: Number(formGate),
           description: formDesc.trim() || `Welcome to ${passport.islandName}! Come over and relax! 🌴`,
-          planeType: passport.planeType || 'Switch',
+          planeType: formPlaneType,
           planeColor: passport.planeColor || 'orange',
           hostFriendCode: passport.friendCode
         })
@@ -677,9 +718,11 @@
   let activeFlights = $derived(dalStore.systemMode === 'DAL' ? flights : dreams);
 
   let myFlight = $derived(activeFlights.find(f => 
-    f.hostFriendCode 
-      ? f.hostFriendCode === passport.friendCode
-      : (f.hostName.toLowerCase() === passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === passport.islandName.toLowerCase())
+    f.status !== 'Closed' && (
+      f.hostFriendCode 
+        ? f.hostFriendCode === passport.friendCode
+        : (f.hostName.toLowerCase() === passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === passport.islandName.toLowerCase())
+    )
   ) || null);
 
   let selectedFlight = $derived(activeFlights.find(f => f.id === selectedFlightId) || null);
@@ -697,80 +740,92 @@
 
 </script>
 
-<div class="min-h-screen {dalStore.systemMode === 'DAL' ? 'bg-[#FEF9E7]' : 'bg-[#1a0b2e]'} airport-runway p-3 sm:p-4 lg:p-6 flex flex-col justify-between selection:bg-[#FFCC00]/40 {dalStore.systemMode === 'DAL' ? 'text-[#4A4A4A]' : 'text-purple-100'} font-sans antialiased relative overflow-x-hidden transition-colors duration-500">
+<div class="h-screen {dalStore.systemMode === 'DAL' ? 'bg-[#FEF9E7]' : 'bg-[#1a0b2e]'} airport-runway flex selection:bg-[#FFCC00]/40 {dalStore.systemMode === 'DAL' ? 'text-[#4A4A4A]' : 'text-purple-100'} font-sans antialiased relative overflow-hidden transition-colors duration-500">
   
-  <!-- Dynamic Header & Flight Control Tower -->
-  <TerminalHeader>
+  <!-- Main Left Column -->
+  <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-6 pb-28">
+
+    <!-- Dynamic Header & Flight Control Tower -->
+    <TerminalHeader>
     <!-- Sound Slider -->
     <SoundToggle {isMuted} onToggle={() => {
       isMuted = !isMuted;
       if (!isMuted) playSound('success', false);
     }} />
 
-    <!-- Header Passport Quick Access Badge -->
-    {#if passport.hasCreated}
-      <PassportBadgeDropdown
-        {passport}
-        bind:showPassportDrawer
-        setShowMilesModal={(v: boolean) => showMilesModal = v}
-        setIsEditingPassport={(v: boolean) => isEditingPassport = v}
-        {isMuted}
-      />
-    {/if}
+    <!-- Traffic Control Button -->
+    <button 
+      onclick={() => { playSound('beep', isMuted); isTrafficModalOpen = true; }}
+      class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
+      title="Traffic Control & Radar Center"
+    >
+      <Radio class="w-5 h-5" />
+    </button>
   </TerminalHeader>
 
-  <!-- Onboarding Screen: Force Passport setup on clean load -->
-  {#if !passport.hasCreated}
-    <OnboardingOverlay
+  <PassportTopsheet
+    {passport}
+    bind:showPassportDrawer
+    setShowMilesModal={(v: boolean) => showMilesModal = v}
+    setIsEditingPassport={(v: boolean) => isEditingPassport = v}
+    {isMuted}
+    {playSound}
+  />
+
+  <!-- Onboarding & Login Screen: Interactive typewriter walkthrough and registration dialog -->
+  {#if !passport.hasCreated && !dalStore.isAuthChecking}
+    <InteractiveWelcome
       onSavePassport={handleSavePassport}
       {isMuted}
     />
   {/if}
 
   <!-- Main Terminal Grid System -->
-  <main class="w-full max-w-7xl mx-auto flex-1 flex flex-col gap-5 items-stretch">
-    
-    <!-- Tab Navigation Bar (ACNH Style) -->
-    <div class="flex items-center justify-center w-full z-30 px-2 sm:px-0">
-      <div class="flex flex-wrap sm:flex-nowrap gap-3 md:gap-5 w-full max-w-4xl justify-center">
-        
-        <button
-          onclick={() => { playSound('beep', isMuted); currentTab = 'book'; }}
-          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'book' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
-        >
-          <Ticket class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'book' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Book Flight' : 'Visit Dream'}</span>
-        </button>
+  <div class="w-full flex-1 flex flex-col relative mt-2 gap-4">
+    <main class="flex-1 flex flex-col gap-4 items-stretch min-w-0">
+      
+      <!-- Floating Bottom App Navigation (ACNH / Glassmorphic Vibe) -->
+      <div class="fixed bottom-4 left-4 right-4 xl:right-[416px] z-40 flex justify-center">
+        <div class="flex items-center justify-around w-full max-w-xl p-2 rounded-2xl border-3 transition-all duration-300 shadow-xl {dalStore.systemMode === 'DAL' ? 'bg-[#FFFCEF]/95 border-[#D1BFAe] text-[#807256] shadow-[0_8px_32px_rgba(209,191,174,0.25)]' : 'bg-[#1a0b2e]/95 border-[#DDA0DD]/30 text-purple-200 shadow-[0_8px_32px_rgba(221,160,221,0.15)]'} backdrop-blur-md">
+          
+          <button
+            onclick={() => { playSound('beep', isMuted); currentTab = 'passport'; }}
+            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'passport' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+          >
+            <BookOpen class="w-5.5 h-5.5 {currentTab === 'passport' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
+            <span class="text-[10px] font-system font-black tracking-wider uppercase">My Passport</span>
+          </button>
 
-        <button
-          onclick={() => { playSound('beep', isMuted); currentTab = 'hub'; }}
-          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer relative {currentTab === 'hub' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
-        >
-          <Plane class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'hub' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'My Flight Hub' : 'My Dream Hub'}</span>
-          {#if myFlight}
-            <span class="absolute top-2 right-2 w-3 h-3 md:w-4 md:h-4 bg-[#FF4747] rounded-full animate-bounce shadow-sm border-2 border-white"></span>
-          {/if}
-        </button>
+          <button
+            onclick={() => { playSound('beep', isMuted); currentTab = 'book'; }}
+            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'book' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+          >
+            <Ticket class="w-5.5 h-5.5 {currentTab === 'book' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
+            <span class="text-[10px] font-system font-black tracking-wider uppercase">Book Flight</span>
+          </button>
 
-        <button
-          onclick={() => { playSound('beep', isMuted); currentTab = 'radio'; }}
-          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'radio' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
-        >
-          <Radio class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'radio' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Airport Radio' : 'Dream Radio'}</span>
-        </button>
+          <button
+            onclick={() => { playSound('beep', isMuted); currentTab = 'hub'; }}
+            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 relative {currentTab === 'hub' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+          >
+            <Plane class="w-5.5 h-5.5 {currentTab === 'hub' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
+            <span class="text-[10px] font-system font-black tracking-wider uppercase">List Flight</span>
+            {#if myFlight}
+              <span class="absolute top-1.5 right-[25%] w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
+              <span class="absolute top-1.5 right-[25%] w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
+            {/if}
+          </button>
 
-        <button
-          onclick={() => { playSound('beep', isMuted); currentTab = 'directory'; }}
-          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'directory' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
-        >
-          <Users class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'directory' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Flyers Directory' : 'Dreamers Directory'}</span>
-        </button>
+          <button
+            onclick={() => { playSound('beep', isMuted); currentTab = 'directory'; }}
+            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'directory' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+          >
+            <Users class="w-5.5 h-5.5 {currentTab === 'directory' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
+            <span class="text-[10px] font-system font-black tracking-wider uppercase">Users</span>
+          </button>
 
+        </div>
       </div>
-    </div>
 
     <!-- Passport Edit Overlay Form -->
     {#if isEditingPassport}
@@ -788,7 +843,14 @@
     {#if showOrvilleIntro}
       <div class="fixed inset-0 z-[100] pointer-events-none flex flex-col justify-end p-4 pb-8 sm:p-8">
         <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
-          <AcnhBubble title="Orville">
+          <AcnhBubble 
+            title="Orville [Tour Guide]"
+            onDismiss={() => {
+              playSound('beep', isMuted);
+              showOrvilleIntro = false;
+              localStorage.setItem('dal_orville_intro', 'hidden');
+            }}
+          >
             <div class="flex gap-4 items-start relative z-10">
               <!-- Character Icon -->
               <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
@@ -796,15 +858,15 @@
               <!-- Text Content -->
               <div class="flex-1 space-y-4">
                 <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
-                  {#if currentTab === 'book'}
-                    Welcome to the Departure Gates! Under this tab, you can search for active pilot runways or register as a Standby Passenger so online pilots can spot you on their radar. Booking a flight lets you boarding card check-in and get the Dodo Code™!
-                  {:else if currentTab === 'hub'}
-                    This is your Private Flight Hangar control console! File a Flight Plan to register your island as an active destination and open your gate. Correctly categorizing your Gate theme helps passengers find the perfect flight, and we'll scan the airwaves to match you with matching standby passengers!
-                  {:else if currentTab === 'radio'}
-                    This is terminal tower radio! Chat with other passengers and pilots, swap turnip prices, or arrange cozy trades in real-time. Drop a friendly callsign message to say hello!
-                  {:else if currentTab === 'directory'}
-                    Welcome to the DAL Registered Flyers Directory! Here you can search through all registered travelers' and pilots' customized passports in real-time. You can also click on any passport card to inspect their trust ratings and vouch for them with a Good Apple!
-                  {/if}
+{#if currentTab === 'passport'}
+  Hey hey! Welcome to Dodo Airlines! Here is your official Frequent Flyer Passport. Keep your details and custom title up-to-date, and make sure to stamp your Stamp Book for Dodo Miles!
+{:else if currentTab === 'book'}
+  Hey hey! Welcome to the Departure Gates. Search for open gates or hop on standby so to put you on the radar. Let's get you checked in and set up with a Dodo Code™!
+{:else if currentTab === 'hub'}
+  Welcome to your Private Flight Hangar! File a Flight Plan and open your gates to the skies. Pick a clear theme, and we'll scan the airwaves to match you with the perfect standby passengers!
+{:else if currentTab === 'directory'}
+  Welcome to the DAL Flyers Directory! Check out customized passports from all our active flyers. Give a passport a tap to check trust ratings or vouch for a pilot with a Good Apple!
+{/if}
                 </p>
                 
                 <!-- Quick actions inside the bubble -->
@@ -814,16 +876,6 @@
                     class="btn-acnh btn-acnh-secondary px-6 py-2 text-sm rounded-full"
                   >
                     🎯 Open Stamp Book
-                  </button>
-                  <button
-                    onclick={() => {
-                      playSound('beep', isMuted);
-                      showOrvilleIntro = false;
-                      localStorage.setItem('dal_orville_intro', 'hidden');
-                    }}
-                    class="btn-acnh btn-acnh-outline px-6 py-2 text-sm rounded-full"
-                  >
-                    Dismiss Guide
                   </button>
                 </div>
               </div>
@@ -851,6 +903,16 @@
 
     <!-- Dynamic Multi-Tab Content View -->
     <div class="w-full">
+      {#if currentTab === 'passport'}
+        <PassportTab
+          {passport}
+          setShowMilesModal={(v: boolean) => showMilesModal = v}
+          setIsEditingPassport={(v: boolean) => isEditingPassport = v}
+          {isMuted}
+          {playSound}
+        />
+      {/if}
+
       {#if currentTab === 'book'}
         <DeparturesTab
           flights={activeFlights}
@@ -867,51 +929,31 @@
 
       {#if currentTab === 'hub'}
         <CockpitTab
-          {myFlight}
-          {handleHostFlight}
+          myFlight={myFlight!}
+          {passport}
+          {requests}
+          {profiles}
+          {openProfileModal}
+          handleHostFlight={handleHostFlight}
           {formError}
           bind:formDodo
           bind:formHemisphere
           bind:formGate
           bind:formDesc
+          bind:formPlaneType
           {isSubmittingHost}
-          {passport}
-          {handleUpdateStatus}
-          {handleLeaveFlight}
-          {handleGenerateAIReview}
+          handleUpdateStatus={handleUpdateStatus}
+          handleLeaveFlight={handleLeaveFlight}
+          handleGenerateAIReview={handleGenerateAIReview}
           {loadingReviewId}
-          {requests}
-          {handleClearForTakeoff}
-          {profiles}
-          {openProfileModal}
+          handleClearForTakeoff={handleClearForTakeoff}
           {isMuted}
+          {mySchedules}
+          handleAddSchedule={handleAddSchedule}
+          handleDeleteSchedule={handleDeleteSchedule}
         />
       {/if}
 
-      {#if currentTab === 'radio'}
-        <RadioTab
-          {totalStandby}
-          {totalPassengers}
-          {totalPilots}
-          {totalPassports}
-          {views}
-          {visitors}
-          {chatter}
-          bind:chatSender
-          bind:chatIsland
-          bind:chatText
-          {handlePostChat}
-          {isPostingChat}
-          {profiles}
-          {openProfileModal}
-          setCurrentTab={(t: 'book' | 'hub' | 'radio' | 'directory') => currentTab = t}
-          setShowPassportDrawer={(v: boolean) => showPassportDrawer = v}
-          setIsEditingPassport={(v: boolean) => isEditingPassport = v}
-          setShowFuelModal={(v: boolean) => showFuelModal = v}
-          {passport}
-          {isMuted}
-        />
-      {/if}
 
       {#if currentTab === 'directory'}
         <DirectoryTab
@@ -923,39 +965,60 @@
       {/if}
     </div>
 
-  </main>
+    </main>
 
-  <!-- FOOTER -->
-  <footer class="w-full max-w-7xl mx-auto mt-8 border-t border-[#E6DFC7] pt-4 flex flex-col sm:flex-row items-center justify-between text-sm font-system text-slate-500 gap-3 text-left">
-    <div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left leading-normal">
-      <span>Dodo Airlines Fan Site &copy; 2026. Non-official fan project.</span>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
-    </div>
-
-    <!-- Sleek integrated Fuel Gauge -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div 
-      onclick={() => { playSound('beep', isMuted); showFuelModal = true; }}
-      class="flex items-center gap-2 bg-[#FFFCEF] border border-[#FFEAA7] rounded-full px-3 py-1 text-slate-600 hover:bg-[#FFF9D6] hover:border-amber-400 transition-all cursor-pointer select-none group shadow-xs"
-    >
-      <span class="animate-pulse">⛽</span>
-      <span class="font-bold text-amber-800 text-xs uppercase tracking-wider">AI Fuel:</span>
-      <div class="w-12 h-1.5 bg-slate-200/80 rounded-full overflow-hidden border border-slate-300/30 relative">
-        <div
-          class="h-full transition-all duration-500 {(aiFuel.aiTokens / aiFuel.maxTokens) < 0.2 ? 'bg-red-500' : (aiFuel.aiTokens / aiFuel.maxTokens) < 0.5 ? 'bg-amber-500' : 'bg-emerald-500'}"
-          style="width: {Math.min(100, (aiFuel.aiTokens / aiFuel.maxTokens) * 100)}%"
-        ></div>
+    <!-- FOOTER -->
+    <footer class="w-full mt-6 border-t border-[#E6DFC7] pt-4 flex flex-col sm:flex-row items-center justify-between text-sm font-system text-slate-500 gap-3 text-left">
+      <div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left leading-normal">
+        <span>Dodo Airlines Fan Site &copy; 2026. Non-official fan project.</span>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
       </div>
-      <span class="font-black text-[#0084CC] text-xs font-system">
-        {aiFuel.aiTokens.toLocaleString()} GAL
-      </span>
-      <span class="text-xs font-black text-amber-700 underline group-hover:text-[#0084CC] transition-colors ml-0.5">
-        [Refuel]
-      </span>
+
+      <!-- Sleek integrated Fuel Gauge -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div 
+        onclick={() => { playSound('beep', isMuted); showFuelModal = true; }}
+        class="flex items-center gap-2 bg-[#FFFCEF] border border-[#FFEAA7] rounded-full px-3 py-1 text-slate-600 hover:bg-[#FFF9D6] hover:border-amber-400 transition-all cursor-pointer select-none group shadow-xs"
+      >
+        <span class="animate-pulse">⛽</span>
+        <span class="font-bold text-amber-800 text-xs uppercase tracking-wider">AI Fuel:</span>
+        <div class="w-12 h-1.5 bg-slate-200/80 rounded-full overflow-hidden border border-slate-300/30 relative">
+          <div
+            class="h-full transition-all duration-500 {(aiFuel.aiTokens / aiFuel.maxTokens) < 0.2 ? 'bg-red-500' : (aiFuel.aiTokens / aiFuel.maxTokens) < 0.5 ? 'bg-amber-500' : 'bg-emerald-500'}"
+            style="width: {Math.min(100, (aiFuel.aiTokens / aiFuel.maxTokens) * 100)}%"
+          ></div>
+        </div>
+        <span class="font-black text-[#0084CC] text-xs font-system">
+          {aiFuel.aiTokens.toLocaleString()} GAL
+        </span>
+        <span class="text-xs font-black text-amber-700 underline group-hover:text-[#0084CC] transition-colors ml-0.5">
+          [Refuel]
+        </span>
+      </div>
+    </footer>
+  </div> <!-- End Main Terminal Grid System wrapper -->
+  </div> <!-- End Main Left Column -->
+
+  <!-- Permanent Radio Sidebar Right Column -->
+  <aside class="hidden xl:block w-full sm:w-[400px] shrink-0 h-full overflow-y-auto custom-scrollbar transition-colors duration-500">
+    <div class="py-3 pr-3 pl-0 sm:py-4 sm:pr-4 lg:py-6 lg:pr-6 h-full">
+      <RadioTab
+        {chatter}
+        bind:chatSender
+        bind:chatIsland
+        bind:chatText
+        {handlePostChat}
+        {isPostingChat}
+        {profiles}
+        {openProfileModal}
+        setShowFuelModal={(v) => showFuelModal = v}
+        {passport}
+        {isMuted}
+      />
     </div>
-  </footer>
+  </aside>
 
   <!-- MODAL: AI JET FUEL STATION -->
   <FuelDepotModal
@@ -1013,6 +1076,23 @@
     onSubmitReview={handleSubmitReview}
     {reviewError}
     {isSubmittingReview}
+    {isMuted}
+  />
+
+  <!-- TRAFFIC CONTROL MODAL -->
+  <TrafficControlModal
+    isOpen={isTrafficModalOpen}
+    onClose={() => isTrafficModalOpen = false}
+    {totalStandby}
+    {totalPassengers}
+    {totalPilots}
+    {totalPassports}
+    {views}
+    {visitors}
+    setCurrentTab={(t) => currentTab = t}
+    setShowPassportDrawer={(v) => showPassportDrawer = v}
+    setIsEditingPassport={(v) => isEditingPassport = v}
+    {passport}
     {isMuted}
   />
 

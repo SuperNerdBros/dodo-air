@@ -11,7 +11,7 @@
   import { GATE_THEMES } from '$lib/types';
   import type { FlightStatus, StandbyRequest } from '$lib/types';
 
-  let myFlight = $derived(dalStore.flights.find(f => f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === dalStore.passport.islandName.toLowerCase()));
+  let myFlight = $derived(dalStore.flights.find(f => f.status !== 'Closed' && f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === dalStore.passport.islandName.toLowerCase()));
 
   async function handleHostFlight(e: Event) {
     e.preventDefault();
@@ -47,7 +47,8 @@
           dodoCode: cleanDodo,
           hemisphere: dalStore.formHemisphere,
           gate: Number(dalStore.formGate),
-          description: dalStore.formDesc.trim() || `Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`
+          description: dalStore.formDesc.trim() || `Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
+          planeType: dalStore.formPlaneType
         })
       });
 
@@ -206,6 +207,15 @@
             <Select bind:value={dalStore.formHemisphere} class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 font-bold outline-none focus:bg-white text-[#0084CC]">
               <option value="Northern">Northern</option>
               <option value="Southern">Southern</option>
+            </Select>
+          </Box>
+        </Box>
+        <Box class="grid grid-cols-1 gap-3">
+          <Box>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">SEAPLANE MODEL</Text>
+            <Select bind:value={dalStore.formPlaneType} class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 font-bold outline-none focus:bg-white text-[#0084CC]">
+              <option value="Switch">🛩️ Switch Model (8 seats)</option>
+              <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
             </Select>
           </Box>
         </Box>

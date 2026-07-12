@@ -79,7 +79,7 @@ export interface Passport {
   hasChatted?: boolean;
   hasCustomized?: boolean;
   hasRequested?: boolean;
-  planeType?: 'Switch' | 'Switch 2';
+  nativeFruit?: string;
   planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
 }
 

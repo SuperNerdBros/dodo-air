@@ -4,6 +4,8 @@
   import { playSound } from '$lib/utils/audio';
   import { GATE_THEMES, DREAM_THEMES, PLANE_COLORS } from '$lib/utils/constants';
   import { dalStore } from '$lib/stores/dal.svelte';
+  import ScheduledTab from './ScheduledTab.svelte';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
     myFlight,
@@ -13,6 +15,7 @@
     formHemisphere = $bindable('Northern'),
     formGate = $bindable(1),
     formDesc = $bindable(''),
+    formPlaneType = $bindable<'Switch' | 'Switch 2'>('Switch'),
     isSubmittingHost = false,
     passport,
     handleUpdateStatus,
@@ -23,7 +26,10 @@
     handleClearForTakeoff,
     profiles,
     openProfileModal,
-    isMuted = false
+    isMuted = false,
+    mySchedules = [],
+    handleAddSchedule,
+    handleDeleteSchedule
   } = $props<{
     myFlight: Flight | null;
     handleHostFlight: (e: SubmitEvent) => void;
@@ -32,6 +38,7 @@
     formHemisphere: 'Northern' | 'Southern';
     formGate: number;
     formDesc: string;
+    formPlaneType?: 'Switch' | 'Switch 2';
     isSubmittingHost?: boolean;
     passport: Passport;
     handleUpdateStatus: (flightId: string, status: FlightStatus) => void;
@@ -43,6 +50,9 @@
     profiles: Record<string, UserProfile>;
     openProfileModal: (friendCode: string) => void;
     isMuted?: boolean;
+    mySchedules?: any[];
+    handleAddSchedule?: (e: Event, dateStr: string) => void;
+    handleDeleteSchedule?: (scheduleId: string) => void;
   }>();
 
   let activeGateTheme = $derived(dalStore.systemMode === 'DAL' ? (GATE_THEMES[formGate] || GATE_THEMES[1]) : (DREAM_THEMES[formGate] || DREAM_THEMES[1]));
@@ -78,16 +88,25 @@
         </p>
       </div>
 
-      <div class="bg-[#FFFCEF] border border-[#E6DFC7] p-3.5 rounded-2xl max-w-xl mx-auto text-left flex gap-3">
-        <span class="text-2xl">{dalStore.systemMode === 'DAL' ? '👷' : '🔮'}</span>
-        <p class="text-xs text-[#4A4A4A] leading-relaxed font-semibold">
-          {#if dalStore.systemMode === 'DAL'}
-            <strong>Wilbur:</strong> "Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
-          {:else}
-            <strong>Luna:</strong> "Welcome to the library of dreams... Provide your Doze Code, and I shall allow others to drift into your island's slumber."
-          {/if}
-        </p>
-      </div>
+      <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur [Co-Pilot]' : 'Luna'}>
+        <div class="flex gap-4 items-start relative z-10 text-left">
+          <!-- Character Icon -->
+          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
+            {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
+          </div>
+          
+          <!-- Text Content -->
+          <div class="flex-1">
+            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
+              {#if dalStore.systemMode === 'DAL'}
+                "Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
+              {:else}
+                "Welcome to the library of dreams... Provide your Doze Code, and I shall allow others to drift into your island's slumber."
+              {/if}
+            </p>
+          </div>
+        </div>
+      </AcnhBubble>
 
       <!-- Host Flight Registration Form -->
       <form onsubmit={handleHostFlight} class="max-w-xl mx-auto text-left space-y-4 border-t border-slate-100 pt-5 text-xs">
@@ -140,6 +159,18 @@
             >
               <option value="Northern">🌍 Northern Hemisphere</option>
               <option value="Southern">🌎 Southern Hemisphere</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-3">
+          <div>
+            <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">SEAPLANE MODEL</label>
+            <select
+              bind:value={formPlaneType}
+              class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-bold outline-none focus:bg-white focus:border-[#0084CC]"
+            >
+              <option value="Switch">🛩️ Switch Model (8 seats)</option>
+              <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
             </select>
           </div>
         </div>
@@ -250,6 +281,17 @@
               {/each}
             </div>
           </div>
+
+          {#if myFlight.status === 'Scheduled' && handleAddSchedule && handleDeleteSchedule}
+            <div class="mt-4">
+              <ScheduledTab
+                {mySchedules}
+                onAddSchedule={handleAddSchedule as any}
+                onDeleteSchedule={handleDeleteSchedule as any}
+                {isMuted}
+              />
+            </div>
+          {/if}
 
           <!-- Passenger Manifest Checked-In List -->
           <div class="bg-white rounded-[32px] p-5 border-2 {dalStore.systemMode === 'DAL' ? 'border-[#0084CC]/10' : 'border-[#4B0082]/10'} shadow-sm transition-colors">

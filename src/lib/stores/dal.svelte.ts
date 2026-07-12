@@ -9,6 +9,11 @@ export class DalState {
   chatter: ChatterMessage[] = $state([]);
   selectedFlightId: string | null = $state(null);
   
+  // Auth state
+  isLoggedIn = $state(false);
+  userEmail = $state('');
+  isAuthChecking = $state(true);
+  
   isMuted = $state(false);
   isSyncing = $state(false);
   
@@ -50,6 +55,7 @@ export class DalState {
   formHemisphere: 'Northern' | 'Southern' = $state('Northern');
   formGate = $state(1);
   formDesc = $state('');
+  formPlaneType: 'Switch' | 'Switch 2' = $state('Switch');
   formError = $state('');
   isSubmittingHost = $state(false);
 
@@ -72,6 +78,27 @@ export class DalState {
 
   init() {
     if (typeof window !== 'undefined') {
+      // Intercept fetch to automatically include X-WP-Nonce for REST API calls
+      const originalFetch = window.fetch;
+      window.fetch = async function(...args: any[]) {
+        const url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url ? args[0].url : '');
+        if (url && url.includes('/wp-json/dodo-air/')) {
+          const wpApiSettings = (window as any).wpApiSettings;
+          if (wpApiSettings && wpApiSettings.nonce) {
+            args[1] = args[1] || {};
+            args[1].headers = args[1].headers || {};
+            if (args[1].headers instanceof Headers) {
+              args[1].headers.set('X-WP-Nonce', wpApiSettings.nonce);
+            } else if (Array.isArray(args[1].headers)) {
+              args[1].headers.push(['X-WP-Nonce', wpApiSettings.nonce]);
+            } else {
+              args[1].headers['X-WP-Nonce'] = wpApiSettings.nonce;
+            }
+          }
+        }
+        return originalFetch.apply(window, args as any);
+      };
+
       try {
         const saved = localStorage.getItem('dal_passport');
         if (saved) {
@@ -225,7 +252,12 @@ export class DalState {
   async fetchState(showIndicator = false) {
     if (showIndicator) this.isSyncing = true;
     try {
-      const res = await fetch('/wp-json/dodo-air/v1/state');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (typeof window !== 'undefined' && (window as any).wpApiSettings?.nonce) {
+        headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
+      }
+      
+      const res = await fetch('/wp-json/dodo-air/v1/state', { headers });
       if (res.ok) {
         const data = await res.json();
         this.flights = data.flights || [];
@@ -239,6 +271,37 @@ export class DalState {
       if (showIndicator) {
         setTimeout(() => (this.isSyncing = false), 500);
       }
+    }
+  }
+
+  async initAuth() {
+    this.isAuthChecking = true;
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (typeof window !== 'undefined' && (window as any).wpApiSettings?.nonce) {
+        headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
+      }
+      
+      const res = await fetch('/wp-json/dodo-air/v1/auth/status', { headers });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.loggedIn) {
+          this.isLoggedIn = true;
+          this.userEmail = data.email;
+        } else {
+          this.isLoggedIn = false;
+          this.userEmail = '';
+        }
+      } else {
+        this.isLoggedIn = false;
+        this.userEmail = '';
+      }
+    } catch (err) {
+      console.error('Failed to check auth status:', err);
+      this.isLoggedIn = false;
+      this.userEmail = '';
+    } finally {
+      this.isAuthChecking = false;
     }
   }
 }

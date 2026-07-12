@@ -84,7 +84,7 @@
         <button type="button" onclick={() => activeTab = 'identity'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'identity' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Identity</button>
         <button type="button" onclick={() => activeTab = 'network'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'network' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Network</button>
         <button type="button" onclick={() => activeTab = 'customization'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'customization' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Style</button>
-        <button type="button" onclick={() => activeTab = 'seaplane'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'seaplane' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Seaplane</button>
+        <button type="button" onclick={() => activeTab = 'native'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'native' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Native</button>
       </div>
     </div>
 
@@ -216,23 +216,26 @@
           </div>
         {/if}
 
-        {#if activeTab === 'seaplane'}
+        {#if activeTab === 'native'}
           <div class="col-start-1 row-start-1 space-y-3.5" transition:fade={{ duration: 150 }}>
             <!-- Seaplane Registration Section -->
             <div class="space-y-3">
               <span class="block text-sm font-system font-black text-[#0084CC] uppercase tracking-wider mb-2">
-                ✈️ Register Your Island Seaplane
+                🏝️ Native Island Assets
               </span>
 
               <div class="space-y-3">
                 <div>
-                  <label class="block text-xs font-system font-black text-[#85806B] mb-1 uppercase">PLANE MODEL</label>
+                  <label class="block text-xs font-system font-black text-[#85806B] mb-1 uppercase">NATIVE FRUIT</label>
                   <select
-                    bind:value={form.planeType}
+                    bind:value={form.nativeFruit}
                     class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-2 font-bold outline-none focus:border-[#0084CC]"
                   >
-                    <option value="Switch">🛩️ Switch Model (8 seats)</option>
-                    <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
+                    <option value="Apple">🍎 Apple</option>
+                    <option value="Cherry">🍒 Cherry</option>
+                    <option value="Orange">🍊 Orange</option>
+                    <option value="Peach">🍑 Peach</option>
+                    <option value="Pear">🍐 Pear</option>
                   </select>
                 </div>
 

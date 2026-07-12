@@ -43,12 +43,12 @@
   }
 </script>
 
-<Box class="max-w-xl mx-auto bg-white rounded-[36px] border-4 border-[#0084CC]/10 p-5 shadow-sm flex flex-col">
+<Box class="max-w-xl mx-auto flex flex-col">
   <Box class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
     <Box class="flex items-center gap-2">
       <Text tag="span" class="text-xl">📻</Text>
       <Box>
-        <Text tag="h2" class="text-base font-black text-[#0084CC] font-system">DAL Terminal Tower Radio</Text>
+        <Text tag="h2" class="text-base font-black text-[#0084CC] font-system">DAL Tower Radio</Text>
         <Text tag="span" class="text-xs font-system font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</Text>
       </Box>
     </Box>
@@ -121,7 +121,7 @@
         bind:value={dalStore.chatText}
         placeholder={dalStore.chatSender ? "Submit airport chatter dispatch..." : "Register name above to chat"}
         disabled={!dalStore.chatSender.trim()}
-        class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white"
+        class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white"
         maxlength={100}
       />
       <Button

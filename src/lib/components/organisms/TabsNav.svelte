@@ -51,7 +51,7 @@
         {:else}
           <Cloud class="w-4 h-4" /> My Dream Hub
         {/if}
-        {#if dalStore.flights.some((f: any) => f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase())}
+        {#if dalStore.flights.some((f: any) => f.status !== 'Closed' && f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase())}
           <Text tag="span" class="w-2 h-2 bg-[#FFCC00] rounded-full animate-ping" />
         {/if}
       </Button>
