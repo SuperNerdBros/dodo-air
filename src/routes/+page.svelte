@@ -994,7 +994,7 @@
     isOpen={showFuelModal}
     onClose={() => showFuelModal = false}
     {aiFuel}
-    {handleRefuel}
+    onRefuel={handleRefuel}
     {isRefueling}
     {isMuted}
   />
@@ -1006,10 +1006,9 @@
     bind:requestGateType
     bind:requestTime
     bind:requestMemo
-    {handleCreateStandbyRequest}
+    onSubmit={handleCreateStandbyRequest}
     {isSubmittingRequest}
     {requestError}
-    {isMuted}
   />
 
   <!-- OVERLAY / DRAWER: BOARDING PASS DETAIL & DODO CODE REVEAL -->
@@ -1019,12 +1018,10 @@
         onClose={() => { playSound('beep', isMuted); selectedFlightId = null; }}
         {selectedFlight}
         {passport}
-        revealedCodes={revealedCodes}
-        handleReveal={handleReveal}
-        {handleBoardFlight}
-        {handleLeaveFlight}
+        onBoardFlight={handleBoardFlight}
+        onLeaveFlight={handleLeaveFlight}
         {boardingError}
-        setBoardingError={(v: string) => boardingError = v}
+        onRequestStandby={(gate) => { requestGateType = gate; showStandbyModal = true; selectedFlightId = null; }}
         {isMuted}
       />
     </div>
@@ -1035,8 +1032,7 @@
     isOpen={showMilesModal}
     onClose={() => showMilesModal = false}
     {passport}
-    {claimStampMiles}
-    challenges={STAMP_CHALLENGES}
+    onClaimStamp={claimStampMiles}
     {isMuted}
   />
 

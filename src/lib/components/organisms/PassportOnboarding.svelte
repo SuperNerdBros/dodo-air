@@ -102,7 +102,7 @@
             <Input
               type="text"
               value={dalStore.passportForm.friendCode}
-              oninput={(e) => {
+              oninput={(e: Event) => {
                 let val = (e.target as HTMLInputElement).value;
                 if (!val.toUpperCase().startsWith('SW-')) {
                   val = 'SW-' + val.replace(/^SW-?/i, '');
