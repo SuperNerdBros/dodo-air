@@ -21,7 +21,7 @@
     setIsEditingPassport: (edit: boolean) => void;
   }>();
 
-  let containerRef: HTMLDivElement;
+  let containerRef: HTMLDivElement | undefined;
 
   function handleOutsideClick(e: MouseEvent) {
     if (showPassportDrawer && containerRef && !containerRef.contains(e.target as Node)) {

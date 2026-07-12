@@ -8,7 +8,7 @@
 
 {#if dalStore.showOrvilleIntro}
   <Box class="fixed inset-0 z-[100] pointer-events-none flex flex-col justify-end p-4 pb-8 sm:p-8">
-    <Box transition={fly={{ y: 50, duration: 300 }}} class="pointer-events-auto mx-auto w-full max-w-3xl relative">
+    <Box class="pointer-events-auto mx-auto w-full max-w-3xl relative">
       <!-- Name badge -->
       <Box class="absolute -top-6 left-8 bg-[#FDF5E6] border-[4px] border-[#D1BFAe] rounded-full px-6 py-1 z-10 shadow-sm transform -rotate-2">
         <Text tag="span" class="text-[#7D6B56] font-black text-xl tracking-wider font-system">Orville</Text>

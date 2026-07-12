@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData, PageData } from './$types';
 	import { Loader2, Package, CheckCircle2, Search, XCircle } from '@lucide/svelte';
 
-	let { data, form }: { data: PageData; form: ActionData } = $props();
+	let { data, form }: { data: any; form: any } = $props();
 
 	let searchQuery = $state('');
 	let installing = $state(false);

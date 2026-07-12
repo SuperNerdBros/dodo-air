@@ -82,7 +82,7 @@
       
       <div class="flex gap-2 p-1 bg-[#E6DFC7]/40 rounded-xl">
         <button type="button" onclick={() => activeTab = 'identity'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'identity' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Identity</button>
-        <button type="button" onclick={() => activeTab = 'network'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'network' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Network</button>
+        <button type="button" onclick={() => activeTab = 'network'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'network' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Address</button>
         <button type="button" onclick={() => activeTab = 'customization'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'customization' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Style</button>
         <button type="button" onclick={() => activeTab = 'native'} class="flex-1 py-1.5 px-1 rounded-lg text-[10px] sm:text-xs font-black uppercase transition-colors {activeTab === 'native' ? 'bg-white text-[#0084CC] shadow-sm' : 'text-[#85806B] hover:bg-white/50'}">Native</button>
       </div>

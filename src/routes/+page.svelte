@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
+  import pkg from '../../package.json';
   import { slide, fade, fly } from 'svelte/transition';
   import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users, Moon, CloudMoon, BookOpen } from '@lucide/svelte';
   import type { Flight, FlightStatus, Passport, StandbyRequest, UserProfile, FeedbackReview, ChatterMessage } from '$lib/studio-types';
@@ -766,7 +767,7 @@
     setShowMilesModal={(v: boolean) => showMilesModal = v}
     setIsEditingPassport={(v: boolean) => isEditingPassport = v}
     {isMuted}
-    {playSound}
+    playSound={(id) => playSound(id as any, isMuted)}
   />
 
   <!-- Onboarding & Login Screen: Interactive typewriter walkthrough and registration dialog -->
@@ -793,7 +794,7 @@
                      ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
                      : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <BookOpen class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'passport' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">My Passport</span>
+            <BookOpen class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'passport' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Passport</span>
           </button>
           
           <button
@@ -803,7 +804,7 @@
                      ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
                      : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <Ticket class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Book Flight</span>
+            <Ticket class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Islands</span>
           </button>
           
           <button
@@ -813,7 +814,7 @@
                      ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
                      : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <Plane class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">List Flight</span>
+            <Plane class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">I want visitors!</span>
             {#if myFlight}
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
@@ -915,7 +916,7 @@
           setShowMilesModal={(v: boolean) => showMilesModal = v}
           setIsEditingPassport={(v: boolean) => isEditingPassport = v}
           {isMuted}
-          {playSound}
+          playSound={(id) => playSound(id as any, isMuted)}
         />
       {/if}
 
@@ -979,6 +980,8 @@
         <span>Dodo Airlines Fan Site &copy; 2026. Non-official fan project.</span>
         <span class="hidden sm:inline text-slate-300">|</span>
         <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
+        <span class="hidden sm:inline text-slate-300">|</span>
+        <span>v{pkg.version}</span>
       </div>
 
       <!-- Sleek integrated Fuel Gauge -->

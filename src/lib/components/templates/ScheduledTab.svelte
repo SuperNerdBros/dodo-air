@@ -71,7 +71,7 @@
     <!-- Week Slider -->
     <div class="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
       {#each days as day}
-        {@const hasSchedule = mySchedules.some(s => s.day === day)}
+        {@const hasSchedule = mySchedules.some((s: any) => s.day === day)}
         <button
           onclick={() => { playSound('beep', isMuted); selectedDay = day; }}
           class="relative flex-shrink-0 px-4 py-3 rounded-2xl font-system font-black tracking-wide text-xs transition-all border-b-4 cursor-pointer font-bold select-none

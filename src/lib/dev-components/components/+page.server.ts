@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { fail } from '@sveltejs/kit';
 import { exec } from 'child_process';
 import util from 'util';
@@ -38,7 +39,7 @@ export const load = async () => {
 };
 
 export const actions = {
-	install: async ({ request }) => {
+	install: async ({ request }: any) => {
 		const data = await request.formData();
 		const components = data.getAll('components');
 

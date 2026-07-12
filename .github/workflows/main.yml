@@ -44,3 +44,11 @@ jobs:
 
       - name: Run E2E Tests
         run: pnpm run test:e2e
+
+      - name: Bump Version and Push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          npm version patch -m "ci: bump version to %s [skip ci]"
+          git push
