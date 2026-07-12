@@ -46,7 +46,7 @@
         <div class="flex items-center gap-2">
           <span class="text-2xl">⛽</span>
           <div>
-            <h3 class="font-display font-black text-sm text-amber-800 uppercase tracking-tight">AI Aviation Fuel Depot</h3>
+            <h3 class="font-system font-black text-sm text-amber-800 uppercase tracking-tight">AI Aviation Fuel Depot</h3>
             <span class="text-[8px] font-mono font-black text-amber-600 block uppercase tracking-widest">DAL Community Power Station</span>
           </div>
         </div>
@@ -123,14 +123,14 @@
             <button
               onclick={() => handleRefuelAction('cash')}
               disabled={isRefueling}
-              class="bg-[#00D632] hover:bg-[#00b029] active:scale-[0.98] disabled:opacity-50 text-white font-display font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
+              class="bg-[#00D632] hover:bg-[#00b029] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
             >
               💸 CashApp Refuel
             </button>
             <button
               onclick={() => handleRefuelAction('venmo')}
               disabled={isRefueling}
-              class="bg-[#008CFF] hover:bg-[#0070cc] active:scale-[0.98] disabled:opacity-50 text-white font-display font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
+              class="bg-[#008CFF] hover:bg-[#0070cc] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
             >
               💙 Venmo Refuel
             </button>

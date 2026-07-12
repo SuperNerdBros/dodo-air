@@ -54,7 +54,7 @@
             🎟️
           </div>
           <div>
-            <h3 class="font-display font-black text-base text-[#0084CC] uppercase leading-none">Dodo Miles+</h3>
+            <h3 class="font-system font-black text-base text-[#0084CC] uppercase leading-none">Dodo Miles+</h3>
             <span class="text-[8.5px] font-mono font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</span>
           </div>
         </div>
@@ -96,7 +96,7 @@
               <!-- Stamp overlay if claimed -->
               {#if isClaimed}
                 <div class="absolute -inset-1 rounded-full bg-red-600/10 border-2 border-red-600 flex items-center justify-center transform rotate-12 select-none pointer-events-none scale-105">
-                  <span class="text-[7.5px] font-display font-black text-red-600 tracking-tighter uppercase leading-none font-bold">OK!</span>
+                  <span class="text-[7.5px] font-system font-black text-red-600 tracking-tighter uppercase leading-none font-bold">OK!</span>
                 </div>
               {/if}
             </div>
@@ -104,7 +104,7 @@
             <!-- Info and button -->
             <div class="flex-1 min-w-0 text-left">
               <div class="flex items-center justify-between gap-1">
-                <span class="font-display font-black text-xs text-slate-700 truncate leading-none font-bold">{challenge.title}</span>
+                <span class="font-system font-black text-xs text-slate-700 truncate leading-none font-bold">{challenge.title}</span>
                 <span class="font-mono text-[9px] text-[#FF9F43] font-black shrink-0 font-bold">+{challenge.miles}</span>
               </div>
               <p class="text-[10px] text-slate-400 mt-1 leading-normal font-sans font-semibold">{challenge.desc}</p>

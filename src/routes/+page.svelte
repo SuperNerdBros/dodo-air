@@ -103,7 +103,7 @@
 
     // Sync to persistent server profiles
     try {
-      await fetch(`/api/profiles/${encodeURIComponent(updated.friendCode)}`, {
+      await fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(updated.friendCode)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,7 +160,7 @@
     playSound('success', isMuted);
     isRefueling = true;
     try {
-      const res = await fetch('/api/ai/refuel', {
+      const res = await fetch('/wp-json/dodo-air/v1/ai/refuel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount })
@@ -186,7 +186,7 @@
   async function fetchState(showIndicator = false) {
     if (showIndicator) isSyncing = true;
     try {
-      const res = await fetch('/api/state');
+      const res = await fetch('/wp-json/dodo-air/v1/state');
       if (res.ok) {
         const data = await res.json();
         flights = data.flights || [];
@@ -244,7 +244,7 @@
       localStorage.setItem('dal_visitor_id', visitorId);
     }
     
-    fetch('/api/visit', {
+    fetch('/wp-json/dodo-air/v1/visit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ visitorId })
@@ -281,7 +281,7 @@
   // Sync profile when passport is created or changed
   $effect(() => {
     if (passport.hasCreated && passport.friendCode) {
-      fetch(`/api/profiles/${encodeURIComponent(passport.friendCode)}`, {
+      fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(passport.friendCode)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -307,7 +307,7 @@
     reviewError = '';
     
     try {
-      const res = await fetch(`/api/profiles/${encodeURIComponent(friendCode)}/reviews`);
+      const res = await fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(friendCode)}/reviews`);
       if (res.ok) {
         const data = await res.json();
         selectedProfileReviews = data;
@@ -331,7 +331,7 @@
     isSubmittingReview = true;
     reviewError = '';
     try {
-      const res = await fetch(`/api/profiles/${encodeURIComponent(selectedFriendCode)}/rate`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(selectedFriendCode)}/rate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -345,7 +345,7 @@
 
       if (res.ok) {
         playSound('success', isMuted);
-        const reviewsRes = await fetch(`/api/profiles/${encodeURIComponent(selectedFriendCode)}/reviews`);
+        const reviewsRes = await fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(selectedFriendCode)}/reviews`);
         if (reviewsRes.ok) {
           const revs = await reviewsRes.json();
           selectedProfileReviews = revs;
@@ -392,7 +392,7 @@
 
     isSubmittingHost = true;
     try {
-      const res = await fetch('/api/flights', {
+      const res = await fetch('/wp-json/dodo-air/v1/flights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -442,7 +442,7 @@
 
     isSubmittingRequest = true;
     try {
-      const res = await fetch('/api/requests', {
+      const res = await fetch('/wp-json/dodo-air/v1/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -478,7 +478,7 @@
 
   async function handleRemoveStandbyRequest(reqId: string) {
     try {
-      const res = await fetch(`/api/requests/${reqId}`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/requests/${reqId}`, {
         method: 'DELETE'
       });
       if (res.ok) {
@@ -499,7 +499,7 @@
 
     boardingError = '';
     try {
-      const res = await fetch(`/api/flights/${flightId}/board`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -527,7 +527,7 @@
 
   async function handleLeaveFlight(flightId: string, passengerId: string) {
     try {
-      const res = await fetch(`/api/flights/${flightId}/leave`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/leave`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passengerId })
@@ -543,7 +543,7 @@
 
   async function handleUpdateStatus(flightId: string, newStatus: FlightStatus) {
     try {
-      const res = await fetch(`/api/flights/${flightId}/status`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -564,7 +564,7 @@
 
   async function handleClearForTakeoff(request: StandbyRequest, flightId: string) {
     try {
-      const resBoard = await fetch(`/api/flights/${flightId}/board`, {
+      const resBoard = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -575,13 +575,13 @@
       });
 
       if (resBoard.ok) {
-        await fetch(`/api/requests/${request.id}`, {
+        await fetch(`/wp-json/dodo-air/v1/requests/${request.id}`, {
           method: 'DELETE'
         });
 
         playSound('success', isMuted);
         
-        await fetch('/api/chatter', {
+        await fetch('/wp-json/dodo-air/v1/chatter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -606,7 +606,7 @@
 
     isPostingChat = true;
     try {
-      const res = await fetch('/api/chatter', {
+      const res = await fetch('/wp-json/dodo-air/v1/chatter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -633,7 +633,7 @@
     loadingReviewId = flightId;
     playSound('bell', isMuted);
     try {
-      const res = await fetch('/api/ai/review', {
+      const res = await fetch('/wp-json/dodo-air/v1/ai/review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ flightId })
@@ -755,42 +755,45 @@
   <!-- Main Terminal Grid System -->
   <main class="w-full max-w-7xl mx-auto flex-1 flex flex-col gap-5 items-stretch">
     
-    <!-- Tab Navigation Bar (Centered Layout) -->
-    <div class="flex items-center justify-center bg-white p-3 rounded-3xl border-2 border-[#0084CC]/10 shadow-sm z-30">
-      
-      <!-- Core Navigation Selector Tabs -->
-      <div class="flex gap-1.5 bg-slate-100 p-1 rounded-2xl w-full md:w-auto max-w-xl justify-center">
+    <!-- Tab Navigation Bar (ACNH Style) -->
+    <div class="flex items-center justify-center w-full z-30 px-2 sm:px-0">
+      <div class="flex flex-wrap sm:flex-nowrap gap-3 md:gap-5 w-full max-w-4xl justify-center">
+        
         <button
           onclick={() => { playSound('beep', isMuted); currentTab = 'book'; }}
-          class="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-display font-black transition-all cursor-pointer font-bold border-none {currentTab === 'book' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'}"
+          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'book' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
-          <Ticket class="w-4 h-4" />
-          Book Flight
+          <Ticket class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'book' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
+          <span class="text-[11px] md:text-sm leading-tight text-center">Book Flight</span>
         </button>
+
         <button
           onclick={() => { playSound('beep', isMuted); currentTab = 'hub'; }}
-          class="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-display font-black transition-all cursor-pointer font-bold border-none {currentTab === 'hub' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'}"
+          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer relative {currentTab === 'hub' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
-          <Plane class="w-4 h-4" />
-          My Flight Hub
+          <Plane class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'hub' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
+          <span class="text-[11px] md:text-sm leading-tight text-center">My Flight Hub</span>
           {#if myFlight}
-            <span class="w-2 h-2 bg-[#FFCC00] rounded-full animate-ping"></span>
+            <span class="absolute top-2 right-2 w-3 h-3 md:w-4 md:h-4 bg-[#FF4747] rounded-full animate-bounce shadow-sm border-2 border-white"></span>
           {/if}
         </button>
+
         <button
           onclick={() => { playSound('beep', isMuted); currentTab = 'radio'; }}
-          class="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-display font-black transition-all cursor-pointer font-bold border-none {currentTab === 'radio' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'}"
+          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'radio' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
-          <Radio class="w-4 h-4" />
-          Airport Radio
+          <Radio class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'radio' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
+          <span class="text-[11px] md:text-sm leading-tight text-center">Airport Radio</span>
         </button>
+
         <button
           onclick={() => { playSound('beep', isMuted); currentTab = 'directory'; }}
-          class="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-display font-black transition-all cursor-pointer font-bold border-none {currentTab === 'directory' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'}"
+          class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'directory' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
-          <Users class="w-4 h-4" />
-          Flyers Directory
+          <Users class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'directory' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
+          <span class="text-[11px] md:text-sm leading-tight text-center">Flyers Directory</span>
         </button>
+
       </div>
     </div>
 
@@ -822,7 +825,7 @@
         <!-- Speech bubble copy -->
         <div class="flex-1 space-y-1.5 min-w-0">
           <!-- Name Tag -->
-          <span class="bg-[#FFCC00] text-[#006094] text-[9px] font-display font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider font-bold">
+          <span class="bg-[#FFCC00] text-[#006094] text-[9px] font-system font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider font-bold">
             Orville [DAL Dispatch]
           </span>
           

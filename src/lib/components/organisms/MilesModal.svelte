@@ -15,7 +15,7 @@
         <Box class="flex items-center gap-2">
           <Box class="w-9 h-9 bg-[#FFCC00] rounded-full flex items-center justify-center text-xl shadow-xs">🎟️</Box>
           <Box>
-            <Text tag="h3" class="font-display font-black text-base text-[#0084CC] uppercase leading-none">NookPhone Dodo Miles+</Text>
+            <Text tag="h3" class="font-system font-black text-base text-[#0084CC] uppercase leading-none">NookPhone Dodo Miles+</Text>
             <Text tag="span" class="text-[8.5px] font-mono font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</Text>
           </Box>
         </Box>
@@ -58,14 +58,14 @@
               </Box>
               {#if isClaimed}
                 <Box class="absolute -inset-1 rounded-full bg-red-600/10 border-2 border-red-600 flex items-center justify-center transform rotate-12 select-none pointer-events-none scale-105">
-                  <Text tag="span" class="text-[7.5px] font-display font-black text-red-600 tracking-tighter uppercase leading-none">OK!</Text>
+                  <Text tag="span" class="text-[7.5px] font-system font-black text-red-600 tracking-tighter uppercase leading-none">OK!</Text>
                 </Box>
               {/if}
             </Box>
 
             <Box class="flex-1 min-w-0">
               <Box class="flex items-center justify-between gap-1">
-                <Text tag="span" class="font-display font-black text-xs text-slate-700 truncate leading-none">{challenge.title}</Text>
+                <Text tag="span" class="font-system font-black text-xs text-slate-700 truncate leading-none">{challenge.title}</Text>
                 <Text tag="span" class="font-mono text-[9px] text-[#FF9F43] font-black shrink-0">+{challenge.miles}</Text>
               </Box>
               <Text tag="p" class="text-[10px] text-slate-400 mt-1 leading-normal font-sans">{challenge.desc}</Text>

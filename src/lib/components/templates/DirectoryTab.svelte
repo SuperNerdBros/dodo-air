@@ -155,7 +155,7 @@
                 <span class="bg-sky-100 text-sky-800 text-[7px] font-mono font-bold px-1.5 py-0.5 rounded-full uppercase leading-none border border-sky-200">
                   Verified Flyer
                 </span>
-                <h3 class="font-display font-black text-sm text-slate-800 leading-tight truncate mt-1 font-bold">
+                <h3 class="font-system font-black text-sm text-slate-800 leading-tight truncate mt-1 font-bold">
                   {p.villagerName}
                 </h3>
                 <p class="text-[11px] font-bold text-[#0084CC] truncate">
@@ -199,7 +199,7 @@
               </span>
             </div>
 
-            <span class="bg-[#0084CC] hover:bg-[#006094] text-white text-[9px] font-mono font-black px-2.5 py-1 rounded-lg uppercase transition-colors font-bold border-none cursor-pointer">
+            <span class="btn-acnh btn-acnh-primary ">
               View Profile
             </span>
           </div>
@@ -212,7 +212,7 @@
       class="bg-white rounded-[32px] border-2 border-dashed border-[#E6DFC7] p-12 text-center"
     >
       <div class="text-4xl">📇</div>
-      <h3 class="font-display font-black text-sm text-slate-700 uppercase tracking-wider mt-3 font-bold">No passports found</h3>
+      <h3 class="font-system font-black text-sm text-slate-700 uppercase tracking-wider mt-3 font-bold">No passports found</h3>
       <p class="text-xs text-slate-400 max-w-xs mx-auto mt-1 leading-normal font-medium">
         We couldn't find any registered flyers matching your search criteria. Try typing something else!
       </p>

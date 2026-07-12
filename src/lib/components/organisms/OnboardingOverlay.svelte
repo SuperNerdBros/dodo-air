@@ -233,7 +233,7 @@
         <div class="flex flex-col gap-2 mt-2">
           <button
             type="submit"
-            class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow-md transition-all uppercase tracking-wide text-xs cursor-pointer"
+            class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow-md transition-all uppercase tracking-wide text-xs cursor-pointer"
           >
             💾 PRINT MY PASSPORT & ENTER COUNTER
           </button>
@@ -247,7 +247,7 @@
           <button
             type="button"
             onclick={handleBrowseAsGuest}
-            class="w-full bg-[#FAF8F2] hover:bg-slate-50 border border-slate-300 text-slate-600 font-display font-black py-2.5 rounded-2xl transition-all uppercase tracking-wide text-[10px] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs font-bold"
+            class="w-full bg-[#FAF8F2] hover:bg-slate-50 border border-slate-300 text-slate-600 font-system font-black py-2.5 rounded-2xl transition-all uppercase tracking-wide text-[10px] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs font-bold"
           >
             🏝️ Browse as Guest (No Passport)
           </button>

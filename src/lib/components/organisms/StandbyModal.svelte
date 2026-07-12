@@ -22,7 +22,7 @@
 
     dalStore.isSubmittingRequest = true;
     try {
-      const res = await fetch('/api/requests', {
+      const res = await fetch('/wp-json/dodo-air/v1/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -62,7 +62,7 @@
     <Box transition={scale} class="bg-white rounded-[32px] border-4 border-[#0084CC] max-w-md w-full p-6 shadow-2xl relative text-[#4A4A4A]">
       <Box class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <Box>
-          <Text tag="h3" class="font-display font-black text-base text-[#0084CC]">File Standby Flight Ticket</Text>
+          <Text tag="h3" class="font-system font-black text-base text-[#0084CC]">File Standby Flight Ticket</Text>
           <Text tag="span" class="text-[8px] font-mono font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</Text>
         </Box>
         <Button onclick={() => dalStore.showStandbyModal = false} class="p-1 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200">
@@ -104,7 +104,7 @@
           <Textarea bind:value={dalStore.requestMemo} placeholder="e.g. Looking to swap DIYs, or sell turnips over 300 bells. Will tip gold nugget! 💰" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold h-20 resize-none outline-none focus:bg-white" maxlength={140} />
         </Box>
 
-        <Button type="submit" disabled={dalStore.isSubmittingRequest} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
+        <Button type="submit" disabled={dalStore.isSubmittingRequest} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
           📡 SUBMIT STANDBY TICKET & ENTER RADAR
         </Button>
       </Form>

@@ -38,7 +38,7 @@
     >
       <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <div>
-          <h3 class="font-display font-black text-base text-[#0084CC]">File Standby Flight Ticket</h3>
+          <h3 class="font-system font-black text-base text-[#0084CC]">File Standby Flight Ticket</h3>
           <span class="text-[8px] font-mono font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</span>
         </div>
         <button
@@ -96,7 +96,7 @@
         <button
           type="submit"
           disabled={isSubmittingRequest}
-          class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold disabled:opacity-50"
+          class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold disabled:opacity-50"
         >
           {isSubmittingRequest ? 'Registering...' : '📡 SUBMIT STANDBY TICKET & ENTER RADAR'}
         </button>

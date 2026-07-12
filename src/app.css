@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+	font-family: 'FOT-RodinBokutoh Pro EB';
+	src: url('./lib/fonts/FOT-RodinBokutoh%20Pro%20EB.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'FOT-Seurat Pro B';
+	src: url('./lib/fonts/FOT-Seurat%20Pro%20B.otf') format('opentype');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
 @layer base {
 	:root {
 		--background: 0 0% 100%;
@@ -50,10 +66,40 @@
 }
 
 @layer base {
+	html {
+		font-size: 18px;
+	}
+	@media (min-width: 768px) {
+		html {
+			font-size: 20px;
+		}
+	}
 	* {
 		@apply border-border;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply bg-background text-foreground font-sans tracking-wide antialiased;
+	}
+}
+
+@layer components {
+	.btn-acnh {
+		@apply font-system font-black tracking-wide rounded-[1rem] border-x-2 border-t-2 border-b-4 transition-all disabled:pointer-events-none disabled:opacity-50 select-none inline-flex items-center justify-center whitespace-nowrap outline-none focus-visible:ring-4 focus-visible:ring-ring/50 gap-2 cursor-pointer shadow-sm active:translate-y-1 active:border-b-[2px];
+	}
+	
+	.btn-acnh-primary {
+		@apply bg-[#0084CC] text-white border-x-[#0073B3] border-t-[#0073B3] border-b-[#005788] hover:bg-[#0095E8];
+	}
+
+	.btn-acnh-secondary {
+		@apply bg-[#FFCC00] text-[#7A5A00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] hover:bg-[#FFD633];
+	}
+
+	.btn-acnh-outline {
+		@apply bg-white text-[#8C7A5A] border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] hover:bg-[#FFFDF5] hover:-translate-y-0.5;
+	}
+
+	.btn-acnh-danger {
+		@apply bg-[#FF4747] text-white border-x-[#E63939] border-t-[#E63939] border-b-[#CC0000] hover:bg-[#FF5C5C];
 	}
 }

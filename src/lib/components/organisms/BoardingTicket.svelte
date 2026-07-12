@@ -16,7 +16,7 @@
     }
     dalStore.boardingError = '';
     try {
-      const res = await fetch(`/api/flights/${flightId}/board`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -43,7 +43,7 @@
 
   async function handleLeaveFlight(flightId: string, passengerId: string) {
     try {
-      const res = await fetch(`/api/flights/${flightId}/leave`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/leave`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passengerId })
@@ -61,7 +61,7 @@
 {#if selectedFlight}
   <Box class="fixed inset-0 bg-[#006094]/40 backdrop-blur-md flex items-center justify-center p-4 z-50 overflow-y-auto">
     <Box transition={scale} class="bg-white rounded-[36px] border-4 border-[#0084CC] max-w-2xl w-full shadow-2xl relative overflow-hidden text-[#4A4A4A] my-8">
-      <Box class="bg-[#0084CC] text-white p-4 font-display font-black flex items-center justify-between border-b-4 border-dashed border-[#006094]">
+      <Box class="bg-[#0084CC] text-white p-4 font-system font-black flex items-center justify-between border-b-4 border-dashed border-[#006094]">
         <Box class="flex items-center gap-2">
           <Ticket class="w-5 h-5 text-[#FFCC00]" />
           <Text tag="span">OFFICIAL DAL BOARDING PASS</Text>
@@ -79,7 +79,7 @@
           <Box class="grid grid-cols-2 gap-4">
             <Box>
               <Text tag="span" class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">PASSENGER NAME</Text>
-              <Text tag="span" class="text-sm font-display font-black text-slate-700 mt-1 block">
+              <Text tag="span" class="text-sm font-system font-black text-slate-700 mt-1 block">
                 {dalStore.passport.hasCreated ? dalStore.passport.villagerName : "GUEST PASSENGER"}
               </Text>
             </Box>
@@ -136,7 +136,7 @@
                       const p = selectedFlight.passengers.find(p => p.name.toLowerCase() === dalStore.passport.villagerName.toLowerCase());
                       if (p) handleLeaveFlight(selectedFlight.id, p.id);
                     }}
-                    class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-mono font-bold text-xs py-2 rounded-xl border border-slate-200 transition-all active:scale-95 text-center font-black"
+                    class="btn-acnh btn-acnh-outline w-full"
                   >
                     👋 Return back home / Clear seat
                   </Button>
@@ -155,7 +155,7 @@
                 <Button
                   onclick={() => handleBoardFlight(selectedFlight.id)}
                   disabled={selectedFlight.status === 'Closed' || selectedFlight.status === 'Departed'}
-                  class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] disabled:opacity-50 text-[#006094] font-display font-black py-3 px-4 rounded-xl shadow border-b-4 border-[#CC9900] text-center text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] disabled:opacity-50 text-[#006094] font-system font-black py-3 px-4 rounded-xl shadow border-b-4 border-[#CC9900] text-center text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5"
                 >
                   <Ticket class="w-4 h-4" />
                   BOARD SEAPLANE (GET DODO CODE™)

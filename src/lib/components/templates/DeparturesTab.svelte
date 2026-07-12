@@ -85,7 +85,7 @@
       >
         <div class="flex items-center gap-1.5 border-b border-amber-200/50 pb-2">
           <span class="text-sm">🚦</span>
-          <h4 class="font-display font-black text-[11px] text-[#006094] uppercase tracking-wider font-bold">DAL Runway Status Board Legend</h4>
+          <h4 class="font-system font-black text-[11px] text-[#006094] uppercase tracking-wider font-bold">DAL Runway Status Board Legend</h4>
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[10px] text-slate-600 font-semibold leading-relaxed">
@@ -193,7 +193,7 @@
                       </span>
                     {/if}
                   </div>
-                  <h3 class="font-display font-black text-[#4A4A4A] mt-0.5 leading-snug font-bold">
+                  <h3 class="font-system font-black text-[#4A4A4A] mt-0.5 leading-snug font-bold">
                     {flight.islandName}
                   </h3>
                   <div class="text-[11px] text-slate-500 font-medium flex items-center flex-wrap gap-1">
@@ -270,14 +270,14 @@
         <div class="flex items-center gap-1.5">
           <span class="text-amber-600 text-lg">🛋️</span>
           <div>
-            <h3 class="font-display font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Standby Lounge Radar</h3>
+            <h3 class="font-system font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Standby Lounge Radar</h3>
             <span class="text-[8.5px] font-mono font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</span>
           </div>
         </div>
 
         <button
           onclick={() => { playSound('beep', isMuted); setShowStandbyModal(true); }}
-          class="bg-[#0084CC] hover:bg-[#006094] text-white font-mono font-black text-[9px] px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs cursor-pointer font-bold border-none"
+          class="btn-acnh btn-acnh-primary "
         >
           <PlusCircle class="w-3 h-3" /> Add Request
         </button>
@@ -327,7 +327,7 @@
                         const p = getPassengerProfile(req.name, req.island);
                         openProfileModal(p ? p.friendCode : req.friendCode || `SW-TEMP-${req.name}-${req.island}`);
                       }}
-                      class="font-display font-black text-xs text-[#0084CC] hover:underline cursor-pointer font-bold"
+                      class="font-system font-black text-xs text-[#0084CC] hover:underline cursor-pointer font-bold"
                       title="View passenger trust profile"
                     >
                       {req.name}

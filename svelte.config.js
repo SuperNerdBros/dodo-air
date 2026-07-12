@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-node';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -8,8 +8,17 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		// adapter-node only
-		adapter: adapter(),
+		prerender: {
+			handleHttpError: 'warn'
+		},
+		adapter: adapter({
+			fallback: 'index.html',
+			pages: '../../wp-content/plugins/super-nerd-bros-dodo-air/public/dist',
+			assets: '../../wp-content/plugins/super-nerd-bros-dodo-air/public/dist',
+			precompress: false,
+			strict: false
+		}),
+
 		alias: {
 			$lib: 'src/lib',
 			'@atoms': 'src/lib/components/atoms',

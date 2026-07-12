@@ -52,7 +52,7 @@
       transition:scale={{ duration: 300, start: 0.95, easing: backOut }}
     >
       <!-- Ticket Perforated top stub divider effect -->
-      <div class="bg-[#0084CC] text-white p-4 font-display font-black flex items-center justify-between border-b-4 border-dashed border-[#006094]">
+      <div class="bg-[#0084CC] text-white p-4 font-system font-black flex items-center justify-between border-b-4 border-dashed border-[#006094]">
         <div class="flex items-center gap-2">
           <Ticket class="w-5 h-5 text-[#FFCC00]" />
           <span class="font-bold">OFFICIAL DAL BOARDING PASS</span>
@@ -71,7 +71,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div>
               <span class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">PASSENGER NAME</span>
-              <span class="text-sm font-display font-black text-slate-700 mt-1 block font-bold">
+              <span class="text-sm font-system font-black text-slate-700 mt-1 block font-bold">
                 {passport.hasCreated ? passport.villagerName : "GUEST PASSENGER"}
               </span>
             </div>
@@ -145,7 +145,7 @@
                       );
                       if (p) onLeaveFlight(selectedFlight.id, p.id);
                     }}
-                    class="w-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-mono font-bold text-xs py-2 rounded-xl border border-slate-200 transition-all active:scale-95 text-center font-black cursor-pointer font-bold"
+                    class="btn-acnh btn-acnh-outline w-full"
                   >
                     👋 Return back home / Clear seat
                   </button>
@@ -183,7 +183,7 @@
                 <button
                   onclick={() => onBoardFlight(selectedFlight.id)}
                   disabled={selectedFlight.status === 'Closed' || selectedFlight.status === 'Departed'}
-                  class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] disabled:opacity-50 text-[#006094] font-display font-black py-3 px-4 rounded-xl shadow border-b-4 border-[#CC9900] text-center text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer font-bold"
+                  class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] disabled:opacity-50 text-[#006094] font-system font-black py-3 px-4 rounded-xl shadow border-b-4 border-[#CC9900] text-center text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer font-bold"
                 >
                   <Ticket class="w-4 h-4" />
                   BOARD SEAPLANE (GET DODO CODE™)

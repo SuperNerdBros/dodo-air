@@ -38,7 +38,7 @@
 
     dalStore.isSubmittingHost = true;
     try {
-      const res = await fetch('/api/flights', {
+      const res = await fetch('/wp-json/dodo-air/v1/flights', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,7 +75,7 @@
 
   async function handleUpdateStatus(flightId: string, newStatus: FlightStatus) {
     try {
-      const res = await fetch(`/api/flights/${flightId}/status`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/status`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -91,7 +91,7 @@
 
   async function handleLeaveFlight(flightId: string, passengerId: string) {
     try {
-      const res = await fetch(`/api/flights/${flightId}/leave`, {
+      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/leave`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passengerId })
@@ -107,7 +107,7 @@
 
   async function handleClearForTakeoff(request: StandbyRequest, flightId: string) {
     try {
-      const resBoard = await fetch(`/api/flights/${flightId}/board`, {
+      const resBoard = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -117,10 +117,10 @@
       });
 
       if (resBoard.ok) {
-        await fetch(`/api/requests/${request.id}`, { method: 'DELETE' });
+        await fetch(`/wp-json/dodo-air/v1/requests/${request.id}`, { method: 'DELETE' });
         dalStore.playSound('success');
         
-        await fetch('/api/chatter', {
+        await fetch('/wp-json/dodo-air/v1/chatter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -139,7 +139,7 @@
     dalStore.loadingReviewId = flightId;
     dalStore.playSound('bell');
     try {
-      const res = await fetch('/api/ai/review', {
+      const res = await fetch('/wp-json/dodo-air/v1/ai/review', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ flightId })
@@ -228,7 +228,7 @@
           <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">FLIGHT PLAN DESCRIPTION</Text>
           <Textarea bind:value={dalStore.formDesc} placeholder="e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach." class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-semibold h-16 resize-none outline-none focus:bg-white focus:border-[#0084CC]" maxlength={180} />
         </Box>
-        <Button type="submit" disabled={dalStore.isSubmittingHost} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
+        <Button type="submit" disabled={dalStore.isSubmittingHost} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
           {dalStore.isSubmittingHost ? 'Dispatching Hangar...' : '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE'}
         </Button>
       </Form>
@@ -242,7 +242,7 @@
             <Text tag="span" class="bg-[#FFCC00] text-[#006094] text-[9px] font-black tracking-widest px-2.5 py-0.5 rounded-full font-mono uppercase">
               ACTIVE PILOT CONSOLE
             </Text>
-            <Text tag="h2" class="text-2xl font-black font-display tracking-tight mt-1">
+            <Text tag="h2" class="text-2xl font-black font-system tracking-tight mt-1">
               Flight {myFlight.id} to '{myFlight.islandName}'
             </Text>
             <Text tag="p" class="text-xs text-sky-200 mt-0.5">
@@ -261,7 +261,7 @@
       <Box class="grid grid-cols-1 md:grid-cols-12 gap-5">
         <Box class="md:col-span-7 space-y-4">
           <Box class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm space-y-4">
-            <Text tag="h3" class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide border-b border-slate-100 pb-2">
+            <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide border-b border-slate-100 pb-2">
               🚦 Seaplane Runway Controllers
             </Text>
             <Box class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
@@ -282,7 +282,7 @@
 
           <Box class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm">
             <Box class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-              <Text tag="h3" class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide">
+              <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide">
                 🎟️ Passenger Flight Manifest
               </Text>
               <Text tag="span" class="font-mono text-[10px] text-[#0084CC] font-bold">
@@ -300,7 +300,7 @@
                     <Box class="flex items-center gap-2">
                       <Text tag="span" class="text-lg">👤</Text>
                       <Box class="text-xs">
-                        <Text tag="span" class="font-display font-black text-slate-700">{p.name}</Text>
+                        <Text tag="span" class="font-system font-black text-slate-700">{p.name}</Text>
                         <Text tag="span" class="text-[9px] font-mono text-slate-400 block">from {p.island}</Text>
                       </Box>
                     </Box>
@@ -318,7 +318,7 @@
 
           <Box class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm space-y-4">
             <Box class="border-b border-slate-100 pb-2">
-              <Text tag="h3" class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide">
+              <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide">
                 📢 Airport Loudspeaker Feed
               </Text>
             </Box>
@@ -327,7 +327,7 @@
             </Box>
             {#if myFlight.review}
               <Box class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200/50 p-4 rounded-[24px] space-y-2">
-                <Text tag="h4" class="font-display font-black text-[#D35400] text-xs flex items-center gap-1">
+                <Text tag="h4" class="font-system font-black text-[#D35400] text-xs flex items-center gap-1">
                   <Sparkles class="w-4 h-4 text-amber-500 fill-amber-500" />
                   Orville's Official Island Travel Review
                 </Text>
@@ -343,7 +343,7 @@
                 <Button
                   onclick={() => handleGenerateAIReview(myFlight.id)}
                   disabled={dalStore.loadingReviewId !== null}
-                  class="w-full bg-[#0084CC] hover:bg-[#006094] text-white font-display font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1 border-b-2 border-[#006094] disabled:opacity-50 shadow-xs"
+                  class="btn-acnh btn-acnh-primary w-full text-xs"
                 >
                   {#if dalStore.loadingReviewId === myFlight.id}
                     <RefreshCw class="w-3.5 h-3.5 animate-spin" />
@@ -362,7 +362,7 @@
             <Box class="flex items-center gap-2 border-b border-[#FFEAA7] pb-2 mb-3">
               <Text tag="span" class="text-xl">🦤</Text>
               <Box>
-                <Text tag="h3" class="font-display font-black text-xs text-[#0084CC] uppercase leading-none">Smart Flight Matchmaker</Text>
+                <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase leading-none">Smart Flight Matchmaker</Text>
                 <Text tag="span" class="text-[8.5px] font-mono text-slate-400 font-bold uppercase mt-0.5 block">ORVILLE'S MATCH COUNTER</Text>
               </Box>
             </Box>
@@ -384,14 +384,14 @@
                     <Box class="flex items-start gap-2">
                       <Text tag="span" class="text-xl">{match.avatar}</Text>
                       <Box>
-                        <Text tag="span" class="font-display font-black text-xs block text-slate-700">{match.name}</Text>
+                        <Text tag="span" class="font-system font-black text-xs block text-slate-700">{match.name}</Text>
                         <Text tag="span" class="text-[9px] text-slate-400 font-mono leading-none">from {match.island}</Text>
                       </Box>
                     </Box>
                     <Text tag="p" class="text-[10.5px] text-slate-500 italic">"{match.memo}"</Text>
                     <Button
                       onclick={() => handleClearForTakeoff(match, myFlight.id)}
-                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-display font-black py-2 rounded-xl text-[10px] uppercase shadow flex items-center justify-center gap-1"
+                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-system font-black py-2 rounded-xl text-[10px] uppercase shadow flex items-center justify-center gap-1"
                     >
                       💚 Clear for Takeoff & Board
                     </Button>
@@ -403,7 +403,7 @@
 
           <Button
             onclick={() => handleUpdateStatus(myFlight.id, 'Closed')}
-            class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-display font-black py-3 rounded-2xl shadow border border-red-200 text-xs text-center block"
+            class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-system font-black py-3 rounded-2xl shadow border border-red-200 text-xs text-center block"
           >
             ⛔ CLOSE GATE & ARCHIVE FLIGHT RUNWAY
           </Button>

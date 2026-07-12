@@ -15,6 +15,7 @@ const config = {
 		},
 		extend: {
 			colors: {
+				system: '#74664b',
 				border: 'hsl(var(--border) / <alpha-value>)',
 				input: 'hsl(var(--input) / <alpha-value>)',
 				ring: 'hsl(var(--ring) / <alpha-value>)',
@@ -55,7 +56,9 @@ const config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['Inter', ...fontFamily.sans]
+				sans: ['"FOT-RodinBokutoh Pro EB"', ...fontFamily.sans],
+				dialog: ['"FOT-RodinBokutoh Pro EB"', ...fontFamily.sans],
+				system: ['"FOT-Seurat Pro B"', ...fontFamily.sans]
 			}
 		}
 	}

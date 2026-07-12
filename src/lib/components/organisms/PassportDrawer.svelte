@@ -22,7 +22,7 @@
         </Box>
         <Box class="space-y-1 flex-1 min-w-0">
           <Text tag="p" class="text-[7.5px] font-mono text-[#85806B] uppercase leading-none">PASSENGER</Text>
-          <Text tag="p" class="font-display font-black text-sm leading-none text-[#4A4A4A] truncate">{dalStore.passport.villagerName}</Text>
+          <Text tag="p" class="font-system font-black text-sm leading-none text-[#4A4A4A] truncate">{dalStore.passport.villagerName}</Text>
           <Text tag="p" class="text-[7.5px] font-mono text-[#85806B] uppercase leading-none mt-1">ISLAND</Text>
           <Text tag="p" class="text-[11px] font-bold text-[#0084CC] leading-none truncate">🏝️ {dalStore.passport.islandName}</Text>
         </Box>
@@ -61,7 +61,7 @@
           dalStore.showMilesModal = true;
           dalStore.showPassportDrawer = false;
         }}
-        class="w-full bg-[#FF9F43] hover:bg-[#ff8f24] text-white py-1.5 rounded-xl font-display font-black text-[10px] uppercase shadow border-b-2 border-[#cc7a1f] flex items-center justify-center gap-1"
+        class="w-full bg-[#FF9F43] hover:bg-[#ff8f24] text-white py-1.5 rounded-xl font-system font-black text-[10px] uppercase shadow border-b-2 border-[#cc7a1f] flex items-center justify-center gap-1"
       >
         🎯 Open Stamp Book
       </Button>
@@ -72,7 +72,7 @@
           dalStore.isEditingPassport = true;
           dalStore.showPassportDrawer = false;
         }}
-        class="w-full bg-[#0084CC] hover:bg-[#006094] text-white py-1.5 rounded-xl font-display font-black text-[10px] uppercase shadow border-b-2 border-[#006094]"
+        class="btn-acnh btn-acnh-primary w-full text-[10px]"
       >
         ✏️ Edit My Passport
       </Button>

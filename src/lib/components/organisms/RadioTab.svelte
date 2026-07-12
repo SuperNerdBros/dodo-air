@@ -19,7 +19,7 @@
 
     dalStore.isPostingChat = true;
     try {
-      const res = await fetch('/api/chatter', {
+      const res = await fetch('/wp-json/dodo-air/v1/chatter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,7 +48,7 @@
     <Box class="flex items-center gap-2">
       <Text tag="span" class="text-xl">📻</Text>
       <Box>
-        <Text tag="h2" class="text-base font-black text-[#0084CC] font-display">DAL Terminal Tower Radio</Text>
+        <Text tag="h2" class="text-base font-black text-[#0084CC] font-system">DAL Terminal Tower Radio</Text>
         <Text tag="span" class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</Text>
       </Box>
     </Box>
@@ -69,7 +69,7 @@
             {msg.type === 'orville' ? '🦤' : '🕶️'}
           </Box>
           <Box class="flex-1 bg-[#F0F9FF] border-2 border-[#0084CC]/20 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-            <Text tag="span" class="font-display font-black text-[#0084CC] text-[10px] block mb-0.5">
+            <Text tag="span" class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
               {msg.sender}
             </Text>
             <Text tag="p" class="font-sans font-semibold leading-relaxed">{msg.text}</Text>
@@ -81,7 +81,7 @@
             {msg.sender.substring(0, 2).toUpperCase()}
           </Box>
           <Box class="flex-1 bg-white border-2 border-slate-100 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-            <Text tag="span" class="font-display font-black text-[#0084CC] text-[10px] block mb-0.5">
+            <Text tag="span" class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
               {msg.sender} {#if msg.island}<Text tag="span" class="text-slate-400 font-mono text-[8.5px] font-bold">from '{msg.island}'</Text>{/if}
             </Text>
             <Text tag="p" class="font-sans leading-relaxed">{msg.text}</Text>
@@ -127,7 +127,7 @@
       <Button
         type="submit"
         disabled={!dalStore.chatSender.trim() || !dalStore.chatText.trim() || dalStore.isPostingChat}
-        class="bg-[#0084CC] hover:bg-[#006094] disabled:opacity-40 text-white px-4.5 rounded-xl font-display font-black uppercase text-xs flex items-center justify-center flex-shrink-0"
+        class="bg-[#0084CC] hover:bg-[#006094] disabled:opacity-40 text-white px-4.5 rounded-xl font-system font-black uppercase text-xs flex items-center justify-center flex-shrink-0"
       >
         Send
       </Button>

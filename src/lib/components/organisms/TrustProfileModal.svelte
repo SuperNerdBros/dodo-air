@@ -81,7 +81,7 @@
           <span class="bg-sky-100 text-sky-800 text-[8px] font-mono font-bold px-2 py-0.5 rounded-full uppercase leading-none border border-sky-200">
             Islander Passport
           </span>
-          <h3 class="font-display font-black text-lg text-slate-800 leading-tight truncate font-bold">
+          <h3 class="font-system font-black text-lg text-slate-800 leading-tight truncate font-bold">
             {prof.villagerName}
           </h3>
           <p class="text-xs font-bold text-[#0084CC] truncate">
@@ -104,7 +104,7 @@
         <!-- Good Apples -->
         <div class="bg-emerald-50/50 border-2 border-emerald-200 rounded-3xl p-4 text-center shadow-xs">
           <span class="text-3xl block">🍏</span>
-          <span class="block font-display font-black text-xs text-[#117A65] uppercase mt-1 leading-none font-bold">Good Apples</span>
+          <span class="block font-system font-black text-xs text-[#117A65] uppercase mt-1 leading-none font-bold">Good Apples</span>
           <span class="block font-mono font-black text-[#117A65] text-2xl mt-1.5 leading-none font-black">
             {prof.goodApples || 0}
           </span>
@@ -114,7 +114,7 @@
         <!-- Rotten Turnips -->
         <div class="bg-rose-50/50 border-2 border-rose-200 rounded-3xl p-4 text-center shadow-xs">
           <span class="text-3xl block">🧅</span>
-          <span class="block font-display font-black text-xs text-rose-800 uppercase mt-1 leading-none font-bold">Rotten Turnips</span>
+          <span class="block font-system font-black text-xs text-rose-800 uppercase mt-1 leading-none font-bold">Rotten Turnips</span>
           <span class="block font-mono font-black text-rose-600 text-2xl mt-1.5 leading-none font-black">
             {prof.rottenTurnips || 0}
           </span>
@@ -124,7 +124,7 @@
 
       <!-- Form to submit Vouch/Report -->
       <div class="bg-white border border-[#E6DFC7]/60 rounded-3xl p-4 mb-6 text-left">
-        <h4 class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wider mb-3 font-bold">
+        <h4 class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wider mb-3 font-bold">
           ✍️ Leave Community Trust Feedback
         </h4>
 
@@ -139,14 +139,14 @@
             <button
               type="button"
               onclick={() => { playSound('beep', isMuted); reviewRatingType = 'apple'; }}
-              class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl font-bold border-2 transition-all cursor-pointer {reviewRatingType === 'apple' ? 'bg-emerald-500 border-emerald-600 text-white shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'}"
+              class="flex-1 {reviewRatingType === 'apple' ? 'btn-acnh bg-[#10B981] text-white border-x-[#059669] border-t-[#059669] border-b-[#047857]' : 'btn-acnh btn-acnh-outline'}"
             >
               🍏 Vouch: Good Apple
             </button>
             <button
               type="button"
               onclick={() => { playSound('beep', isMuted); reviewRatingType = 'turnip'; }}
-              class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl font-bold border-2 transition-all cursor-pointer {reviewRatingType === 'turnip' ? 'bg-rose-500 border-rose-600 text-white shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'}"
+              class="flex-1 {reviewRatingType === 'turnip' ? 'btn-acnh btn-acnh-danger' : 'btn-acnh btn-acnh-outline'}"
             >
               🧅 Report: Rotten Turnip
             </button>
@@ -166,7 +166,7 @@
           <button
             type="submit"
             disabled={isSubmittingReview}
-            class="w-full font-display font-black text-xs uppercase py-2.5 rounded-xl shadow border-b-2 transition-all cursor-pointer font-bold {reviewRatingType === 'apple' ? 'bg-emerald-500 hover:bg-emerald-600 border-emerald-700 text-white' : 'bg-rose-500 hover:bg-rose-600 border-rose-700 text-white'}"
+            class="w-full font-system font-black text-xs uppercase py-2.5 rounded-xl shadow border-b-2 transition-all cursor-pointer font-bold {reviewRatingType === 'apple' ? 'bg-emerald-500 hover:bg-emerald-600 border-emerald-700 text-white' : 'bg-rose-500 hover:bg-rose-600 border-rose-700 text-white'}"
           >
             {isSubmittingReview ? "submitting feedback..." : `Submit Trust Rating (${reviewRatingType === 'apple' ? '🍏 Vouch' : '🧅 Report'})`}
           </button>
@@ -192,7 +192,7 @@
                 </span>
                 <div class="flex-1 min-w-0 text-left">
                   <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="font-display font-black text-slate-700 truncate font-bold">
+                    <span class="font-system font-black text-slate-700 truncate font-bold">
                       {rev.authorName} <span class="font-normal font-sans text-slate-400">from</span> '{rev.authorIsland}'
                     </span>
                     <span class="text-[8px] font-mono text-slate-400 shrink-0">

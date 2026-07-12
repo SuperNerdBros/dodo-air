@@ -213,7 +213,7 @@ export class DalState {
   async fetchState(showIndicator = false) {
     if (showIndicator) this.isSyncing = true;
     try {
-      const res = await fetch('/api/state');
+      const res = await fetch('/wp-json/dodo-air/v1/state');
       if (res.ok) {
         const data = await res.json();
         this.flights = data.flights || [];

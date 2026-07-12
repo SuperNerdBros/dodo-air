@@ -134,7 +134,7 @@
 
           <Button
             type="submit"
-            class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow-md transition-all uppercase tracking-wide text-xs mt-2"
+            class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow-md transition-all uppercase tracking-wide text-xs mt-2"
           >
             💾 PRINT MY PASSPORT & ENTER COUNTER
           </Button>

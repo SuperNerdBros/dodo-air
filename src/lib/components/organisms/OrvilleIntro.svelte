@@ -12,7 +12,7 @@
       <Box class="text-center space-y-4">
         <Box class="w-16 h-16 bg-[#FFFCEF] border-2 border-[#E6DFC7] rounded-full flex items-center justify-center text-4xl mx-auto shadow-inner">🦤</Box>
         <Box>
-          <Text tag="h2" class="text-2xl font-black text-[#0084CC] font-display">Welcome to DAL Gateway</Text>
+          <Text tag="h2" class="text-2xl font-black text-[#0084CC] font-system">Welcome to DAL Gateway</Text>
           <Text tag="p" class="text-[10px] text-slate-400 font-mono mt-1 uppercase tracking-widest font-bold">AIRPORT TERMINAL CONNECTED</Text>
         </Box>
         <Box class="bg-white border-2 border-[#E6DFC7] p-4 rounded-2xl text-left flex gap-3 shadow-xs">
@@ -27,7 +27,7 @@
             dalStore.showOrvilleIntro = false;
             localStorage.setItem('dal_orville_intro', 'hidden');
           }}
-          class="w-full bg-[#0084CC] hover:bg-[#006094] text-white font-display font-black py-3 rounded-2xl border-b-4 border-[#006094] shadow transition-all uppercase tracking-wide text-xs"
+          class="btn-acnh btn-acnh-primary w-full py-3 text-xs"
         >
           🎫 ENTER AIRPORT TERMINAL
         </Button>

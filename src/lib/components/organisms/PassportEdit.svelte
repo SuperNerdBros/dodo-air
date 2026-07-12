@@ -30,7 +30,7 @@
     <Box transition={scale} class="bg-[#FAF8F2] rounded-[36px] border-4 border-[#E6DFC7] p-5 max-w-sm w-full shadow-2xl relative text-[#4A4A4A]">
       <Box class="flex items-center gap-2 border-b border-[#E6DFC7] pb-2 mb-3">
         <Text tag="span" class="text-xl">📖</Text>
-        <Text tag="h3" class="font-display font-black text-sm text-[#0084CC] uppercase">Update Passport Credentials</Text>
+        <Text tag="h3" class="font-system font-black text-sm text-[#0084CC] uppercase">Update Passport Credentials</Text>
       </Box>
 
       <Form onsubmit={handleSavePassport} class="space-y-3.5 text-xs">
@@ -99,7 +99,7 @@
         </Box>
 
         <Box class="flex gap-2 pt-1.5">
-          <Button type="submit" class="flex-1 bg-[#0084CC] hover:bg-[#006094] text-white font-display font-black py-2 rounded-xl text-center shadow">
+          <Button type="submit" class="btn-acnh btn-acnh-primary flex-1">
             💾 UPDATE PASSPORT
           </Button>
           <Button type="button" onclick={() => dalStore.isEditingPassport = false} class="bg-slate-100 hover:bg-slate-200 border border-slate-200 px-4 py-2 rounded-xl">

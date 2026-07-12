@@ -174,7 +174,7 @@
         <button
           type="submit"
           disabled={isSubmittingHost}
-          class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-display font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold"
+          class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold"
         >
           {isSubmittingHost ? 'Dispatching Hangar...' : '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE'}
         </button>
@@ -192,7 +192,7 @@
             <span class="bg-[#FFCC00] text-[#006094] text-[9px] font-black tracking-widest px-2.5 py-0.5 rounded-full font-mono uppercase font-bold">
               ACTIVE PILOT CONSOLE
             </span>
-            <h2 class="text-2xl font-black font-display tracking-tight mt-1 font-bold">
+            <h2 class="text-2xl font-black font-system tracking-tight mt-1 font-bold">
               Flight {myFlight.id} to '{myFlight.islandName}'
             </h2>
             <p class="text-xs text-sky-200 mt-0.5">
@@ -217,7 +217,7 @@
         <div class="md:col-span-7 space-y-4">
           <!-- Gate Controller Status board -->
           <div class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm space-y-4">
-            <h3 class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide border-b border-slate-100 pb-2 font-bold">
+            <h3 class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide border-b border-slate-100 pb-2 font-bold">
               🚦 Seaplane Runway Controllers
             </h3>
 
@@ -237,7 +237,7 @@
           <!-- Passenger Manifest Checked-In List -->
           <div class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-              <h3 class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide font-bold">
+              <h3 class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide font-bold">
                 🎟️ Passenger Flight Manifest
               </h3>
               <span class="font-mono text-[10px] text-[#0084CC] font-bold">
@@ -256,7 +256,7 @@
                     <div class="flex items-center gap-2">
                       <span class="text-lg">👤</span>
                       <div class="text-xs text-left">
-                        <span class="font-display font-black text-slate-700 block font-bold">{p.name}</span>
+                        <span class="font-system font-black text-slate-700 block font-bold">{p.name}</span>
                         <span class="text-[9px] font-mono text-slate-400 block">from {p.island}</span>
                       </div>
                     </div>
@@ -276,7 +276,7 @@
           <!-- Loudspeaker Broadcast announcement and AI brochure review -->
           <div class="bg-white rounded-[32px] p-5 border-2 border-[#0084CC]/10 shadow-sm space-y-4">
             <div class="border-b border-slate-100 pb-2">
-              <h3 class="font-display font-black text-xs text-[#0084CC] uppercase tracking-wide font-bold">
+              <h3 class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide font-bold">
                 📢 Airport Loudspeaker Feed
               </h3>
             </div>
@@ -288,7 +288,7 @@
             <!-- AI Review segment -->
             {#if myFlight.review}
               <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200/50 p-4 rounded-[24px] space-y-2">
-                <h4 class="font-display font-black text-[#D35400] text-xs flex items-center gap-1 font-bold">
+                <h4 class="font-system font-black text-[#D35400] text-xs flex items-center gap-1 font-bold">
                   <Sparkles class="w-4 h-4 text-amber-500 fill-amber-500" />
                   Orville's Official Island Travel Review
                 </h4>
@@ -304,7 +304,7 @@
                 <button
                   onclick={() => handleGenerateAIReview(myFlight.id)}
                   disabled={loadingReviewId !== null}
-                  class="w-full bg-[#0084CC] hover:bg-[#006094] text-white font-display font-black py-2 rounded-xl text-xs flex items-center justify-center gap-1 border-b-2 border-[#006094] disabled:opacity-50 shadow-xs cursor-pointer font-bold border-none"
+                  class="btn-acnh btn-acnh-primary w-full text-xs"
                 >
                   {#if loadingReviewId === myFlight.id}
                     <RefreshCw class="w-3.5 h-3.5 animate-spin" />
@@ -326,7 +326,7 @@
             <div class="flex items-center gap-2 border-b border-[#FFEAA7] pb-2 mb-3">
               <span class="text-xl">🦤</span>
               <div>
-                <h3 class="font-display font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Smart Flight Matchmaker</h3>
+                <h3 class="font-system font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Smart Flight Matchmaker</h3>
                 <span class="text-[8.5px] font-mono text-slate-400 font-bold uppercase mt-0.5 block">ORVILLE'S MATCH COUNTER</span>
               </div>
             </div>
@@ -356,7 +356,7 @@
                             const p = getProfile(match.name, match.island);
                             openProfileModal(p ? p.friendCode : match.friendCode || `SW-TEMP-${match.name}-${match.island}`);
                           }}
-                          class="font-display font-black text-xs block text-[#0084CC] hover:underline cursor-pointer font-bold"
+                          class="font-system font-black text-xs block text-[#0084CC] hover:underline cursor-pointer font-bold"
                         >
                           {match.name}
                         </span>
@@ -370,7 +370,7 @@
 
                     <button
                       onclick={() => { playSound('beep', isMuted); handleClearForTakeoff(match, myFlight.id); }}
-                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-display font-black py-2 rounded-xl text-[10px] uppercase shadow flex items-center justify-center gap-1 cursor-pointer font-bold border-none"
+                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-system font-black py-2 rounded-xl text-[10px] uppercase shadow flex items-center justify-center gap-1 cursor-pointer font-bold border-none"
                     >
                       💚 Clear for Takeoff & Board
                     </button>
@@ -383,7 +383,7 @@
           <!-- Close Flight Plan Desk -->
           <button
             onclick={() => { playSound('beep', isMuted); handleUpdateStatus(myFlight.id, 'Closed'); }}
-            class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-display font-black py-3 rounded-2xl shadow border border-red-200 text-xs text-center block cursor-pointer font-bold"
+            class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-system font-black py-3 rounded-2xl shadow border border-red-200 text-xs text-center block cursor-pointer font-bold"
           >
             ⛔ CLOSE GATE & ARCHIVE FLIGHT RUNWAY
           </button>

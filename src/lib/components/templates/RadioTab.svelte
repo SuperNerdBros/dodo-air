@@ -69,7 +69,7 @@
   <div id="dal-traffic-control-panel" class="w-full bg-white border-2 border-[#E6DFC7] rounded-[32px] p-4 lg:p-5 shadow-xs flex flex-col gap-4">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-dashed border-[#E6DFC7] pb-3 text-left">
       <div>
-        <h2 class="font-display font-black text-sm text-[#0084CC] tracking-wide flex items-center gap-1.5 uppercase font-bold">
+        <h2 class="font-system font-black text-sm text-[#0084CC] tracking-wide flex items-center gap-1.5 uppercase font-bold">
           <span class="animate-pulse">📡</span> DAL Traffic Control & Radar Center
         </h2>
         <p class="text-[10px] text-slate-500 font-mono">
@@ -106,7 +106,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">🛋️</span>
-          <span class="font-display font-black text-[11px] text-sky-800 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-sky-800 uppercase tracking-wide font-bold">
             Standby
           </span>
         </div>
@@ -144,7 +144,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">🎟️</span>
-          <span class="font-display font-black text-[11px] text-amber-800 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-amber-800 uppercase tracking-wide font-bold">
             Passengers
           </span>
         </div>
@@ -178,7 +178,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">👨‍✈️</span>
-          <span class="font-display font-black text-[11px] text-emerald-800 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-emerald-800 uppercase tracking-wide font-bold">
             Pilots
           </span>
         </div>
@@ -216,7 +216,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">📖</span>
-          <span class="font-display font-black text-[11px] text-amber-900 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-amber-900 uppercase tracking-wide font-bold">
             Passports
           </span>
         </div>
@@ -249,7 +249,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">👀</span>
-          <span class="font-display font-black text-[11px] text-rose-800 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-rose-800 uppercase tracking-wide font-bold">
             Views
           </span>
         </div>
@@ -282,7 +282,7 @@
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">👥</span>
-          <span class="font-display font-black text-[11px] text-violet-800 uppercase tracking-wide font-bold">
+          <span class="font-system font-black text-[11px] text-violet-800 uppercase tracking-wide font-bold">
             Visitors
           </span>
         </div>
@@ -308,7 +308,7 @@
       <div class="flex items-center gap-2">
         <span class="text-xl">📻</span>
         <div>
-          <h2 class="text-base font-black text-[#0084CC] font-display font-bold">DAL Terminal Tower Radio</h2>
+          <h2 class="text-base font-black text-[#0084CC] font-system font-bold">DAL Terminal Tower Radio</h2>
           <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</span>
         </div>
       </div>
@@ -334,7 +334,7 @@
               {isOrville ? '🦤' : '🕶️'}
             </div>
             <div class="flex-1 bg-[#F0F9FF] border-2 border-[#0084CC]/20 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-              <span class="font-display font-black text-[#0084CC] text-[10px] block mb-0.5 font-bold">
+              <span class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5 font-bold">
                 {msg.sender}
               </span>
               <p class="font-sans font-semibold leading-relaxed text-left">{msg.text}</p>
@@ -346,7 +346,7 @@
               {msg.sender.substring(0, 2).toUpperCase()}
             </div>
             <div class="flex-1 bg-white border-2 border-slate-100 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-              <span class="font-display font-black text-[#0084CC] text-[10px] block mb-0.5">
+              <span class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
                 <!-- svelte-ignore a11y_click_events_have_key_events -->
                 <!-- svelte-ignore a11y_no_static_element_interactions -->
                 <span 
@@ -422,7 +422,7 @@
         <button
           type="submit"
           disabled={!chatSender.trim() || !chatText.trim() || isPostingChat}
-          class="bg-[#0084CC] hover:bg-[#006094] disabled:opacity-40 text-white px-4.5 rounded-xl font-display font-black uppercase text-xs flex items-center justify-center flex-shrink-0 cursor-pointer font-bold border-none"
+          class="bg-[#0084CC] hover:bg-[#006094] disabled:opacity-40 text-white px-4.5 rounded-xl font-system font-black uppercase text-xs flex items-center justify-center flex-shrink-0 cursor-pointer font-bold border-none"
         >
           Send
         </button>

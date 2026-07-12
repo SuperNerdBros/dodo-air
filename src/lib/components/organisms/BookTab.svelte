@@ -68,7 +68,7 @@
                       </Text>
                     {/if}
                   </Box>
-                  <Text tag="h3" class="font-display font-black text-[#4A4A4A] mt-0.5 leading-snug">
+                  <Text tag="h3" class="font-system font-black text-[#4A4A4A] mt-0.5 leading-snug">
                     {flight.islandName}
                   </Text>
                   <Text tag="p" class="text-[11px] text-slate-500 font-medium">
@@ -107,13 +107,13 @@
         <Box class="flex items-center gap-1.5">
           <Text tag="span" class="text-amber-600 text-lg">🛋️</Text>
           <Box>
-            <Text tag="h3" class="font-display font-black text-xs text-[#0084CC] uppercase leading-none">Standby Lounge Radar</Text>
+            <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase leading-none">Standby Lounge Radar</Text>
             <Text tag="span" class="text-[8.5px] font-mono font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</Text>
           </Box>
         </Box>
         <Button
           onclick={() => { dalStore.playSound('beep'); dalStore.showStandbyModal = true; }}
-          class="bg-[#0084CC] hover:bg-[#006094] text-white font-mono font-black text-[9px] px-2.5 py-1 rounded-full flex items-center gap-1 shadow-xs"
+          class="btn-acnh btn-acnh-primary "
         >
           <PlusCircle class="w-3 h-3" /> Add Request
         </Button>
@@ -134,7 +134,7 @@
                 <Button
                   onclick={async () => {
                     try {
-                      const res = await fetch(`/api/requests/${req.id}`, { method: 'DELETE' });
+                      const res = await fetch(`/wp-json/dodo-air/v1/requests/${req.id}`, { method: 'DELETE' });
                       if (res.ok) { dalStore.playSound('beep'); dalStore.fetchState(); }
                     } catch (err) {}
                   }}
@@ -150,7 +150,7 @@
                 </Box>
                 <Box class="flex-1 min-w-0">
                   <Box class="flex items-center flex-wrap gap-1">
-                    <Text tag="span" class="font-display font-black text-xs text-slate-700">{req.name}</Text>
+                    <Text tag="span" class="font-system font-black text-xs text-slate-700">{req.name}</Text>
                     <Text tag="span" class="text-[8px] font-mono text-slate-400">from {req.island}</Text>
                   </Box>
                   <Text tag="p" class="text-[9px] font-mono text-slate-400 uppercase font-black truncate max-w-full">

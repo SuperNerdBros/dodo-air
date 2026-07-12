@@ -63,7 +63,7 @@
   >
     <div class="flex items-center gap-2 border-b border-[#E6DFC7] pb-2 mb-3">
       <span class="text-xl">📖</span>
-      <h3 class="font-display font-black text-sm text-[#0084CC] uppercase">Update Passport Credentials</h3>
+      <h3 class="font-system font-black text-sm text-[#0084CC] uppercase">Update Passport Credentials</h3>
     </div>
 
     <form onsubmit={handleSubmit} class="space-y-3.5 text-xs">
@@ -207,13 +207,13 @@
         <button
           type="button"
           onclick={() => { playSound('beep', isMuted); onClose(); }}
-          class="bg-slate-100 hover:bg-slate-200 text-slate-500 font-display font-black py-2.5 rounded-xl text-center uppercase cursor-pointer"
+          class="btn-acnh btn-acnh-outline "
         >
           Cancel
         </button>
         <button
           type="submit"
-          class="bg-[#0084CC] hover:bg-[#006094] text-white font-display font-black py-2.5 rounded-xl text-center uppercase cursor-pointer shadow-xs border-b-2 border-[#006094]"
+          class="btn-acnh btn-acnh-primary py-2"
         >
           Save Details
         </button>
