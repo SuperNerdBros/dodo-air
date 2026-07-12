@@ -425,17 +425,14 @@
       return;
     }
 
-    if (!formDodo.trim()) {
-      formError = 'Please enter a valid 5-character Dodo Code.';
-      playSound('beep', isMuted);
-      return;
-    }
-
-    const cleanDodo = formDodo.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    if (cleanDodo.length !== 5) {
-      formError = 'Dodo Code must be exactly 5 characters (A-Z, 0-9).';
-      playSound('beep', isMuted);
-      return;
+    let cleanDodo = '';
+    if (formDodo.trim()) {
+      cleanDodo = formDodo.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (cleanDodo.length !== 5) {
+        formError = 'Dodo Code must be exactly 5 characters (A-Z, 0-9).';
+        playSound('beep', isMuted);
+        return;
+      }
     }
 
     isSubmittingHost = true;
@@ -601,7 +598,7 @@
     }
   }
 
-  async function handleUpdateStatus(flightId: string, newStatus: FlightStatus) {
+  async function handleUpdateStatus(flightId: string, newStatus: FlightStatus, dodoCode?: string) {
     const endpoint = dalStore.systemMode === 'DAL' 
       ? `/wp-json/dodo-air/v1/flights/${flightId}/status`
       : `/wp-json/dodo-air/v1/dreams/${flightId}/status`;
@@ -609,7 +606,7 @@
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus, dodoCode })
       });
       if (res.ok) {
         playSound('bell', isMuted);
@@ -784,47 +781,70 @@
   <div class="w-full flex-1 flex flex-col relative mt-2 gap-4">
     <main class="flex-1 flex flex-col gap-4 items-stretch min-w-0">
       
-      <!-- Floating Bottom App Navigation (ACNH / Glassmorphic Vibe) -->
-      <div class="fixed bottom-4 left-4 right-4 xl:right-[416px] z-40 flex justify-center">
-        <div class="flex items-center justify-around w-full max-w-xl p-2 rounded-2xl border-3 transition-all duration-300 shadow-xl {dalStore.systemMode === 'DAL' ? 'bg-[#FFFCEF]/95 border-[#D1BFAe] text-[#807256] shadow-[0_8px_32px_rgba(209,191,174,0.25)]' : 'bg-[#1a0b2e]/95 border-[#DDA0DD]/30 text-purple-200 shadow-[0_8px_32px_rgba(221,160,221,0.15)]'} backdrop-blur-md">
-          
+      <!-- Tab Teeth for the Header -->
+      <div class="w-full flex justify-between items-start px-4 sm:px-8 lg:px-12 -mt-10 z-40 relative">
+        
+        <!-- Left: Area Tabs -->
+        <div class="flex items-start gap-1 sm:gap-2">
           <button
             onclick={() => { playSound('beep', isMuted); currentTab = 'passport'; }}
-            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'passport' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+            class="px-3 sm:px-5 pt-6 rounded-b-xl border-x-2 border-b-2 transition-all duration-300 font-system font-black tracking-wider text-[10px] sm:text-xs uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md origin-top
+                   {currentTab === 'passport' 
+                     ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
+                     : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <BookOpen class="w-5.5 h-5.5 {currentTab === 'passport' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
-            <span class="text-[10px] font-system font-black tracking-wider uppercase">My Passport</span>
+            <BookOpen class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'passport' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">My Passport</span>
           </button>
-
+          
           <button
             onclick={() => { playSound('beep', isMuted); currentTab = 'book'; }}
-            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'book' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+            class="px-3 sm:px-5 pt-6 rounded-b-xl border-x-2 border-b-2 transition-all duration-300 font-system font-black tracking-wider text-[10px] sm:text-xs uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md origin-top
+                   {currentTab === 'book' 
+                     ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
+                     : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <Ticket class="w-5.5 h-5.5 {currentTab === 'book' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
-            <span class="text-[10px] font-system font-black tracking-wider uppercase">Book Flight</span>
+            <Ticket class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Book Flight</span>
           </button>
-
+          
           <button
             onclick={() => { playSound('beep', isMuted); currentTab = 'hub'; }}
-            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 relative {currentTab === 'hub' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+            class="px-3 sm:px-5 pt-6 rounded-b-xl border-x-2 border-b-2 transition-all duration-300 font-system font-black tracking-wider text-[10px] sm:text-xs uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md origin-top relative
+                   {currentTab === 'hub' 
+                     ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
+                     : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <Plane class="w-5.5 h-5.5 {currentTab === 'hub' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
-            <span class="text-[10px] font-system font-black tracking-wider uppercase">List Flight</span>
+            <Plane class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">List Flight</span>
             {#if myFlight}
-              <span class="absolute top-1.5 right-[25%] w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
-              <span class="absolute top-1.5 right-[25%] w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
+              <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
+              <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
             {/if}
           </button>
-
+          
           <button
             onclick={() => { playSound('beep', isMuted); currentTab = 'directory'; }}
-            class="flex-1 flex flex-col items-center justify-center gap-1 py-2 px-3 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 {currentTab === 'directory' ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#7A5A00] font-bold shadow-md' : 'bg-[#DDA0DD] text-[#4B0082] font-bold shadow-md') : 'hover:bg-[#FFCC00]/10 dark:hover:bg-[#DDA0DD]/10'}"
+            class="px-3 sm:px-5 pt-6 rounded-b-xl border-x-2 border-b-2 transition-all duration-300 font-system font-black tracking-wider text-[10px] sm:text-xs uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md origin-top
+                   {currentTab === 'directory' 
+                     ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
+                     : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-sky-200 border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-purple-200 border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
           >
-            <Users class="w-5.5 h-5.5 {currentTab === 'directory' ? (dalStore.systemMode === 'DAL' ? 'text-[#7A5A00]' : 'text-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'text-[#A0937D]' : 'text-purple-300')}" />
-            <span class="text-[10px] font-system font-black tracking-wider uppercase">Users</span>
+            <Users class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'directory' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Users</span>
           </button>
-
         </div>
+
+        <!-- Right: Ask Orville -->
+        <button
+          onclick={() => {
+            playSound('beep', isMuted);
+            showOrvilleIntro = true;
+            localStorage.setItem('dal_orville_intro', 'show');
+          }}
+          class="px-3 sm:px-6 pt-6 rounded-b-xl border-x-2 border-b-2 transition-all duration-300 font-system font-black tracking-wider text-[10px] sm:text-xs uppercase flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md origin-top
+                 {showOrvilleIntro 
+                   ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#FFCC00] pb-3 scale-y-105' : 'bg-[#DDA0DD] text-[#4B0082] border-[#DDA0DD] pb-3 scale-y-105')
+                   : (dalStore.systemMode === 'DAL' ? 'bg-[#0070B0] text-[#FFFCEF] border-[#0070B0] hover:bg-[#0084CC] hover:text-white pb-1' : 'bg-[#3A0066] text-[#F3E8FF] border-[#3A0066] hover:bg-[#4B0082] hover:text-white pb-1')}"
+        >
+          <span class="text-base sm:text-lg {showOrvilleIntro ? '' : 'opacity-80'}">🦤</span> <span class="hidden sm:inline">Ask Orville</span>
+        </button>
       </div>
 
     <!-- Passport Edit Overlay Form -->
@@ -885,21 +905,7 @@
       </div>
     {/if}
 
-    <!-- Ask Orville Floating Helper -->
-    {#if !showOrvilleIntro}
-      <div class="flex justify-end -mt-3">
-        <button
-          onclick={() => {
-            playSound('beep', isMuted);
-            showOrvilleIntro = true;
-            localStorage.setItem('dal_orville_intro', 'show');
-          }}
-          class="flex items-center gap-1.5 bg-[#FFFCEF] hover:bg-[#FFEAA7]/40 border-2 border-[#FFEAA7] text-amber-800 font-system font-bold text-xs px-3 py-1 rounded-full shadow-xs transition-all uppercase cursor-pointer"
-        >
-          🦤 Ask Orville for Help
-        </button>
-      </div>
-    {/if}
+    <!-- Ask Orville Floating Helper Removed (Now a top tab) -->
 
     <!-- Dynamic Multi-Tab Content View -->
     <div class="w-full">

@@ -41,7 +41,7 @@
     formPlaneType?: 'Switch' | 'Switch 2';
     isSubmittingHost?: boolean;
     passport: Passport;
-    handleUpdateStatus: (flightId: string, status: FlightStatus) => void;
+    handleUpdateStatus: (flightId: string, status: FlightStatus, dodoCode?: string) => void;
     handleLeaveFlight: (flightId: string, passengerId: string) => void;
     handleGenerateAIReview: (flightId: string) => void;
     loadingReviewId?: string | null;
@@ -62,6 +62,18 @@
       p => p.villagerName.toLowerCase() === name.toLowerCase() && 
            p.islandName.toLowerCase() === island.toLowerCase()
     );
+  }
+
+  let pendingDodoCode = $state('');
+
+  function handleProvideDodoCode(code: string) {
+    if (!myFlight) return;
+    const cleanDodo = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (cleanDodo.length !== 5) {
+      alert('Dodo Code must be exactly 5 characters (A-Z, 0-9).');
+      return;
+    }
+    handleUpdateStatus(myFlight.id, 'Boarding', cleanDodo);
   }
 </script>
 
@@ -99,9 +111,9 @@
           <div class="flex-1">
             <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
               {#if dalStore.systemMode === 'DAL'}
-                "Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
+                "Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!"
               {:else}
-                "Welcome to the library of dreams... Provide your Doze Code, and I shall allow others to drift into your island's slumber."
+                "Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island."
               {/if}
             </p>
           </div>
@@ -140,15 +152,14 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">
-              {dalStore.systemMode === 'DAL' ? 'DODO CODE (5-DIGIT ALPHANUMERIC)' : 'DOZE CODE (5-DIGIT ALPHANUMERIC)'}
+              {dalStore.systemMode === 'DAL' ? 'DODO CODE (OPTIONAL TO SCHEDULE)' : 'DOZE CODE (OPTIONAL TO SCHEDULE)'}
             </label>
             <input
               type="text"
               bind:value={formDodo}
-              placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01' : 'e.g. DZ123'}
+              placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01 (Leave blank to schedule)' : 'e.g. DZ123 (Leave blank to schedule)'}
               class="w-full bg-[#FAF8F2] {dalStore.systemMode === 'DAL' ? 'border-[#0084CC]/30 text-[#0084CC]' : 'border-[#4B0082]/30 text-[#4B0082]'} border-2 rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest text-center uppercase outline-none focus:bg-white font-bold transition-colors"
               maxlength={5}
-              required
             />
           </div>
           <div>
@@ -220,7 +231,11 @@
           disabled={isSubmittingHost}
           class="w-full {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900]' : 'bg-[#DDA0DD] hover:bg-[#e8b5e8] text-[#4B0082] border-[#ba80ba]'} font-system font-black py-3 rounded-2xl border-b-4 shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold"
         >
-          {isSubmittingHost ? (dalStore.systemMode === 'DAL' ? 'Dispatching Hangar...' : 'Publishing Dream...') : (dalStore.systemMode === 'DAL' ? '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE' : '🔮 SHARE MY DREAM WITH THE WORLD')}
+          {#if isSubmittingHost}
+            {dalStore.systemMode === 'DAL' ? 'Dispatching Hangar...' : 'Publishing Dream...'}
+          {:else}
+            {dalStore.systemMode === 'DAL' ? (formDodo.trim() ? '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE' : '📅 SCHEDULE MY FLIGHT DEPARTURE') : (formDodo.trim() ? '🔮 SHARE MY DREAM WITH THE WORLD' : '📅 SCHEDULE MY DREAM STATE')}
+          {/if}
         </button>
       </form>
     </div>
@@ -252,11 +267,47 @@
               {dalStore.systemMode === 'DAL' ? 'My Dodo Code' : 'My Doze Code'}
             </span>
             <span class="text-2xl font-black {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'} tracking-widest leading-none mt-0.5 block uppercase font-bold">
-              {myFlight.dodoCode}
+              {myFlight.dodoCode || 'TBD'}
             </span>
           </div>
         </div>
       </div>
+
+      {#if !myFlight.dodoCode}
+        <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur [Co-Pilot]' : 'Luna'}>
+          <div class="flex gap-4 items-start relative z-10 text-left">
+            <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
+              {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
+            </div>
+            
+            <div class="flex-1 space-y-3">
+              <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
+                {#if dalStore.systemMode === 'DAL'}
+                  "Your flight is scheduled! Whenever you're ready to open the gates, just give me your 5-digit Dodo Code™ and we'll clear you for boarding."
+                {:else}
+                  "Your dream is scheduled... Provide your Doze Code when you are ready to let others drift into your island's slumber."
+                {/if}
+              </p>
+              
+              <div class="flex gap-2 max-w-sm">
+                <input
+                  type="text"
+                  bind:value={pendingDodoCode}
+                  placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01' : 'e.g. DZ123'}
+                  class="flex-1 bg-white border border-[#E6DFC7] rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest uppercase outline-none focus:border-[#0084CC] text-center"
+                  maxlength="5"
+                />
+                <button
+                  onclick={() => handleProvideDodoCode(pendingDodoCode)}
+                  class="bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900] border-b-4 font-system font-black px-4 py-2 rounded-xl text-xs uppercase cursor-pointer"
+                >
+                  {dalStore.systemMode === 'DAL' ? 'Submit' : 'Awaken'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </AcnhBubble>
+      {/if}
 
       <!-- Cockpit controls grid -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
@@ -273,7 +324,14 @@
               {#each ['Scheduled', 'Boarding', 'Departed', 'Delayed'] as FlightStatus[] as status}
                 {@const isActive = myFlight.status === status}
                 <button
-                  onclick={() => { playSound('beep', isMuted); handleUpdateStatus(myFlight.id, status); }}
+                  onclick={() => {
+                    playSound('beep', isMuted);
+                    if (!myFlight.dodoCode && (status === 'Boarding' || status === 'Departed')) {
+                      alert(dalStore.systemMode === 'DAL' ? 'Please provide a Dodo Code first!' : 'Please provide a Doze Code first!');
+                      return;
+                    }
+                    handleUpdateStatus(myFlight.id, status);
+                  }}
                   class="py-2 rounded-xl font-system font-black border transition-all text-sm cursor-pointer font-bold {isActive ? 'bg-[#FFCC00] text-[#006094] border-2 border-[#0084CC] shadow scale-105' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-400'}"
                 >
                   {status.toUpperCase()}

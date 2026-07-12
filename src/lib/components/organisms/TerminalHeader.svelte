@@ -14,7 +14,25 @@
   let formattedDate = $derived(
     `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][dalStore.liveTime.getMonth()]} ${dalStore.liveTime.getDate()}, ${dalStore.liveTime.getFullYear()}`
   );
-  let formattedTime = $derived(dalStore.liveTime.toTimeString().split(' ')[0]);
+  let formattedTime = $derived(
+    dalStore.liveTime.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true
+    })
+  );
+  let timeZone = $derived(
+    (() => {
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).formatToParts(dalStore.liveTime);
+        const tzPart = parts.find(p => p.type === 'timeZoneName');
+        return tzPart ? tzPart.value : '';
+      } catch (e) {
+        return '';
+      }
+    })()
+  );
   let logoUrl = $derived(
     typeof window !== 'undefined' && (window as any).wpApiSettings?.pluginUrl
       ? `${(window as any).wpApiSettings.pluginUrl}public/dal.png`
@@ -88,7 +106,12 @@
         <Clock class="w-4 h-4 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
         <Box class="flex flex-col leading-tight">
           <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} uppercase block text-[9px] font-black tracking-wider leading-none mb-0.5">CLOCK</Text>
-          <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'} font-bold tracking-wider text-xs whitespace-nowrap">{formattedTime}</Text>
+          <Text tag="span" class="text-white font-bold tracking-wider text-xs whitespace-nowrap">
+            {formattedTime}
+            {#if timeZone}
+              <span class="opacity-60 text-[10px] ml-1 font-medium">{timeZone}</span>
+            {/if}
+          </Text>
         </Box>
       </Box>
     </Box>

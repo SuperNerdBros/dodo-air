@@ -74,6 +74,11 @@ export class DalState {
 
   constructor() {
     this.init();
+    if (typeof window !== 'undefined') {
+      setInterval(() => {
+        this.liveTime = new Date();
+      }, 1000);
+    }
   }
 
   init() {
