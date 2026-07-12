@@ -9,7 +9,7 @@
 	let installing = $state(false);
 
 	let filteredComponents = $derived(
-		data.availableComponents.filter((c) =>
+		data.availableComponents.filter((c: string) =>
 			c.toLowerCase().includes(searchQuery.toLowerCase())
 		)
 	);

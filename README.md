@@ -1,10 +1,18 @@
-# SvelteKit Enterprise Boilerplate (Atomic Design)
+# Dodo Airlines (DAL) Terminal
 
-A comprehensive, production-ready GitHub boilerplate template for modern Svelte 5 and SvelteKit applications. Built for high-velocity engineering teams and agentic workflows, this template enforces an incredibly rigid, hyper-disciplined interpretation of Atomic Design.
+Welcome to the Dodo Airlines (DAL) Terminal, a web application inspired by Animal Crossing: New Horizons! This tool serves as a real-time flight board and radio chatter system for ACNH players to share Dodo Codes, request island visits, and communicate.
+
+## 🌟 Features
+
+- **Flight Board**: File flight plans to share your Dodo Code with other players. Provide details about your island (e.g., Turnip prices, Celeste visits, Meteor showers).
+- **Standby Requests**: Looking to travel? Submit a standby request to let hosts know you're looking for an open gate.
+- **Terminal Radio Chatter**: Chat with other passengers in real-time. 
+- **AI-Powered NPCs**: The terminal radio is monitored by our favorite DAL staff, Orville and Wilbur! Powered by the Gemini AI API, they will dynamically respond to your messages in character when mentioned. Orville can even generate enthusiastic loudspeaker announcements for your flights and write creative travel reviews for your island!
+- **Real-Time State**: The board automatically updates and cleans up stale flights to keep the terminal fresh.
 
 ## 🚀 Architecture Overview & Rules of Engagement
 
-This repository strictly enforces **Atomic Design Boundaries**. We impose rules to keep complexity bounded, allowing AI agents and human engineers to work without stepping on each other's toes.
+This repository is built as a **SvelteKit Enterprise Boilerplate** that strictly enforces **Atomic Design Boundaries**. We impose rules to keep complexity bounded, allowing AI agents and human engineers to work without stepping on each other's toes.
 
 ### 1. Strict Collision Boundaries (The Fog of War)
 
@@ -26,6 +34,7 @@ Components can **only** see exactly one tier down. The fog of war covers everyth
 
 - **Framework**: SvelteKit 5 (using Runes), TypeScript, Node.js
 - **CSS**: Tailwind CSS
+- **AI Engine**: Google Gemini API (`@google/genai`)
 - **Package Manager**: pnpm
 - **Testing**: Vitest (Unit) and Playwright (E2E)
 
@@ -38,6 +47,7 @@ Components can **only** see exactly one tier down. The fog of war covers everyth
 2. **Environment Setup:**
    ```bash
    cp .env.example .env
+   # Ensure you set your GEMINI_API_KEY in the .env file!
    ```
 3. **Start the development server:**
    ```bash

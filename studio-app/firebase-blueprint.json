@@ -1,0 +1,120 @@
+{
+  "entities": {
+    "Flight": {
+      "title": "Flight",
+      "description": "An island flight plan representing an open gate",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "hostName": { "type": "string" },
+        "islandName": { "type": "string" },
+        "dodoCode": { "type": "string" },
+        "hemisphere": { "type": "string" },
+        "gate": { "type": "number" },
+        "description": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "planeType": { "type": "string" },
+        "capacity": { "type": "number" },
+        "planeColor": { "type": "string" }
+      }
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Persistent profile of a community member including ratings and feedback",
+      "type": "object",
+      "properties": {
+        "friendCode": { "type": "string" },
+        "villagerName": { "type": "string" },
+        "islandName": { "type": "string" },
+        "avatarIcon": { "type": "string" },
+        "title": { "type": "string" },
+        "signature": { "type": "string" },
+        "colorIndex": { "type": "number" },
+        "goodApples": { "type": "number" },
+        "rottenTurnips": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "FeedbackReview": {
+      "title": "FeedbackReview",
+      "description": "Vouch or report testimonial written by a passenger or visitor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "targetFriendCode": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorIsland": { "type": "string" },
+        "ratingType": { "type": "string" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "ChatterMessage": {
+      "title": "ChatterMessage",
+      "description": "A terminal loudspeaker radio message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sender": { "type": "string" },
+        "island": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "type": { "type": "string" }
+      }
+    },
+    "StandbyRequest": {
+      "title": "StandbyRequest",
+      "description": "A standby flight request listed by an island passenger",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "island": { "type": "string" },
+        "title": { "type": "string" },
+        "avatar": { "type": "string" },
+        "friendCode": { "type": "string" },
+        "gateType": { "type": "number" },
+        "timePreference": { "type": "string" },
+        "memo": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "GlobalStats": {
+      "title": "GlobalStats",
+      "description": "Global shared system state and metrics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "aiTokens": { "type": "number" },
+        "maxTokens": { "type": "number" }
+      }
+    }
+  },
+  "firestore": {
+    "flights/{flightId}": {
+      "schema": "Flight",
+      "description": "Active seaplane flight plans"
+    },
+    "profiles/{friendCode}": {
+      "schema": "UserProfile",
+      "description": "User trust profiles and rating aggregates"
+    },
+    "profiles/{friendCode}/reviews/{reviewId}": {
+      "schema": "FeedbackReview",
+      "description": "Vouches and reports written for a user"
+    },
+    "chatter/{messageId}": {
+      "schema": "ChatterMessage",
+      "description": "Terminal radio channel chatter"
+    },
+    "requests/{requestId}": {
+      "schema": "StandbyRequest",
+      "description": "Active standby traveler requests"
+    },
+    "state/{documentId}": {
+      "schema": "GlobalStats",
+      "description": "Global statistics and AI fuel pool"
+    }
+  }
+}

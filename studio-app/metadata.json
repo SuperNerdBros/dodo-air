@@ -1,0 +1,6 @@
+{
+  "name": "Dodo Airlines Flight Board",
+  "description": "A live, real-time Animal Crossing: New Horizons Dodo code sharing and flight board system with dynamic departure boards, passenger manifest checks, airport terminal chatter, and AI-powered flight controller announcements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net: deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Profiles
+    match /profiles/{friendCode} {
+      allow read: if true;
+      allow create, update: if friendCode.size() <= 100;
+      allow delete: if false;
+    }
+
+    // Feedback reviews
+    match /profiles/{friendCode}/reviews/{reviewId} {
+      allow read: if true;
+      allow create: if reviewId.size() <= 100;
+      allow update, delete: if false;
+    }
+
+    // Flights
+    match /flights/{flightId} {
+      allow read: if true;
+      allow create, update, delete: if flightId.size() <= 100;
+    }
+
+    // Terminal Chatter
+    match /chatter/{messageId} {
+      allow read: if true;
+      allow create, update, delete: if messageId.size() <= 100;
+    }
+
+    // Standby Requests
+    match /requests/{requestId} {
+      allow read: if true;
+      allow create, update, delete: if requestId.size() <= 100;
+    }
+
+    // Global Stats and AI Fuel pool
+    match /state/{documentId} {
+      allow read: if true;
+      allow create, update, delete: if documentId.size() <= 100;
+
+      match /visitors/{visitorId} {
+        allow read: if true;
+        allow create, update, delete: if visitorId.size() <= 100;
+      }
+    }
+  }
+}
