@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount, onDestroy, tick } from 'svelte';
   import { slide, fade } from 'svelte/transition';
-  import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users } from '@lucide/svelte';
+  import { Plane, Calendar, Clock, Ticket, Radio, RefreshCw, Users, Moon, CloudMoon } from '@lucide/svelte';
   import type { Flight, FlightStatus, Passport, StandbyRequest, UserProfile, FeedbackReview, ChatterMessage } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { STAMP_CHALLENGES, generateRandomFriendCode } from '$lib/utils/constants';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   import SoundToggle from '$lib/components/atoms/SoundToggle.svelte';
+  import TerminalHeader from '$lib/components/organisms/TerminalHeader.svelte';
   import OnboardingOverlay from '$lib/components/organisms/OnboardingOverlay.svelte';
   import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
   import PassportBadgeDropdown from '$lib/components/molecules/PassportBadgeDropdown.svelte';
@@ -25,6 +27,7 @@
 
   // State variables
   let flights = $state<Flight[]>([]);
+  let dreams = $state<Flight[]>([]);
   let requests = $state<StandbyRequest[]>([]);
   let chatter = $state<ChatterMessage[]>([]);
   let selectedFlightId = $state<string | null>(null);
@@ -112,7 +115,8 @@
           avatarIcon: updated.avatarIcon,
           title: `${updated.titlePart1} ${updated.titlePart2}`,
           signature: updated.signature,
-          colorIndex: updated.colorIndex
+          colorIndex: updated.colorIndex,
+          dreamAddress: updated.dreamAddress
         })
       });
       // Refresh the system state immediately to update the counter
@@ -190,6 +194,7 @@
       if (res.ok) {
         const data = await res.json();
         flights = data.flights || [];
+        dreams = data.dreams || [];
         chatter = data.chatter || [];
         requests = data.requests || [];
         profiles = data.profiles || {};
@@ -290,7 +295,8 @@
           avatarIcon: passport.avatarIcon,
           title: `${passport.titlePart1} ${passport.titlePart2}`,
           signature: passport.signature,
-          colorIndex: passport.colorIndex
+          colorIndex: passport.colorIndex,
+          dreamAddress: passport.dreamAddress
         })
       }).catch(err => console.error("Error auto-syncing profile:", err));
     }
@@ -391,8 +397,9 @@
     }
 
     isSubmittingHost = true;
+    const endpoint = dalStore.systemMode === 'DAL' ? '/wp-json/dodo-air/v1/flights' : '/wp-json/dodo-air/v1/dreams';
     try {
-      const res = await fetch('/wp-json/dodo-air/v1/flights', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -410,8 +417,13 @@
 
       if (res.ok) {
         const newFlight = await res.json();
-        playSound('airplane', isMuted);
-        flights = [newFlight, ...flights];
+        if (dalStore.systemMode === 'DAL') {
+          playSound('airplane', isMuted);
+          flights = [newFlight, ...flights];
+        } else {
+          playSound('bell', isMuted);
+          dreams = [newFlight, ...dreams];
+        }
         selectedFlightId = newFlight.id;
         formDodo = '';
         formDesc = '';
@@ -498,8 +510,11 @@
     }
 
     boardingError = '';
+    const endpoint = dalStore.systemMode === 'DAL' 
+      ? `/wp-json/dodo-air/v1/flights/${flightId}/board`
+      : `/wp-json/dodo-air/v1/dreams/${flightId}/visit`;
     try {
-      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -526,8 +541,11 @@
   }
 
   async function handleLeaveFlight(flightId: string, passengerId: string) {
+    const endpoint = dalStore.systemMode === 'DAL' 
+      ? `/wp-json/dodo-air/v1/flights/${flightId}/leave`
+      : `/wp-json/dodo-air/v1/dreams/${flightId}/leave`;
     try {
-      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/leave`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ passengerId })
@@ -542,8 +560,11 @@
   }
 
   async function handleUpdateStatus(flightId: string, newStatus: FlightStatus) {
+    const endpoint = dalStore.systemMode === 'DAL' 
+      ? `/wp-json/dodo-air/v1/flights/${flightId}/status`
+      : `/wp-json/dodo-air/v1/dreams/${flightId}/status`;
     try {
-      const res = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/status`, {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -563,8 +584,11 @@
   }
 
   async function handleClearForTakeoff(request: StandbyRequest, flightId: string) {
+    const endpoint = dalStore.systemMode === 'DAL' 
+      ? `/wp-json/dodo-air/v1/flights/${flightId}/board`
+      : `/wp-json/dodo-air/v1/dreams/${flightId}/visit`;
     try {
-      const resBoard = await fetch(`/wp-json/dodo-air/v1/flights/${flightId}/board`, {
+      const resBoard = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -649,17 +673,19 @@
     }
   }
 
-  let myFlight = $derived(flights.find(f => 
+  let activeFlights = $derived(dalStore.systemMode === 'DAL' ? flights : dreams);
+
+  let myFlight = $derived(activeFlights.find(f => 
     f.hostFriendCode 
       ? f.hostFriendCode === passport.friendCode
       : (f.hostName.toLowerCase() === passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === passport.islandName.toLowerCase())
   ) || null);
 
-  let selectedFlight = $derived(flights.find(f => f.id === selectedFlightId) || null);
+  let selectedFlight = $derived(activeFlights.find(f => f.id === selectedFlightId) || null);
 
   let totalPassports = $derived(Object.keys(profiles).length);
-  let totalPilots = $derived(flights.length);
-  let totalPassengers = $derived(flights.reduce((sum, f) => sum + (f.passengers?.length || 0), 0));
+  let totalPilots = $derived(activeFlights.length);
+  let totalPassengers = $derived(activeFlights.reduce((sum, f) => sum + (f.passengers?.length || 0), 0));
   let totalStandby = $derived(requests.length);
 
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -670,79 +696,27 @@
 
 </script>
 
-<div class="min-h-screen bg-[#FEF9E7] airport-runway p-3 sm:p-4 lg:p-6 flex flex-col justify-between selection:bg-[#FFCC00]/40 text-[#4A4A4A] font-sans antialiased relative overflow-x-hidden">
+<div class="min-h-screen {dalStore.systemMode === 'DAL' ? 'bg-[#FEF9E7]' : 'bg-[#1a0b2e]'} airport-runway p-3 sm:p-4 lg:p-6 flex flex-col justify-between selection:bg-[#FFCC00]/40 {dalStore.systemMode === 'DAL' ? 'text-[#4A4A4A]' : 'text-purple-100'} font-sans antialiased relative overflow-x-hidden transition-colors duration-500">
   
   <!-- Dynamic Header & Flight Control Tower -->
-  <header class="w-full max-w-7xl mx-auto mb-5 bg-[#0084CC] text-white rounded-[32px] p-4 lg:p-5 shadow-lg border-b-4 border-[#FFCC00] flex flex-col lg:flex-row items-center justify-between gap-4 relative overflow-visible z-40">
-    
-    <!-- Sky glow effect -->
-    <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#FFCC00] via-sky-500 to-transparent pointer-events-none"></div>
-    
-    <!-- Logo & Counter Brand -->
-    <div class="flex items-center gap-3 z-10 w-full lg:w-auto text-left">
-      <div class="w-12 h-12 bg-[#FFCC00] rounded-full border-2 border-white flex items-center justify-center shadow transform -rotate-12">
-        <Plane class="w-7 h-7 text-[#0084CC] fill-[#0084CC]" />
-      </div>
-      <div>
-        <div class="flex items-center gap-1.5">
-          <span class="bg-[#FFCC00] text-[#006094] text-[9px] font-black tracking-widest px-2 py-0.5 rounded-full font-mono shadow-sm font-bold">
-            DAL GATEWAY
-          </span>
-          {#if isSyncing}
-            <span class="flex items-center gap-1 text-[9px] text-sky-200 animate-pulse font-mono font-semibold">
-              <RefreshCw class="w-2.5 h-2.5 animate-spin" /> Radar Active
-            </span>
-          {/if}
-        </div>
-        <h1 class="text-xl lg:text-2xl font-black tracking-tight text-white drop-shadow font-bold">
-          Dodo Airlines <span class="text-[#FFCC00]">Booking Terminal</span>
-        </h1>
-      </div>
-    </div>
+  <TerminalHeader>
+    <!-- Sound Slider -->
+    <SoundToggle {isMuted} onToggle={() => {
+      isMuted = !isMuted;
+      if (!isMuted) playSound('success', false);
+    }} />
 
-    <!-- Header Right Aligned Group -->
-    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 z-20 w-full lg:w-auto justify-end">
-      <!-- Airport Status Display Board -->
-      <div class="flex flex-wrap items-center gap-3 bg-[#006094]/80 rounded-2xl p-2.5 border border-white/10 shadow-inner w-full sm:w-auto justify-around font-mono text-[11px] text-left">
-        <div class="flex items-center gap-2">
-          <Calendar class="w-3.5 h-3.5 text-[#FFCC00]" />
-          <div>
-            <span class="text-sky-200 uppercase block text-[8px] font-black leading-none mb-0.5 font-bold">DATE</span>
-            <span class="text-white font-bold">{formattedDay}, {formattedDate}</span>
-          </div>
-        </div>
-        
-        <div class="h-6 w-px bg-sky-500/30"></div>
-
-        <div class="flex items-center gap-2">
-          <Clock class="w-3.5 h-3.5 text-[#FFCC00]" />
-          <div>
-            <span class="text-sky-200 uppercase block text-[8px] font-black leading-none mb-0.5 font-bold">CLOCK</span>
-            <span class="text-[#FFCC00] font-bold tracking-wider">{formattedTime}</span>
-          </div>
-        </div>
-
-        <div class="h-6 w-px bg-sky-500/30"></div>
-
-        <!-- Sound Slider -->
-        <SoundToggle {isMuted} onToggle={() => {
-          isMuted = !isMuted;
-          if (!isMuted) playSound('success', false);
-        }} />
-      </div>
-
-      <!-- Header Passport Quick Access Badge -->
-      {#if passport.hasCreated}
-        <PassportBadgeDropdown
-          {passport}
-          bind:showPassportDrawer
-          setShowMilesModal={(v: boolean) => showMilesModal = v}
-          setIsEditingPassport={(v: boolean) => isEditingPassport = v}
-          {isMuted}
-        />
-      {/if}
-    </div>
-  </header>
+    <!-- Header Passport Quick Access Badge -->
+    {#if passport.hasCreated}
+      <PassportBadgeDropdown
+        {passport}
+        bind:showPassportDrawer
+        setShowMilesModal={(v: boolean) => showMilesModal = v}
+        setIsEditingPassport={(v: boolean) => isEditingPassport = v}
+        {isMuted}
+      />
+    {/if}
+  </TerminalHeader>
 
   <!-- Onboarding Screen: Force Passport setup on clean load -->
   {#if !passport.hasCreated}
@@ -764,7 +738,7 @@
           class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'book' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
           <Ticket class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'book' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-[11px] md:text-sm leading-tight text-center">Book Flight</span>
+          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Book Flight' : 'Visit Dream'}</span>
         </button>
 
         <button
@@ -772,7 +746,7 @@
           class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer relative {currentTab === 'hub' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
           <Plane class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'hub' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-[11px] md:text-sm leading-tight text-center">My Flight Hub</span>
+          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'My Flight Hub' : 'My Dream Hub'}</span>
           {#if myFlight}
             <span class="absolute top-2 right-2 w-3 h-3 md:w-4 md:h-4 bg-[#FF4747] rounded-full animate-bounce shadow-sm border-2 border-white"></span>
           {/if}
@@ -783,7 +757,7 @@
           class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'radio' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
           <Radio class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'radio' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-[11px] md:text-sm leading-tight text-center">Airport Radio</span>
+          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Airport Radio' : 'Dream Radio'}</span>
         </button>
 
         <button
@@ -791,7 +765,7 @@
           class="flex-1 basis-[45%] sm:basis-auto flex flex-col items-center justify-center gap-1.5 md:gap-2 p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border-x-4 border-t-4 border-b-8 transition-all font-system font-black tracking-wider shadow-sm active:translate-y-2 active:border-b-0 cursor-pointer {currentTab === 'directory' ? 'bg-[#FFCC00] border-x-[#E5B800] border-t-[#E5B800] border-b-[#CC9900] text-[#7A5A00] translate-y-1 !border-b-4' : 'bg-white border-x-[#F2F2F2] border-t-[#F2F2F2] border-b-[#E0E0E0] text-[#8C7A5A] hover:-translate-y-1 hover:bg-[#FFFDF5]'}"
         >
           <Users class="w-7 h-7 md:w-9 md:h-9 {currentTab === 'directory' ? 'text-[#7A5A00]' : 'text-[#A0937D]'}" />
-          <span class="text-[11px] md:text-sm leading-tight text-center">Flyers Directory</span>
+          <span class="text-sm md:text-sm leading-tight text-center">{dalStore.systemMode === 'DAL' ? 'Flyers Directory' : 'Dreamers Directory'}</span>
         </button>
 
       </div>
@@ -825,7 +799,7 @@
         <!-- Speech bubble copy -->
         <div class="flex-1 space-y-1.5 min-w-0">
           <!-- Name Tag -->
-          <span class="bg-[#FFCC00] text-[#006094] text-[9px] font-system font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider font-bold">
+          <span class="bg-[#FFCC00] text-[#006094] text-xs font-system font-black px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider font-bold">
             Orville [DAL Dispatch]
           </span>
           
@@ -846,7 +820,7 @@
           <div class="pt-1 flex flex-wrap gap-2 text-left">
             <button
               onclick={() => { playSound('beep', isMuted); showMilesModal = true; }}
-              class="bg-[#FF9F43] hover:bg-[#ff8f24] text-white font-mono font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase transition-all shadow-xs cursor-pointer font-bold border-none"
+              class="bg-[#FF9F43] hover:bg-[#ff8f24] text-white font-system font-black text-xs px-2.5 py-0.5 rounded-full uppercase transition-all shadow-xs cursor-pointer font-bold border-none"
             >
               🎯 Open Stamp Book
             </button>
@@ -856,7 +830,7 @@
                 showOrvilleIntro = false;
                 localStorage.setItem('dal_orville_intro', 'hidden');
               }}
-              class="bg-[#85806B]/20 hover:bg-[#85806B]/30 text-[#85806B] font-mono font-bold text-[9px] px-2.5 py-0.5 rounded-full uppercase transition-all cursor-pointer font-bold border-none"
+              class="bg-[#85806B]/20 hover:bg-[#85806B]/30 text-[#85806B] font-system font-bold text-xs px-2.5 py-0.5 rounded-full uppercase transition-all cursor-pointer font-bold border-none"
             >
               Dismiss Guide
             </button>
@@ -874,7 +848,7 @@
             showOrvilleIntro = true;
             localStorage.setItem('dal_orville_intro', 'show');
           }}
-          class="flex items-center gap-1.5 bg-[#FFFCEF] hover:bg-[#FFEAA7]/40 border-2 border-[#FFEAA7] text-amber-800 font-mono font-bold text-[9px] px-3 py-1 rounded-full shadow-xs transition-all uppercase cursor-pointer"
+          class="flex items-center gap-1.5 bg-[#FFFCEF] hover:bg-[#FFEAA7]/40 border-2 border-[#FFEAA7] text-amber-800 font-system font-bold text-xs px-3 py-1 rounded-full shadow-xs transition-all uppercase cursor-pointer"
         >
           🦤 Ask Orville for Help
         </button>
@@ -885,7 +859,7 @@
     <div class="w-full">
       {#if currentTab === 'book'}
         <DeparturesTab
-          {flights}
+          flights={activeFlights}
           bind:selectedFlightId
           {passport}
           {profiles}
@@ -958,7 +932,7 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="w-full max-w-7xl mx-auto mt-8 border-t border-[#E6DFC7] pt-4 flex flex-col sm:flex-row items-center justify-between text-[10.5px] font-mono text-slate-500 gap-3 text-left">
+  <footer class="w-full max-w-7xl mx-auto mt-8 border-t border-[#E6DFC7] pt-4 flex flex-col sm:flex-row items-center justify-between text-sm font-system text-slate-500 gap-3 text-left">
     <div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left leading-normal">
       <span>Dodo Airlines Fan Site &copy; 2026. Non-official fan project.</span>
       <span class="hidden sm:inline text-slate-300">|</span>
@@ -973,17 +947,17 @@
       class="flex items-center gap-2 bg-[#FFFCEF] border border-[#FFEAA7] rounded-full px-3 py-1 text-slate-600 hover:bg-[#FFF9D6] hover:border-amber-400 transition-all cursor-pointer select-none group shadow-xs"
     >
       <span class="animate-pulse">⛽</span>
-      <span class="font-bold text-amber-800 text-[9.5px] uppercase tracking-wider">AI Fuel:</span>
+      <span class="font-bold text-amber-800 text-xs uppercase tracking-wider">AI Fuel:</span>
       <div class="w-12 h-1.5 bg-slate-200/80 rounded-full overflow-hidden border border-slate-300/30 relative">
         <div
           class="h-full transition-all duration-500 {(aiFuel.aiTokens / aiFuel.maxTokens) < 0.2 ? 'bg-red-500' : (aiFuel.aiTokens / aiFuel.maxTokens) < 0.5 ? 'bg-amber-500' : 'bg-emerald-500'}"
           style="width: {Math.min(100, (aiFuel.aiTokens / aiFuel.maxTokens) * 100)}%"
         ></div>
       </div>
-      <span class="font-black text-[#0084CC] text-[9.5px] font-mono">
+      <span class="font-black text-[#0084CC] text-xs font-system">
         {aiFuel.aiTokens.toLocaleString()} GAL
       </span>
-      <span class="text-[9px] font-black text-amber-700 underline group-hover:text-[#0084CC] transition-colors ml-0.5">
+      <span class="text-xs font-black text-amber-700 underline group-hover:text-[#0084CC] transition-colors ml-0.5">
         [Refuel]
       </span>
     </div>

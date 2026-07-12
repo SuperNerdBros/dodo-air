@@ -26,6 +26,7 @@ export interface Flight {
   announcement?: string;
   review?: string;
   isCustomAIReviewGenerating?: boolean;
+  travelType?: 'DAL' | 'LUNA';
 }
 
 export interface ChatterMessage {
@@ -39,6 +40,7 @@ export interface ChatterMessage {
 
 export interface ServerState {
   flights: Flight[];
+  dreams: Flight[];
   chatter: ChatterMessage[];
   requests: StandbyRequest[];
 }
@@ -62,6 +64,7 @@ export interface Passport {
   titlePart1: string;
   titlePart2: string;
   friendCode: string;
+  dreamAddress?: string;
   avatarIcon: string;
   signature: string;
   hasCreated: boolean;
@@ -99,20 +102,31 @@ export const TITLE_PART_2 = [
 
 export const AVATAR_ICONS = [
   { char: "🦤", label: "Dodo" },
+  { char: "🍎", label: "Apple" },
+  { char: "🍒", label: "Cherry" },
+  { char: "🍊", label: "Orange" },
   { char: "🍑", label: "Peach" },
+  { char: "🍐", label: "Pear" },
+  { char: "🥥", label: "Coconut" },
+  { char: "🎃", label: "Pumpkin" },
+  { char: "🍅", label: "Tomato" },
+  { char: "🥔", label: "Potato" },
+  { char: "🥕", label: "Carrot" },
+  { char: "🌾", label: "Wheat" },
+  { char: "🎋", label: "Sugarcane" },
+  { char: "🦋", label: "Butterfly" },
+  { char: "🪲", label: "Beetle (Bug)" },
+  { char: "🐞", label: "Ladybug" },
   { char: "💰", label: "Bell Bag" },
   { char: "🦖", label: "Fossil" },
   { char: "🌠", label: "Star" },
   { char: "🍃", label: "Leaf" },
-  { char: "🍎", label: "Apple" },
   { char: "🌴", label: "Palm Tree" },
   { char: "🎁", label: "Present" },
-  { char: "🦋", label: "Butterfly" },
   { char: "🎣", label: "Fishing Rod" },
   { char: "⛺", label: "Tent" },
   { char: "🧸", label: "Plushie" },
-  { char: "🦉", label: "Owl" },
-  { char: "🍊", label: "Orange" }
+  { char: "🦉", label: "Owl" }
 ];
 
 export const PASSPORT_COLORS = [
@@ -129,6 +143,14 @@ export const GATE_THEMES: Record<number, { name: string; icon: string; desc: str
   3: { name: "Flick & C.J. Safari", icon: "🦋", desc: "Optimal for premium Bug Catching, Fishing tourneys, and bug swaps.", color: "#E05252", bg: "bg-red-50", text: "text-[#E05252]", tag: "BUG-3" },
   4: { name: "Island Explorers", icon: "🏝️", desc: "Optimal for sightseeing, shopping, fruit picking, and custom tours.", color: "#2ECC71", bg: "bg-emerald-50", text: "text-[#2ECC71]", tag: "COAST-4" },
   5: { name: "DIY & Freebie Lounge", icon: "🎁", desc: "Optimal for recipe card swaps, clothing giveaways, and item recycling.", color: "#9B59B6", bg: "bg-purple-50", text: "text-[#9B59B6]", tag: "LOBBY-5" }
+};
+
+export const DREAM_THEMES: Record<number, { name: string; icon: string; desc: string; color: string; bg: string; text: string; tag: string }> = {
+  1: { name: "Cottagecore / Fairycore", icon: "🍄", desc: "Aesthetic forests, mushrooms, and whimsical nature vibes.", color: "#8B5A2B", bg: "bg-amber-50", text: "text-[#8B5A2B]", tag: "NATURE-1" },
+  2: { name: "Horror / Spooky", icon: "👻", desc: "Haunted towns, creepy stories, and scary island themes.", color: "#4B0082", bg: "bg-purple-50", text: "text-[#4B0082]", tag: "SPOOKY-2" },
+  3: { name: "Urban / Citycore", icon: "🏙️", desc: "Bustling streets, crosswalks, shops, and dense city living.", color: "#555555", bg: "bg-gray-50", text: "text-[#555555]", tag: "CITY-3" },
+  4: { name: "Tropical Resort", icon: "🏖️", desc: "Relaxing beaches, tiki bars, pools, and island getaways.", color: "#00CED1", bg: "bg-cyan-50", text: "text-[#00CED1]", tag: "RESORT-4" },
+  5: { name: "Interactive Puzzle", icon: "🧩", desc: "Maze runs, mysteries, scavenger hunts, and lore islands.", color: "#FF4500", bg: "bg-orange-50", text: "text-[#FF4500]", tag: "PUZZLE-5" }
 };
 
 export const STAMP_CHALLENGES: StampChallenge[] = [

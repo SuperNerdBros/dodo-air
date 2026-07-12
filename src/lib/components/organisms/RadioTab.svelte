@@ -49,10 +49,10 @@
       <Text tag="span" class="text-xl">📻</Text>
       <Box>
         <Text tag="h2" class="text-base font-black text-[#0084CC] font-system">DAL Terminal Tower Radio</Text>
-        <Text tag="span" class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</Text>
+        <Text tag="span" class="text-xs font-system font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</Text>
       </Box>
     </Box>
-    <Text tag="span" class="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-black uppercase">
+    <Text tag="span" class="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-xs font-system font-black uppercase">
       ACTIVE
     </Text>
   </Box>
@@ -60,7 +60,7 @@
   <Box class="space-y-3.5 max-h-[380px] overflow-y-auto mb-4 pr-1 flex flex-col">
     {#each dalStore.chatter as msg}
       {#if msg.type === 'system'}
-        <Box class="text-[10px] text-slate-500 bg-[#FAF8F2] border border-[#E6DFC7]/50 p-2 rounded-xl text-center font-mono">
+        <Box class="text-sm text-slate-500 bg-[#FAF8F2] border border-[#E6DFC7]/50 p-2 rounded-xl text-center font-system">
           {msg.text}
         </Box>
       {:else if msg.type === 'orville' || msg.type === 'wilbur'}
@@ -69,7 +69,7 @@
             {msg.type === 'orville' ? '🦤' : '🕶️'}
           </Box>
           <Box class="flex-1 bg-[#F0F9FF] border-2 border-[#0084CC]/20 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-            <Text tag="span" class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
+            <Text tag="span" class="font-system font-black text-[#0084CC] text-sm block mb-0.5">
               {msg.sender}
             </Text>
             <Text tag="p" class="font-sans font-semibold leading-relaxed">{msg.text}</Text>
@@ -81,8 +81,8 @@
             {msg.sender.substring(0, 2).toUpperCase()}
           </Box>
           <Box class="flex-1 bg-white border-2 border-slate-100 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-            <Text tag="span" class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
-              {msg.sender} {#if msg.island}<Text tag="span" class="text-slate-400 font-mono text-[8.5px] font-bold">from '{msg.island}'</Text>{/if}
+            <Text tag="span" class="font-system font-black text-[#0084CC] text-sm block mb-0.5">
+              {msg.sender} {#if msg.island}<Text tag="span" class="text-slate-400 font-system text-xs font-bold">from '{msg.island}'</Text>{/if}
             </Text>
             <Text tag="p" class="font-sans leading-relaxed">{msg.text}</Text>
           </Box>
@@ -94,7 +94,7 @@
   <Form onsubmit={handlePostChat} class="border-t border-slate-100 pt-4 text-xs space-y-3">
     <Box class="grid grid-cols-2 gap-2">
       <Box>
-        <Text tag="label" class="block text-[8px] uppercase font-mono font-black text-[#0084CC] mb-0.5">VILLAGER CALLSIGN</Text>
+        <Text tag="label" class="block text-xs uppercase font-system font-black text-[#0084CC] mb-0.5">VILLAGER CALLSIGN</Text>
         <Input
           type="text"
           bind:value={dalStore.chatSender}
@@ -104,7 +104,7 @@
         />
       </Box>
       <Box>
-        <Text tag="label" class="block text-[8px] uppercase font-mono font-black text-[#0084CC] mb-0.5">ISLAND ID</Text>
+        <Text tag="label" class="block text-xs uppercase font-system font-black text-[#0084CC] mb-0.5">ISLAND ID</Text>
         <Input
           type="text"
           bind:value={dalStore.chatIsland}

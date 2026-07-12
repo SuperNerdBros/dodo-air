@@ -2,7 +2,9 @@ import { type Flight, type ChatterMessage, type StandbyRequest, type Passport, t
 
 export class DalState {
   currentTab: 'book' | 'hub' | 'radio' = $state('book');
+  systemMode: 'DAL' | 'LUNA' = $state('DAL');
   flights: Flight[] = $state([]);
+  dreams: Flight[] = $state([]);
   requests: StandbyRequest[] = $state([]);
   chatter: ChatterMessage[] = $state([]);
   selectedFlightId: string | null = $state(null);
@@ -95,7 +97,17 @@ export class DalState {
       this.showOrvilleIntro = localStorage.getItem('dal_orville_intro') !== 'hidden';
       this.chatSender = localStorage.getItem('dal_chat_sender') || '';
       this.chatIsland = localStorage.getItem('dal_chat_island') || '';
+      const savedMode = localStorage.getItem('dal_system_mode');
+      if (savedMode === 'DAL' || savedMode === 'LUNA') {
+        this.systemMode = savedMode;
+      }
     }
+  }
+
+  toggleSystemMode() {
+    this.systemMode = this.systemMode === 'DAL' ? 'LUNA' : 'DAL';
+    localStorage.setItem('dal_system_mode', this.systemMode);
+    this.playSound('bell');
   }
 
   playSound(type: 'beep' | 'chatter' | 'success' | 'airplane' | 'bell') {
@@ -217,6 +229,7 @@ export class DalState {
       if (res.ok) {
         const data = await res.json();
         this.flights = data.flights || [];
+        this.dreams = data.dreams || [];
         this.chatter = data.chatter || [];
         this.requests = data.requests || [];
       }

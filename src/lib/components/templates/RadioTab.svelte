@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { Compass, Ticket, Plane, BookOpen, Eye, Users } from '@lucide/svelte';
+  import { Compass, Ticket, Plane, BookOpen, Eye, Users, Cloud } from '@lucide/svelte';
   import type { ChatterMessage, Passport, UserProfile } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
+  import { dalStore } from '$lib/stores/dal.svelte';
   import { onMount, tick } from 'svelte';
 
   let {
@@ -140,12 +141,16 @@
         title="Click to view active flight departures"
       >
         <div class="absolute right-2 top-2 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-          <Ticket class="w-12 h-12 text-amber-500" />
+          {#if dalStore.systemMode === 'DAL'}
+            <Ticket class="w-12 h-12 text-amber-500" />
+          {:else}
+            <Cloud class="w-12 h-12 text-amber-500" />
+          {/if}
         </div>
         <div class="flex items-center gap-2 mb-1">
           <span class="text-xl">🎟️</span>
           <span class="font-system font-black text-[11px] text-amber-800 uppercase tracking-wide font-bold">
-            Passengers
+            {dalStore.systemMode === 'DAL' ? 'Passengers' : 'Dreamers'}
           </span>
         </div>
         <div class="flex items-baseline gap-1.5">
@@ -153,11 +158,11 @@
             {totalPassengers}
           </span>
           <span class="text-[9px] font-mono text-amber-600 font-bold uppercase">
-            Boarded
+            {dalStore.systemMode === 'DAL' ? 'Boarded' : 'Dreaming'}
           </span>
         </div>
         <p class="text-[9.5px] text-slate-500 leading-snug mt-1 font-sans font-semibold">
-          Seaplane passengers boarded on active flights.
+          {dalStore.systemMode === 'DAL' ? 'Seaplane passengers boarded on active flights.' : 'Dreamers currently exploring active dreams.'}
         </p>
       </div>
 
@@ -174,12 +179,16 @@
         title="Click to manage or host flight plans"
       >
         <div class="absolute right-2 top-2 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
-          <Plane class="w-12 h-12 text-emerald-500" />
+          {#if dalStore.systemMode === 'DAL'}
+            <Plane class="w-12 h-12 text-emerald-500" />
+          {:else}
+            <Cloud class="w-12 h-12 text-emerald-500" />
+          {/if}
         </div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-xl">👨‍✈️</span>
+          <span class="text-xl">{dalStore.systemMode === 'DAL' ? '👨‍✈️' : '🔮'}</span>
           <span class="font-system font-black text-[11px] text-emerald-800 uppercase tracking-wide font-bold">
-            Pilots
+            {dalStore.systemMode === 'DAL' ? 'Pilots' : 'Hosts'}
           </span>
         </div>
         <div class="flex items-baseline gap-1.5">
@@ -191,7 +200,7 @@
           </span>
         </div>
         <p class="text-[9.5px] text-slate-500 leading-snug mt-1 font-sans font-semibold">
-          Islanders hosting active flight plans right now.
+          {dalStore.systemMode === 'DAL' ? 'Islanders hosting active flight plans right now.' : 'Islanders sharing their dreams right now.'}
         </p>
       </div>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Plane, ChevronRight, BookOpen } from '@lucide/svelte';
+  import { Plane, ChevronRight, BookOpen, Cloud } from '@lucide/svelte';
   import Box from '../atoms/Box.atom.svelte';
   import Text from '../atoms/Text.atom.svelte';
   import Button from '../atoms/Button.atom.svelte';
@@ -31,18 +31,26 @@
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'book'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
-          dalStore.currentTab === 'book' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'
+          dalStore.currentTab === 'book' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-sm' : 'bg-[#4B0082] text-white shadow-sm') : 'hover:bg-slate-200 text-[#4A4A4A]'
         }`}
       >
-        <Plane class="w-4 h-4" /> Book Flight
+        {#if dalStore.systemMode === 'DAL'}
+          <Plane class="w-4 h-4" /> Book Flight
+        {:else}
+          <Cloud class="w-4 h-4" /> Find Dream
+        {/if}
       </Button>
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'hub'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
-          dalStore.currentTab === 'hub' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'
+          dalStore.currentTab === 'hub' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-sm' : 'bg-[#4B0082] text-white shadow-sm') : 'hover:bg-slate-200 text-[#4A4A4A]'
         }`}
       >
-        <Plane class="w-4 h-4" /> My Flight Hub
+        {#if dalStore.systemMode === 'DAL'}
+          <Plane class="w-4 h-4" /> My Flight Hub
+        {:else}
+          <Cloud class="w-4 h-4" /> My Dream Hub
+        {/if}
         {#if dalStore.flights.some((f: any) => f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase())}
           <Text tag="span" class="w-2 h-2 bg-[#FFCC00] rounded-full animate-ping" />
         {/if}
@@ -50,10 +58,14 @@
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'radio'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
-          dalStore.currentTab === 'radio' ? 'bg-[#0084CC] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'
+          dalStore.currentTab === 'radio' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-sm' : 'bg-[#4B0082] text-white shadow-sm') : 'hover:bg-slate-200 text-[#4A4A4A]'
         }`}
       >
-        <Plane class="w-4 h-4" /> Airport Radio
+        {#if dalStore.systemMode === 'DAL'}
+          <Plane class="w-4 h-4" /> Airport Radio
+        {:else}
+          <Cloud class="w-4 h-4" /> Dream Radio
+        {/if}
       </Button>
     </Box>
   </Box>

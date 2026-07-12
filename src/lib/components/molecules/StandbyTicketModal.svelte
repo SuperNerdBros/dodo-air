@@ -39,7 +39,7 @@
       <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <div>
           <h3 class="font-system font-black text-base text-[#0084CC]">File Standby Flight Ticket</h3>
-          <span class="text-[8px] font-mono font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</span>
+          <span class="text-xs font-system font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</span>
         </div>
         <button
           onclick={onClose}
@@ -51,13 +51,13 @@
 
       <form onsubmit={onSubmit} class="space-y-4 text-xs">
         {#if requestError}
-          <p class="text-xs font-bold text-red-600 flex items-center gap-1 font-mono">
+          <p class="text-xs font-bold text-red-600 flex items-center gap-1 font-system">
             <AlertCircle class="w-4 h-4" /> {requestError}
           </p>
         {/if}
 
         <div>
-          <label class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">DESIRED GATE THEME / PURPOSE</label>
+          <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">DESIRED GATE THEME / PURPOSE</label>
           <select
             bind:value={requestGateType}
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none cursor-pointer"
@@ -71,7 +71,7 @@
         </div>
 
         <div>
-          <label class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">TIME PREFERENCE</label>
+          <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TIME PREFERENCE</label>
           <select
             bind:value={requestTime}
             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none cursor-pointer"
@@ -84,7 +84,7 @@
         </div>
 
         <div>
-          <label class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">CUSTOM MEMO / SEEKING DETAILS</label>
+          <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">CUSTOM MEMO / SEEKING DETAILS</label>
           <textarea
             bind:value={requestMemo}
             placeholder="e.g. Looking to swap DIYs, or sell turnips over 300 bells. Will tip gold nugget! 💰"

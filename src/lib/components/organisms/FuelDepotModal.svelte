@@ -46,8 +46,8 @@
         <div class="flex items-center gap-2">
           <span class="text-2xl">⛽</span>
           <div>
-            <h3 class="font-system font-black text-sm text-amber-800 uppercase tracking-tight">AI Aviation Fuel Depot</h3>
-            <span class="text-[8px] font-mono font-black text-amber-600 block uppercase tracking-widest">DAL Community Power Station</span>
+            <h3 class="font-system font-black text-sm text-amber-800 uppercase tracking-normal">AI Aviation Fuel Depot</h3>
+            <span class="text-xs font-system font-black text-amber-600 block uppercase tracking-widest">DAL Community Power Station</span>
           </div>
         </div>
         <button
@@ -64,20 +64,20 @@
         </p>
 
         <div class="bg-white/80 p-3.5 rounded-2xl border border-amber-200/40 space-y-2">
-          <span class="block text-[8px] font-mono font-black text-amber-700 uppercase tracking-wider">FUEL DRAIN CONSUMPTION METRICS</span>
-          <div class="grid grid-cols-2 gap-3 text-[10px]">
+          <span class="block text-xs font-system font-black text-amber-700 uppercase tracking-wider">FUEL DRAIN CONSUMPTION METRICS</span>
+          <div class="grid grid-cols-2 gap-3 text-sm">
             <div class="flex items-center gap-2 bg-sky-50/50 p-2 rounded-xl border border-sky-100">
               <span class="text-base">📝</span>
               <div>
                 <p class="font-black text-slate-700">AI Travel Review</p>
-                <p class="font-mono text-amber-700 font-bold">-300 GAL / review</p>
+                <p class="font-system text-amber-700 font-bold">-300 GAL / review</p>
               </div>
             </div>
             <div class="flex items-center gap-2 bg-teal-50/50 p-2 rounded-xl border border-teal-100">
               <span class="text-base">💬</span>
               <div>
                 <p class="font-black text-slate-700">Radio Chatter Bot</p>
-                <p class="font-mono text-amber-700 font-bold">-150 GAL / reply</p>
+                <p class="font-system text-amber-700 font-bold">-150 GAL / reply</p>
               </div>
             </div>
           </div>
@@ -85,8 +85,8 @@
 
         <!-- Fuel Progress Bar -->
         <div class="bg-white p-4.5 rounded-2xl border-2 border-[#FFEAA7] shadow-inner space-y-3">
-          <div class="flex justify-between items-end font-mono">
-            <span class="text-[9px] font-black text-[#85806B] uppercase tracking-wider">CURRENT FUEL IN STORAGE TANK:</span>
+          <div class="flex justify-between items-end font-system">
+            <span class="text-xs font-black text-[#85806B] uppercase tracking-wider">CURRENT FUEL IN STORAGE TANK:</span>
             <span class="text-xs font-black text-[#0084CC]">
               {aiFuel.aiTokens.toLocaleString()} / {aiFuel.maxTokens.toLocaleString()} GAL
             </span>
@@ -110,27 +110,27 @@
             <div class="absolute top-0 bottom-0 left-3/4 w-0.5 bg-[#4A4A4A]/10"></div>
           </div>
 
-          <p class="text-[9.5px] text-slate-500 font-semibold text-center italic">
+          <p class="text-xs text-slate-500 font-semibold text-center italic">
             When the tank is completely dry, our AI-powered travel reviews and radio chatter bots will temporarily pause until refueled.
           </p>
         </div>
 
         <div class="space-y-2">
-          <label class="block text-[8.5px] font-mono font-black text-amber-700 uppercase tracking-wider text-center">
+          <label class="block text-xs font-system font-black text-amber-700 uppercase tracking-wider text-center">
             ⚡ CHOOSE A REFUEL METHOD TO INSTANTLY PUMP +5,000 GALLONS
           </label>
           <div class="grid grid-cols-2 gap-3.5">
             <button
               onclick={() => handleRefuelAction('cash')}
               disabled={isRefueling}
-              class="bg-[#00D632] hover:bg-[#00b029] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
+              class="bg-[#00D632] hover:bg-[#00b029] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-sm py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
             >
               💸 CashApp Refuel
             </button>
             <button
               onclick={() => handleRefuelAction('venmo')}
               disabled={isRefueling}
-              class="bg-[#008CFF] hover:bg-[#0070cc] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-[11px] py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
+              class="bg-[#008CFF] hover:bg-[#0070cc] active:scale-[0.98] disabled:opacity-50 text-white font-system font-black text-sm py-2.5 px-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-1.5 uppercase cursor-pointer border-none font-bold"
             >
               💙 Venmo Refuel
             </button>

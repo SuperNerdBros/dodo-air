@@ -67,6 +67,7 @@ export interface Passport {
   titlePart1: string;
   titlePart2: string;
   friendCode: string;
+  dreamAddress?: string;
   avatarIcon: string;
   signature: string;
   hasCreated: boolean;
@@ -94,6 +95,7 @@ export interface FeedbackReview {
 
 export interface UserProfile {
   friendCode: string;
+  dreamAddress?: string;
   villagerName: string;
   islandName: string;
   avatarIcon: string;

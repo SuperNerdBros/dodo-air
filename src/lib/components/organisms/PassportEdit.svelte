@@ -35,17 +35,17 @@
 
       <Form onsubmit={handleSavePassport} class="space-y-3.5 text-xs">
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">VILLAGER ID</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">VILLAGER ID</Text>
           <Input type="text" bind:value={dalStore.passportForm.villagerName} placeholder="e.g. Raymond" class="w-full bg-white border border-[#E6DFC7] rounded-xl px-3 py-1.5 font-bold outline-none focus:border-[#0084CC]" maxlength={12} required />
         </Box>
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">HOME ISLAND</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">HOME ISLAND</Text>
           <Input type="text" bind:value={dalStore.passportForm.islandName} placeholder="e.g. Peaches Cove" class="w-full bg-white border border-[#E6DFC7] rounded-xl px-3 py-1.5 font-bold outline-none focus:border-[#0084CC]" maxlength={14} required />
         </Box>
 
         <Box class="grid grid-cols-2 gap-2">
           <Box>
-            <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">TITLE PREFIX</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">TITLE PREFIX</Text>
             <Select bind:value={dalStore.passportForm.titlePart1} class="w-full bg-white border border-[#E6DFC7] rounded-xl px-2 py-1.5 font-bold outline-none">
               {#each TITLE_PART_1 as p}
                 <option value={p}>{p}</option>
@@ -53,7 +53,7 @@
             </Select>
           </Box>
           <Box>
-            <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">TITLE SUFFIX</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">TITLE SUFFIX</Text>
             <Select bind:value={dalStore.passportForm.titlePart2} class="w-full bg-white border border-[#E6DFC7] rounded-xl px-2 py-1.5 font-bold outline-none">
               {#each TITLE_PART_2 as s}
                 <option value={s}>{s}</option>
@@ -63,16 +63,16 @@
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">SWITCH FRIEND CODE</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">SWITCH FRIEND CODE</Text>
           <Input type="text" value={dalStore.passportForm.friendCode} oninput={(e: Event) => {
             let val = (e.target as HTMLInputElement).value;
             if (!val.toUpperCase().startsWith('SW-')) val = 'SW-' + val.replace(/^SW-?/i, '');
             dalStore.passportForm.friendCode = val;
-          }} class="w-full bg-white border border-[#E6DFC7] rounded-xl px-3 py-1.5 font-mono font-bold outline-none focus:border-[#0084CC]" maxlength={17} />
+          }} class="w-full bg-white border border-[#E6DFC7] rounded-xl px-3 py-1.5 font-system font-bold outline-none focus:border-[#0084CC]" maxlength={17} />
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">PORTRAIT AVATAR</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">PORTRAIT AVATAR</Text>
           <Box class="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto p-1 bg-white border border-[#E6DFC7] rounded-xl">
             {#each AVATAR_ICONS as icon}
               <Button type="button" onclick={() => dalStore.passportForm.avatarIcon = icon.char} class={`w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-all ${dalStore.passportForm.avatarIcon === icon.char ? 'bg-[#FFCC00] border border-[#0084CC] scale-110 shadow-xs' : 'bg-slate-50 hover:bg-slate-100'}`}>
@@ -83,7 +83,7 @@
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-1.5 uppercase">PASSPORT THEME COLOR</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-1.5 uppercase">PASSPORT THEME COLOR</Text>
           <Box class="flex justify-between bg-white p-1.5 border border-[#E6DFC7] rounded-xl">
             {#each PASSPORT_COLORS as c, idx}
               <Button type="button" onclick={() => dalStore.passportForm.colorIndex = idx} class={`w-5 h-5 rounded-full flex items-center justify-center transition-all ${c.bg} ${c.border} border ${dalStore.passportForm.colorIndex === idx ? 'scale-125 ring-2 ring-[#0084CC]' : ''}`}>
@@ -94,7 +94,7 @@
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#85806B] mb-0.5 uppercase">PERSONAL REMARKS / COMMENT</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#85806B] mb-0.5 uppercase">PERSONAL REMARKS / COMMENT</Text>
           <Input type="text" bind:value={dalStore.passportForm.signature} placeholder="Wings up, skies clear!" class="w-full bg-white border border-[#E6DFC7] rounded-xl px-3 py-1.5 font-bold outline-none" maxlength={40} />
         </Box>
 

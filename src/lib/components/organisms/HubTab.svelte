@@ -162,14 +162,14 @@
       <Box class="max-w-xs mx-auto">
         <Box class="w-20 h-20 bg-[#F0F9FF] border-2 border-[#0084CC] rounded-full flex items-center justify-center text-5xl mx-auto shadow relative transform -rotate-12">
           🛩️
-          <Box class="absolute -bottom-1 -right-1 bg-[#FFCC00] text-[#006094] text-[8px] font-mono font-black px-1.5 py-0.5 rounded-full border border-white uppercase">
+          <Box class="absolute -bottom-1 -right-1 bg-[#FFCC00] text-[#006094] text-xs font-system font-black px-1.5 py-0.5 rounded-full border border-white uppercase">
             DAL-X
           </Box>
         </Box>
       </Box>
       <Box>
         <Text tag="h2" class="text-xl font-black text-[#0084CC]">Your Private DAL Seaplane Hangar</Text>
-        <Text tag="p" class="text-xs text-slate-400 font-mono mt-1 uppercase tracking-wider font-bold">
+        <Text tag="p" class="text-xs text-slate-400 font-system mt-1 uppercase tracking-wider font-bold">
           PARKED & FUELED - READY TO WELCOME VISITORS
         </Text>
       </Box>
@@ -182,27 +182,27 @@
       
       <Form onsubmit={handleHostFlight} class="max-w-xl mx-auto text-left space-y-4 border-t border-slate-100 pt-5 text-xs">
         {#if dalStore.formError}
-          <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 font-mono bg-red-50 p-2.5 rounded-xl border border-red-100">
+          <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 font-system bg-red-50 p-2.5 rounded-xl border border-red-100">
             <AlertCircle class="w-4 h-4" /> {dalStore.formError}
           </Text>
         {/if}
         <Box class="grid grid-cols-2 gap-3">
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOST NAME</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOST NAME</Text>
             <Input type="text" value={dalStore.passport.villagerName} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none" disabled />
           </Box>
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOME ISLAND</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOME ISLAND</Text>
             <Input type="text" value={dalStore.passport.islandName} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none" disabled />
           </Box>
         </Box>
         <Box class="grid grid-cols-2 gap-3">
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">DODO CODE</Text>
-            <Input type="text" bind:value={dalStore.formDodo} placeholder="e.g. D0D01" class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 text-xs font-mono font-black tracking-widest text-center uppercase outline-none focus:bg-white text-[#0084CC]" maxlength={5} required />
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">DODO CODE</Text>
+            <Input type="text" bind:value={dalStore.formDodo} placeholder="e.g. D0D01" class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest text-center uppercase outline-none focus:bg-white text-[#0084CC]" maxlength={5} required />
           </Box>
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">HEMISPHERE</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">HEMISPHERE</Text>
             <Select bind:value={dalStore.formHemisphere} class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 font-bold outline-none focus:bg-white text-[#0084CC]">
               <option value="Northern">Northern</option>
               <option value="Southern">Southern</option>
@@ -210,7 +210,7 @@
           </Box>
         </Box>
         <Box>
-          <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">GATE THEME CATEGORY</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">GATE THEME CATEGORY</Text>
           <Box class="flex flex-col gap-2">
             {#each Object.entries(GATE_THEMES) as [numStr, theme]}
               {@const num = Number(numStr)}
@@ -218,14 +218,14 @@
                 <input type="radio" checked={dalStore.formGate === num} class="mt-1" />
                 <Box>
                   <span class="font-bold text-xs" style={dalStore.formGate === num ? `color: ${theme.color};` : 'color: #4A4A4A;'}>{theme.icon} {theme.name}</span>
-                  <span class="text-[10px] text-slate-500 block leading-normal">{theme.desc}</span>
+                  <span class="text-sm text-slate-500 block leading-normal">{theme.desc}</span>
                 </Box>
               </Box>
             {/each}
           </Box>
         </Box>
         <Box>
-          <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">FLIGHT PLAN DESCRIPTION</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">FLIGHT PLAN DESCRIPTION</Text>
           <Textarea bind:value={dalStore.formDesc} placeholder="e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach." class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-semibold h-16 resize-none outline-none focus:bg-white focus:border-[#0084CC]" maxlength={180} />
         </Box>
         <Button type="submit" disabled={dalStore.isSubmittingHost} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
@@ -239,18 +239,18 @@
         <Box class="absolute right-0 top-0 opacity-10 text-9xl pointer-events-none select-none">🛩️</Box>
         <Box class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
           <Box>
-            <Text tag="span" class="bg-[#FFCC00] text-[#006094] text-[9px] font-black tracking-widest px-2.5 py-0.5 rounded-full font-mono uppercase">
+            <Text tag="span" class="bg-[#FFCC00] text-[#006094] text-xs font-black tracking-widest px-2.5 py-0.5 rounded-full font-system uppercase">
               ACTIVE PILOT CONSOLE
             </Text>
-            <Text tag="h2" class="text-2xl font-black font-system tracking-tight mt-1">
+            <Text tag="h2" class="text-2xl font-black font-system tracking-normal mt-1">
               Flight {myFlight.id} to '{myFlight.islandName}'
             </Text>
             <Text tag="p" class="text-xs text-sky-200 mt-0.5">
               Island host: <Text tag="strong">{myFlight.hostName}</Text> | Gate Theme: <Text tag="strong">{GATE_THEMES[myFlight.gate]?.name}</Text>
             </Text>
           </Box>
-          <Box class="bg-black/20 border border-white/10 p-3 rounded-2xl text-center font-mono">
-            <Text tag="span" class="block text-[8px] text-sky-200 font-bold uppercase">My Dodo Code</Text>
+          <Box class="bg-black/20 border border-white/10 p-3 rounded-2xl text-center font-system">
+            <Text tag="span" class="block text-xs text-sky-200 font-bold uppercase">My Dodo Code</Text>
             <Text tag="span" class="text-2xl font-black text-[#FFCC00] tracking-widest leading-none mt-0.5 block uppercase">
               {myFlight.dodoCode}
             </Text>
@@ -268,7 +268,7 @@
               {#each ['Scheduled', 'Boarding', 'Departed', 'Delayed'] as status}
                 <Button
                   onclick={() => handleUpdateStatus(myFlight.id, status as FlightStatus)}
-                  class={`py-2 rounded-xl font-mono font-black border transition-all text-[10px] ${
+                  class={`py-2 rounded-xl font-system font-black border transition-all text-sm ${
                     myFlight.status === status
                       ? 'bg-[#FFCC00] text-[#006094] border-2 border-[#0084CC] shadow scale-105'
                       : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-400'
@@ -285,12 +285,12 @@
               <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase tracking-wide">
                 🎟️ Passenger Flight Manifest
               </Text>
-              <Text tag="span" class="font-mono text-[10px] text-[#0084CC] font-bold">
+              <Text tag="span" class="font-system text-sm text-[#0084CC] font-bold">
                 BOARDED: {myFlight.passengers.length} SEATS
               </Text>
             </Box>
             {#if myFlight.passengers.length === 0}
-              <Box class="py-8 text-center font-mono text-slate-400 text-xs">
+              <Box class="py-8 text-center font-system text-slate-400 text-xs">
                 No passengers have checked in at Gate {myFlight.gate} yet. Runways are clear!
               </Box>
             {:else}
@@ -301,12 +301,12 @@
                       <Text tag="span" class="text-lg">👤</Text>
                       <Box class="text-xs">
                         <Text tag="span" class="font-system font-black text-slate-700">{p.name}</Text>
-                        <Text tag="span" class="text-[9px] font-mono text-slate-400 block">from {p.island}</Text>
+                        <Text tag="span" class="text-xs font-system text-slate-400 block">from {p.island}</Text>
                       </Box>
                     </Box>
                     <Button
                       onclick={() => handleLeaveFlight(myFlight.id, p.id)}
-                      class="bg-slate-200 hover:bg-slate-300 text-[#4A4A4A] font-mono text-[9px] font-black px-2 py-1 rounded-full border-b border-slate-400"
+                      class="bg-slate-200 hover:bg-slate-300 text-[#4A4A4A] font-system text-xs font-black px-2 py-1 rounded-full border-b border-slate-400"
                     >
                       Return Home
                     </Button>
@@ -322,7 +322,7 @@
                 📢 Airport Loudspeaker Feed
               </Text>
             </Box>
-            <Box class="bg-[#FAF8F2] p-3 rounded-2xl border border-[#E6DFC7]/50 text-xs text-slate-600 font-mono italic leading-relaxed">
+            <Box class="bg-[#FAF8F2] p-3 rounded-2xl border border-[#E6DFC7]/50 text-xs text-slate-600 font-system italic leading-relaxed">
               "{myFlight.announcement || 'Attention passengers! Hangar seaplane prepares for flight checklist.'}"
             </Box>
             {#if myFlight.review}
@@ -337,7 +337,7 @@
               </Box>
             {:else}
               <Box class="bg-[#A2D2FF]/10 border border-[#0084CC]/10 p-4 rounded-[24px] text-center">
-                <Text tag="p" class="text-[11px] text-slate-500 mb-2 leading-relaxed">
+                <Text tag="p" class="text-sm text-slate-500 mb-2 leading-relaxed">
                   Ask Orville to compile Wilbur's flight deck observations and publish an official Travel Review brochure!
                 </Text>
                 <Button
@@ -363,16 +363,16 @@
               <Text tag="span" class="text-xl">🦤</Text>
               <Box>
                 <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase leading-none">Smart Flight Matchmaker</Text>
-                <Text tag="span" class="text-[8.5px] font-mono text-slate-400 font-bold uppercase mt-0.5 block">ORVILLE'S MATCH COUNTER</Text>
+                <Text tag="span" class="text-xs font-system text-slate-400 font-bold uppercase mt-0.5 block">ORVILLE'S MATCH COUNTER</Text>
               </Box>
             </Box>
             
             {@const matches = dalStore.requests.filter(r => r.gateType === myFlight.gate)}
             {#if matches.length === 0}
-              <Box class="text-center py-8 text-slate-400 font-mono text-xs space-y-2">
+              <Box class="text-center py-8 text-slate-400 font-system text-xs space-y-2">
                 <Compass class="w-8 h-8 text-slate-300 mx-auto animate-spin" />
                 <Text tag="p" class="uppercase font-bold">Scanning Airwaves...</Text>
-                <Text tag="p" class="text-[10px] leading-relaxed">No standby flyers are looking for Gate Category {myFlight.gate} at the moment. Keep radar active!</Text>
+                <Text tag="p" class="text-sm leading-relaxed">No standby flyers are looking for Gate Category {myFlight.gate} at the moment. Keep radar active!</Text>
               </Box>
             {:else}
               <Box class="space-y-3">
@@ -385,13 +385,13 @@
                       <Text tag="span" class="text-xl">{match.avatar}</Text>
                       <Box>
                         <Text tag="span" class="font-system font-black text-xs block text-slate-700">{match.name}</Text>
-                        <Text tag="span" class="text-[9px] text-slate-400 font-mono leading-none">from {match.island}</Text>
+                        <Text tag="span" class="text-xs text-slate-400 font-system leading-none">from {match.island}</Text>
                       </Box>
                     </Box>
-                    <Text tag="p" class="text-[10.5px] text-slate-500 italic">"{match.memo}"</Text>
+                    <Text tag="p" class="text-sm text-slate-500 italic">"{match.memo}"</Text>
                     <Button
                       onclick={() => handleClearForTakeoff(match, myFlight.id)}
-                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-system font-black py-2 rounded-xl text-[10px] uppercase shadow flex items-center justify-center gap-1"
+                      class="w-full bg-[#137333] hover:bg-[#0f5d29] text-white font-system font-black py-2 rounded-xl text-sm uppercase shadow flex items-center justify-center gap-1"
                     >
                       💚 Clear for Takeoff & Board
                     </Button>

@@ -8,7 +8,7 @@
   import Textarea from '../atoms/Textarea.atom.svelte';
   import Form from '../atoms/Form.atom.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
-  import { GATE_THEMES } from '$lib/types';
+  import { GATE_THEMES, DREAM_THEMES } from '$lib/types';
 
   async function handleCreateStandbyRequest(e: Event) {
     e.preventDefault();
@@ -63,7 +63,7 @@
       <Box class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
         <Box>
           <Text tag="h3" class="font-system font-black text-base text-[#0084CC]">File Standby Flight Ticket</Text>
-          <Text tag="span" class="text-[8px] font-mono font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</Text>
+          <Text tag="span" class="text-xs font-system font-bold text-slate-400 block uppercase">DODO AIRLINES STANDBY REGISTRY</Text>
         </Box>
         <Button onclick={() => dalStore.showStandbyModal = false} class="p-1 rounded-full bg-slate-100 text-slate-400 hover:bg-slate-200">
           <X class="w-4 h-4" />
@@ -72,15 +72,15 @@
 
       <Form onsubmit={handleCreateStandbyRequest} class="space-y-4 text-xs">
         {#if dalStore.requestError}
-          <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 font-mono">
+          <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 font-system">
             <AlertCircle class="w-4 h-4" /> {dalStore.requestError}
           </Text>
         {/if}
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">DESIRED GATE THEME / PURPOSE</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">DESIRED GATE THEME / PURPOSE</Text>
           <Select bind:value={dalStore.requestGateType} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
-            {#each Object.entries(GATE_THEMES) as [num, theme_val]}
+            {#each Object.entries(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES) as [num, theme_val]}
               {@const theme = theme_val as any}
               <option value={num}>
                 {theme.icon} {theme.name} ({theme.tag})
@@ -90,7 +90,7 @@
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">TIME PREFERENCE</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TIME PREFERENCE</Text>
           <Select bind:value={dalStore.requestTime} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-bold outline-none">
             <option value="Online Now">⏱️ Online Right Now</option>
             <option value="In 10 Mins">⏱️ Flying in 10 Minutes</option>
@@ -100,7 +100,7 @@
         </Box>
 
         <Box>
-          <Text tag="label" class="block text-[8px] font-mono font-black text-[#0084CC] mb-1 uppercase">CUSTOM MEMO / SEEKING DETAILS</Text>
+          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">CUSTOM MEMO / SEEKING DETAILS</Text>
           <Textarea bind:value={dalStore.requestMemo} placeholder="e.g. Looking to swap DIYs, or sell turnips over 300 bells. Will tip gold nugget! 💰" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 font-semibold h-20 resize-none outline-none focus:bg-white" maxlength={140} />
         </Box>
 

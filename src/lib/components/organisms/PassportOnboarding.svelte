@@ -34,7 +34,7 @@
         </Box>
         <Box>
           <Text tag="h2" class="text-2xl font-black text-[#0084CC]">Dodo Airlines Front Desk</Text>
-          <Text tag="p" class="text-xs text-[#4A4A4A]/70 font-mono mt-1 uppercase tracking-widest font-bold">
+          <Text tag="p" class="text-xs text-[#4A4A4A]/70 font-system mt-1 uppercase tracking-widest font-bold">
             PRINT YOUR FREQUENT FLYER PASSPORT
           </Text>
         </Box>
@@ -49,7 +49,7 @@
         <Form onsubmit={handleSavePassport} class="space-y-3.5 text-left text-xs">
           <Box class="grid grid-cols-2 gap-3">
             <Box>
-              <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">VILLAGER NAME</Text>
+              <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">VILLAGER NAME</Text>
               <Input
                 type="text"
                 bind:value={dalStore.passportForm.villagerName}
@@ -60,7 +60,7 @@
               />
             </Box>
             <Box>
-              <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">HOME ISLAND</Text>
+              <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">HOME ISLAND</Text>
               <Input
                 type="text"
                 bind:value={dalStore.passportForm.islandName}
@@ -74,7 +74,7 @@
 
           <Box class="grid grid-cols-2 gap-3">
             <Box>
-              <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">TITLE PREFIX</Text>
+              <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TITLE PREFIX</Text>
               <Select
                 bind:value={dalStore.passportForm.titlePart1}
                 class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-2 font-bold outline-none focus:border-[#0084CC] focus:bg-white"
@@ -85,7 +85,7 @@
               </Select>
             </Box>
             <Box>
-              <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">TITLE SUFFIX</Text>
+              <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TITLE SUFFIX</Text>
               <Select
                 bind:value={dalStore.passportForm.titlePart2}
                 class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-2 font-bold outline-none focus:border-[#0084CC] focus:bg-white"
@@ -98,7 +98,7 @@
           </Box>
 
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">SWITCH FRIEND CODE</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">SWITCH FRIEND CODE</Text>
             <Input
               type="text"
               value={dalStore.passportForm.friendCode}
@@ -110,13 +110,13 @@
                 dalStore.passportForm.friendCode = val;
               }}
               placeholder="SW-1234-5678-9012"
-              class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-mono font-bold outline-none focus:border-[#0084CC] focus:bg-white"
+              class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-system font-bold outline-none focus:border-[#0084CC] focus:bg-white"
               maxlength={17}
             />
           </Box>
 
           <Box>
-            <Text tag="label" class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">PORTRAIT PHOTO</Text>
+            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">PORTRAIT PHOTO</Text>
             <Box class="flex gap-2 p-1.5 bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl overflow-x-auto">
               {#each AVATAR_ICONS.slice(0, 10) as icon}
                 <Button

@@ -46,7 +46,7 @@
 		<header class="space-y-2 border-b border-zinc-800 pb-8">
 			<div class="flex items-center justify-between">
 				<div>
-					<h1 class="text-4xl font-bold tracking-tight text-white flex items-center gap-3">
+					<h1 class="text-4xl font-bold tracking-normal text-white flex items-center gap-3">
 						<Package class="w-10 h-10 text-emerald-400" />
 						Component Installer
 					</h1>
@@ -71,7 +71,7 @@
 				<div class="flex-1 space-y-2">
 					<h3 class="font-semibold">{form.message}</h3>
 					{#if form.output}
-						<pre class="text-xs bg-black/50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap font-mono border border-white/5">{form.output}</pre>
+						<pre class="text-xs bg-black/50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap font-system border border-white/5">{form.output}</pre>
 					{/if}
 				</div>
 			</div>
@@ -155,7 +155,7 @@
 									</span>
 								</div>
 								{#if isInstalled}
-									<span class="absolute top-2 right-2 text-[10px] uppercase font-bold tracking-wider text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+									<span class="absolute top-2 right-2 text-sm uppercase font-bold tracking-wider text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">
 										Installed
 									</span>
 								{/if}

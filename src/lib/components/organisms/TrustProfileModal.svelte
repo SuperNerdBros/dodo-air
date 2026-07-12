@@ -78,7 +78,7 @@
           {prof.avatarIcon || '🦤'}
         </div>
         <div class="text-center sm:text-left space-y-1 flex-1 min-w-0">
-          <span class="bg-sky-100 text-sky-800 text-[8px] font-mono font-bold px-2 py-0.5 rounded-full uppercase leading-none border border-sky-200">
+          <span class="bg-sky-100 text-sky-800 text-xs font-system font-bold px-2 py-0.5 rounded-full uppercase leading-none border border-sky-200">
             Islander Passport
           </span>
           <h3 class="font-system font-black text-lg text-slate-800 leading-tight truncate font-bold">
@@ -88,13 +88,13 @@
             🏝️ {prof.islandName}
           </p>
           {#if prof.signature}
-            <p class="text-[10px] font-mono italic text-slate-500 truncate mt-0.5">
+            <p class="text-sm font-system italic text-slate-500 truncate mt-0.5">
               "{prof.signature}"
             </p>
           {/if}
         </div>
-        <div class="sm:text-right text-[10px] font-mono text-slate-500 border-t sm:border-t-0 sm:border-l border-[#E6DFC7]/40 pt-2 sm:pt-0 sm:pl-3 max-w-[140px] w-full sm:w-auto">
-          <span class="block text-[7.5px] uppercase font-bold text-slate-400 leading-none">FRIEND ID</span>
+        <div class="sm:text-right text-sm font-system text-slate-500 border-t sm:border-t-0 sm:border-l border-[#E6DFC7]/40 pt-2 sm:pt-0 sm:pl-3 max-w-[140px] w-full sm:w-auto">
+          <span class="block text-xs uppercase font-bold text-slate-400 leading-none">FRIEND ID</span>
           <span class="font-bold text-slate-700 block mt-1 leading-none">{prof.friendCode.startsWith('SW-TEMP-') ? 'NOT LINKED' : prof.friendCode}</span>
         </div>
       </div>
@@ -105,20 +105,20 @@
         <div class="bg-emerald-50/50 border-2 border-emerald-200 rounded-3xl p-4 text-center shadow-xs">
           <span class="text-3xl block">🍏</span>
           <span class="block font-system font-black text-xs text-[#117A65] uppercase mt-1 leading-none font-bold">Good Apples</span>
-          <span class="block font-mono font-black text-[#117A65] text-2xl mt-1.5 leading-none font-black">
+          <span class="block font-system font-black text-[#117A65] text-2xl mt-1.5 leading-none font-black">
             {prof.goodApples || 0}
           </span>
-          <p class="text-[9px] font-medium text-slate-500 mt-1 font-sans">Vouched for positive, kind visits!</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 font-sans">Vouched for positive, kind visits!</p>
         </div>
 
         <!-- Rotten Turnips -->
         <div class="bg-rose-50/50 border-2 border-rose-200 rounded-3xl p-4 text-center shadow-xs">
           <span class="text-3xl block">🧅</span>
           <span class="block font-system font-black text-xs text-rose-800 uppercase mt-1 leading-none font-bold">Rotten Turnips</span>
-          <span class="block font-mono font-black text-rose-600 text-2xl mt-1.5 leading-none font-black">
+          <span class="block font-system font-black text-rose-600 text-2xl mt-1.5 leading-none font-black">
             {prof.rottenTurnips || 0}
           </span>
-          <p class="text-[9px] font-medium text-slate-500 mt-1 font-sans">Reported for bad flight behavior.</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 font-sans">Reported for bad flight behavior.</p>
         </div>
       </div>
 
@@ -129,7 +129,7 @@
         </h4>
 
         {#if reviewError}
-          <div class="bg-red-50 text-red-700 p-2.5 rounded-xl text-[10px] font-mono font-bold mb-3 border border-red-200 flex items-center gap-1.5 leading-snug">
+          <div class="bg-red-50 text-red-700 p-2.5 rounded-xl text-sm font-system font-bold mb-3 border border-red-200 flex items-center gap-1.5 leading-snug">
             <AlertCircle class="w-3.5 h-3.5" /> {reviewError}
           </div>
         {/if}
@@ -175,18 +175,18 @@
 
       <!-- Feedback Review Feed -->
       <div class="space-y-3 text-left">
-        <span class="block text-[8px] font-mono font-black text-slate-400 uppercase tracking-wider">
+        <span class="block text-xs font-system font-black text-slate-400 uppercase tracking-wider">
           📋 COMMUNITY FEEDBACK HISTORY ({selectedProfileReviews.length})
         </span>
 
         <div class="space-y-2.5 max-h-[160px] overflow-y-auto pr-1">
           {#if selectedProfileReviews.length === 0}
-            <p class="text-[11px] italic font-mono text-slate-400 text-center py-4">
+            <p class="text-sm italic font-system text-slate-400 text-center py-4">
               No community feedback reviews have been registered for this flyer yet. Be the first to vouch or report!
             </p>
           {:else}
             {#each selectedProfileReviews as rev}
-              <div class="bg-white border border-[#E6DFC7]/40 rounded-2xl p-3 flex gap-2 items-start text-[11px]">
+              <div class="bg-white border border-[#E6DFC7]/40 rounded-2xl p-3 flex gap-2 items-start text-sm">
                 <span class="text-lg flex-shrink-0 mt-0.5">
                   {rev.ratingType === 'apple' ? '🍏' : '🧅'}
                 </span>
@@ -195,7 +195,7 @@
                     <span class="font-system font-black text-slate-700 truncate font-bold">
                       {rev.authorName} <span class="font-normal font-sans text-slate-400">from</span> '{rev.authorIsland}'
                     </span>
-                    <span class="text-[8px] font-mono text-slate-400 shrink-0">
+                    <span class="text-xs font-system text-slate-400 shrink-0">
                       {new Date(rev.createdAt).toLocaleDateString()}
                     </span>
                   </div>

@@ -61,16 +61,16 @@
         📇
       </div>
       <div>
-        <h2 class="text-base font-mono font-black tracking-wider text-[#0084CC] uppercase leading-none">
+        <h2 class="text-base font-system font-black tracking-wider text-[#0084CC] uppercase leading-none">
           DAL Registered Flyers Directory
         </h2>
-        <span class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-widest mt-1 block">
+        <span class="text-xs font-system text-slate-400 font-bold uppercase tracking-widest mt-1 block">
           Discover and vouch for verified islanders in the lounge
         </span>
       </div>
     </div>
 
-    <div class="flex items-center gap-2 font-mono text-[10px] text-slate-500">
+    <div class="flex items-center gap-2 font-system text-sm text-slate-500">
       <span class="bg-sky-50 text-[#0084CC] px-3 py-1 rounded-full font-bold border border-sky-100 uppercase">
         {profilesList.length} total registered {profilesList.length === 1 ? 'flyer' : 'flyers'}
       </span>
@@ -95,26 +95,26 @@
 
     <!-- Sort option toggles -->
     <div class="flex items-center gap-2 self-start md:self-center shrink-0">
-      <span class="text-[10px] font-mono font-black text-slate-400 flex items-center gap-1 uppercase">
+      <span class="text-sm font-system font-black text-slate-400 flex items-center gap-1 uppercase">
         <SlidersHorizontal class="w-3 h-3" /> Sort:
       </span>
 
       <div class="flex gap-1 bg-slate-100 p-0.5 rounded-xl">
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'recent'; }}
-          class="px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'recent' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'recent' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
         >
           Recent Updates
         </button>
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'name'; }}
-          class="px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'name' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'name' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
         >
           Alphabetical
         </button>
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'apples'; }}
-          class="px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'apples' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'apples' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
         >
           🍎 Vouches
         </button>
@@ -140,7 +140,7 @@
         >
           <!-- Me sticker badge -->
           {#if isMe}
-            <span class="absolute -right-12 top-4 rotate-45 bg-[#FFCC00] text-[#006094] text-[8px] font-mono font-black py-1 px-12 tracking-wider shadow-sm uppercase font-bold text-center z-10">
+            <span class="absolute -right-12 top-4 rotate-45 bg-[#FFCC00] text-[#006094] text-xs font-system font-black py-1 px-12 tracking-wider shadow-sm uppercase font-bold text-center z-10">
               You
             </span>
           {/if}
@@ -152,13 +152,13 @@
                 {p.avatarIcon || '🦤'}
               </div>
               <div class="space-y-0.5 flex-1 min-w-0">
-                <span class="bg-sky-100 text-sky-800 text-[7px] font-mono font-bold px-1.5 py-0.5 rounded-full uppercase leading-none border border-sky-200">
+                <span class="bg-sky-100 text-sky-800 text-xs font-system font-bold px-1.5 py-0.5 rounded-full uppercase leading-none border border-sky-200">
                   Verified Flyer
                 </span>
                 <h3 class="font-system font-black text-sm text-slate-800 leading-tight truncate mt-1 font-bold">
                   {p.villagerName}
                 </h3>
-                <p class="text-[11px] font-bold text-[#0084CC] truncate">
+                <p class="text-sm font-bold text-[#0084CC] truncate">
                   🏝️ {p.islandName}
                 </p>
               </div>
@@ -166,23 +166,23 @@
 
             <!-- Passport Title -->
             <div class="space-y-1">
-              <span class="block text-[7.5px] font-mono text-[#85806B] uppercase leading-none">PASSPORT TITLE</span>
-              <span class="inline-block bg-[#F5F2E6] border border-[#E6DFC7] rounded-sm px-1.5 py-0.5 text-[8.5px] font-mono font-bold text-[#80765A] uppercase truncate max-w-full">
+              <span class="block text-xs font-system text-[#85806B] uppercase leading-none">PASSPORT TITLE</span>
+              <span class="inline-block bg-[#F5F2E6] border border-[#E6DFC7] rounded-sm px-1.5 py-0.5 text-xs font-system font-bold text-[#80765A] uppercase truncate max-w-full">
                 {p.title || 'Freshly Picked Islander'}
               </span>
             </div>
 
             <!-- Friend Code -->
             <div class="space-y-1">
-              <span class="block text-[7.5px] font-mono text-[#85806B] uppercase leading-none">FRIEND CODE</span>
-              <span class="font-mono font-bold text-slate-500 text-[10px] block">
+              <span class="block text-xs font-system text-[#85806B] uppercase leading-none">FRIEND CODE</span>
+              <span class="font-system font-bold text-slate-500 text-sm block">
                 {p.friendCode}
               </span>
             </div>
 
             <!-- Signature -->
             {#if p.signature}
-              <div class="bg-white/65 border border-[#E6DFC7]/40 p-2.5 rounded-xl text-[10px] italic text-slate-500 min-h-[44px] flex items-center">
+              <div class="bg-white/65 border border-[#E6DFC7]/40 p-2.5 rounded-xl text-sm italic text-slate-500 min-h-[44px] flex items-center">
                 "{p.signature}"
               </div>
             {/if}
@@ -190,7 +190,7 @@
 
           <!-- Rating / Vouch stats & CTA button -->
           <div class="mt-4 pt-3.5 border-t border-dashed border-[#E6DFC7] flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 text-[11px] font-mono font-black font-bold">
+            <div class="flex items-center gap-2 text-sm font-system font-black font-bold">
               <span class="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2 py-0.5 flex items-center gap-1">
                 🍏 {p.goodApples || 0}
               </span>

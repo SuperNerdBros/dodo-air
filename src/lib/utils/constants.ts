@@ -57,6 +57,14 @@ export const GATE_THEMES: Record<number, { name: string; icon: string; desc: str
   5: { name: "DIY & Freebie Lounge", icon: "🎁", desc: "Optimal for recipe card swaps, clothing giveaways, and item recycling.", color: "#9B59B6", bg: "bg-purple-50", text: "text-[#9B59B6]", tag: "LOBBY-5" }
 };
 
+export const DREAM_THEMES: Record<number, { name: string; icon: string; desc: string; color: string; bg: string; text: string; tag: string }> = {
+  1: { name: "Cottagecore / Fairycore", icon: "🍄", desc: "Aesthetic forests, mushrooms, and whimsical nature vibes.", color: "#8B5A2B", bg: "bg-amber-50", text: "text-[#8B5A2B]", tag: "NATURE-1" },
+  2: { name: "Horror / Spooky", icon: "👻", desc: "Haunted towns, creepy stories, and scary island themes.", color: "#4B0082", bg: "bg-purple-50", text: "text-[#4B0082]", tag: "SPOOKY-2" },
+  3: { name: "Urban / Citycore", icon: "🏙️", desc: "Bustling streets, crosswalks, shops, and dense city living.", color: "#555555", bg: "bg-gray-50", text: "text-[#555555]", tag: "CITY-3" },
+  4: { name: "Tropical Resort", icon: "🏖️", desc: "Relaxing beaches, tiki bars, pools, and island getaways.", color: "#00CED1", bg: "bg-cyan-50", text: "text-[#00CED1]", tag: "RESORT-4" },
+  5: { name: "Interactive Puzzle", icon: "🧩", desc: "Maze runs, mysteries, scavenger hunts, and lore islands.", color: "#FF4500", bg: "bg-orange-50", text: "text-[#FF4500]", tag: "PUZZLE-5" }
+};
+
 export interface StampChallenge {
   id: string;
   title: string;

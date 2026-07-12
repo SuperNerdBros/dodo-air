@@ -64,7 +64,7 @@
       <Box class="bg-[#0084CC] text-white p-4 font-system font-black flex items-center justify-between border-b-4 border-dashed border-[#006094]">
         <Box class="flex items-center gap-2">
           <Ticket class="w-5 h-5 text-[#FFCC00]" />
-          <Text tag="span">OFFICIAL DAL BOARDING PASS</Text>
+          <Text tag="span">UNOFFICIAL DAL BOARDING PASS</Text>
         </Box>
         <Button
           onclick={() => { dalStore.playSound('beep'); dalStore.selectedFlightId = null; }}
@@ -78,14 +78,14 @@
         <Box class="flex-1 space-y-4">
           <Box class="grid grid-cols-2 gap-4">
             <Box>
-              <Text tag="span" class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">PASSENGER NAME</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 uppercase font-black tracking-wider leading-none">PASSENGER NAME</Text>
               <Text tag="span" class="text-sm font-system font-black text-slate-700 mt-1 block">
                 {dalStore.passport.hasCreated ? dalStore.passport.villagerName : "GUEST PASSENGER"}
               </Text>
             </Box>
             <Box>
-              <Text tag="span" class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">SEAPLANE FLIGHT</Text>
-              <Text tag="span" class="text-sm font-mono font-black text-[#0084CC] mt-1 block">
+              <Text tag="span" class="block text-xs font-system text-slate-400 uppercase font-black tracking-wider leading-none">SEAPLANE FLIGHT</Text>
+              <Text tag="span" class="text-sm font-system font-black text-[#0084CC] mt-1 block">
                 {selectedFlight.id}
               </Text>
             </Box>
@@ -93,13 +93,13 @@
 
           <Box class="grid grid-cols-2 gap-4">
             <Box>
-              <Text tag="span" class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">DEPARTURE PORT</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 uppercase font-black tracking-wider leading-none">DEPARTURE PORT</Text>
               <Text tag="span" class="text-xs font-bold text-slate-700 mt-1 block">
                 🏝️ {dalStore.passport.hasCreated ? dalStore.passport.islandName : "HOME PORT"}
               </Text>
             </Box>
             <Box>
-              <Text tag="span" class="block text-[8px] font-mono text-slate-400 uppercase font-black tracking-wider leading-none">DESTINATION ISLAND</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 uppercase font-black tracking-wider leading-none">DESTINATION ISLAND</Text>
               <Text tag="span" class="text-xs font-bold text-[#0084CC] mt-1 block">
                 🏝️ {selectedFlight.islandName} (Host {selectedFlight.hostName})
               </Text>
@@ -108,16 +108,16 @@
 
           <Box class="grid grid-cols-3 gap-2 bg-[#FAF8F2] p-2.5 rounded-2xl border border-[#E6DFC7]">
             <Box class="text-center border-r border-[#E6DFC7]/60">
-              <Text tag="span" class="block text-[7.5px] font-mono text-slate-400 font-bold leading-none">GATE</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 font-bold leading-none">GATE</Text>
               <Text tag="span" class="text-sm font-black text-[#0084CC] leading-none mt-1 block">{selectedFlight.gate}</Text>
             </Box>
             <Box class="text-center border-r border-[#E6DFC7]/60">
-              <Text tag="span" class="block text-[7.5px] font-mono text-slate-400 font-bold leading-none">SEAT ASSIGNED</Text>
-              <Text tag="span" class="text-sm font-mono font-black text-slate-700 leading-none mt-1 block">05A</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 font-bold leading-none">SEAT ASSIGNED</Text>
+              <Text tag="span" class="text-sm font-system font-black text-slate-700 leading-none mt-1 block">05A</Text>
             </Box>
             <Box class="text-center">
-              <Text tag="span" class="block text-[7.5px] font-mono text-slate-400 font-bold leading-none">STATUS</Text>
-              <Text tag="span" class="text-[10px] font-mono font-black text-amber-600 leading-none mt-1 block uppercase">{selectedFlight.status}</Text>
+              <Text tag="span" class="block text-xs font-system text-slate-400 font-bold leading-none">STATUS</Text>
+              <Text tag="span" class="text-sm font-system font-black text-amber-600 leading-none mt-1 block uppercase">{selectedFlight.status}</Text>
             </Box>
           </Box>
 
@@ -125,8 +125,8 @@
             {#if selectedFlight.passengers.some(p => p.name.toLowerCase() === dalStore.passport.villagerName.toLowerCase())}
               <Box class="w-full space-y-2">
                 <Box class="bg-[#E6F4EA] border-2 border-[#137333] p-3 rounded-2xl text-center">
-                  <Text tag="span" class="block text-[8px] font-mono text-[#137333] font-black uppercase tracking-wider">BOARDED SEAPLANE - DODO CODE</Text>
-                  <Text tag="span" class="text-2xl font-mono font-black text-[#137333] tracking-widest mt-0.5 block uppercase">
+                  <Text tag="span" class="block text-xs font-system text-[#137333] font-black uppercase tracking-wider">BOARDED SEAPLANE - DODO CODE</Text>
+                  <Text tag="span" class="text-2xl font-system font-black text-[#137333] tracking-widest mt-0.5 block uppercase">
                     {selectedFlight.dodoCode}
                   </Text>
                 </Box>
@@ -145,11 +145,11 @@
             {:else}
               <Box class="w-full space-y-2">
                 {#if dalStore.boardingError}
-                  <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 mb-1 font-mono">
+                  <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 mb-1 font-system">
                     <AlertCircle class="w-3.5 h-3.5" /> {dalStore.boardingError}
                   </Text>
                 {/if}
-                <Text tag="p" class="text-[10.5px] text-[#4A4A4A]/70 leading-relaxed font-sans mb-1 text-center sm:text-left">
+                <Text tag="p" class="text-sm text-[#4A4A4A]/70 leading-relaxed font-sans mb-1 text-center sm:text-left">
                   🦤 <Text tag="strong">Orville:</Text> "Step up to the counter! Book your Boarding Pass on Flight <Text tag="strong">{selectedFlight.id}</Text> to receive clearance and the Dodo Code."
                 </Text>
                 <Button
@@ -167,8 +167,8 @@
 
         <Box class="md:w-44 border-t md:border-t-0 md:border-l-2 border-slate-100 pt-4 md:pt-0 md:pl-4 flex flex-col justify-between items-center text-center">
           <Box class="space-y-1">
-            <Text tag="span" class="text-[7px] font-mono text-slate-400 font-bold block uppercase tracking-wide">BOARDING NUMBER</Text>
-            <Text tag="span" class="font-mono text-xs font-black text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+            <Text tag="span" class="text-xs font-system text-slate-400 font-bold block uppercase tracking-wide">BOARDING NUMBER</Text>
+            <Text tag="span" class="font-system text-xs font-black text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
               #DAL-{selectedFlight.id.replace('DAL-', '')}05
             </Text>
           </Box>
@@ -178,9 +178,9 @@
                 <Box class="bg-slate-700" style={`width: ${width}px;`} />
               {/each}
             </Box>
-            <Text tag="span" class="font-mono text-[7px] text-slate-400 mt-1 block">DODO AIRLINES INC</Text>
+            <Text tag="span" class="font-system text-xs text-slate-400 mt-1 block">DODO AIRLINES INC</Text>
           </Box>
-          <Text tag="span" class="text-[10px] text-slate-400 font-semibold italic leading-snug">
+          <Text tag="span" class="text-sm text-slate-400 font-semibold italic leading-snug">
             *Please leave through airport gates!
           </Text>
         </Box>

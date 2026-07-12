@@ -104,7 +104,7 @@
       </div>
       <div>
         <h2 class="text-2xl font-black text-[#0084CC]">Dodo Airlines Front Desk</h2>
-        <p class="text-xs text-[#4A4A4A]/70 font-mono mt-1 uppercase tracking-widest font-bold">
+        <p class="text-xs text-[#4A4A4A]/70 font-system mt-1 uppercase tracking-widest font-bold">
           PRINT YOUR FREQUENT FLYER PASSPORT
         </p>
       </div>
@@ -119,7 +119,7 @@
       <form onsubmit={handleSubmit} class="space-y-3.5 text-left text-xs">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">VILLAGER NAME</label>
+            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">VILLAGER NAME</label>
             <input
               type="text"
               bind:value={passportForm.villagerName}
@@ -130,7 +130,7 @@
             />
           </div>
           <div>
-            <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">HOME ISLAND</label>
+            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">HOME ISLAND</label>
             <input
               type="text"
               bind:value={passportForm.islandName}
@@ -144,7 +144,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">TITLE PREFIX</label>
+            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TITLE PREFIX</label>
             <select
               bind:value={passportForm.titlePart1}
               class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-2 font-bold outline-none focus:border-[#0084CC] focus:bg-white"
@@ -155,7 +155,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">TITLE SUFFIX</label>
+            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">TITLE SUFFIX</label>
             <select
               bind:value={passportForm.titlePart2}
               class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-2 font-bold outline-none focus:border-[#0084CC] focus:bg-white"
@@ -168,19 +168,19 @@
         </div>
 
         <div>
-          <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">SWITCH FRIEND CODE</label>
+          <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">SWITCH FRIEND CODE</label>
           <input
             type="text"
             value={passportForm.friendCode}
             oninput={updateFriendCode}
             placeholder="SW-1234-5678-9012"
-            class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-mono font-bold outline-none focus:border-[#0084CC] focus:bg-white"
+            class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-system font-bold outline-none focus:border-[#0084CC] focus:bg-white"
             maxlength="17"
           />
         </div>
 
         <div>
-          <label class="block text-[9px] font-mono font-black text-[#0084CC] mb-1 uppercase">PORTRAIT PHOTO</label>
+          <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase">PORTRAIT PHOTO</label>
           <div class="flex gap-2 p-1.5 bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl overflow-x-auto">
             {#each AVATAR_ICONS.slice(0, 10) as icon}
               <button
@@ -196,13 +196,13 @@
 
         <!-- Seaplane Registration Section -->
         <div class="border-t border-[#E6DFC7]/60 pt-3 mt-3 space-y-3">
-          <span class="block text-[10px] font-mono font-black text-[#0084CC] uppercase tracking-wider">
+          <span class="block text-sm font-system font-black text-[#0084CC] uppercase tracking-wider">
             ✈️ Register Your Island Seaplane
           </span>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-[8px] font-mono font-black text-[#85806B] mb-1 uppercase">PLANE MODEL</label>
+              <label class="block text-xs font-system font-black text-[#85806B] mb-1 uppercase">PLANE MODEL</label>
               <select
                 bind:value={passportForm.planeType}
                 class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-2 py-1.5 font-bold outline-none focus:border-[#0084CC]"
@@ -213,7 +213,7 @@
             </div>
 
             <div>
-              <label class="block text-[8px] font-mono font-black text-[#85806B] mb-1 uppercase">LIVERY COLOR</label>
+              <label class="block text-xs font-system font-black text-[#85806B] mb-1 uppercase">LIVERY COLOR</label>
               <div class="flex gap-1.5 bg-[#FAF8F2] p-1 border border-[#E6DFC7] rounded-xl">
                 {#each PLANE_COLORS as color}
                   <button
@@ -222,7 +222,7 @@
                     class="w-6 h-6 rounded-lg flex items-center justify-center transition-all cursor-pointer {color.bg} {color.border} border-2 {(passportForm.planeColor || 'orange') === color.id ? 'scale-110 ring-2 ring-[#0084CC]' : 'opacity-70 hover:opacity-100'}"
                     title={color.name}
                   >
-                    <span class="text-[10px] text-white">✈️</span>
+                    <span class="text-sm text-white">✈️</span>
                   </button>
                 {/each}
               </div>
@@ -240,14 +240,14 @@
 
           <div class="relative flex py-1 items-center">
             <div class="flex-grow border-t border-[#E6DFC7]/50"></div>
-            <span class="flex-shrink mx-3 text-[9px] font-mono font-black text-slate-400 uppercase tracking-wider">or</span>
+            <span class="flex-shrink mx-3 text-xs font-system font-black text-slate-400 uppercase tracking-wider">or</span>
             <div class="flex-grow border-t border-[#E6DFC7]/50"></div>
           </div>
 
           <button
             type="button"
             onclick={handleBrowseAsGuest}
-            class="w-full bg-[#FAF8F2] hover:bg-slate-50 border border-slate-300 text-slate-600 font-system font-black py-2.5 rounded-2xl transition-all uppercase tracking-wide text-[10px] flex items-center justify-center gap-1.5 cursor-pointer shadow-xs font-bold"
+            class="w-full bg-[#FAF8F2] hover:bg-slate-50 border border-slate-300 text-slate-600 font-system font-black py-2.5 rounded-2xl transition-all uppercase tracking-wide text-sm flex items-center justify-center gap-1.5 cursor-pointer shadow-xs font-bold"
           >
             🏝️ Browse as Guest (No Passport)
           </button>

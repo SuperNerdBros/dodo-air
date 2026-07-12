@@ -55,7 +55,7 @@
           </div>
           <div>
             <h3 class="font-system font-black text-base text-[#0084CC] uppercase leading-none">Dodo Miles+</h3>
-            <span class="text-[8.5px] font-mono font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</span>
+            <span class="text-xs font-system font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</span>
           </div>
         </div>
         <button
@@ -69,12 +69,12 @@
       <!-- Balance Widget -->
       <div class="bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
         <div class="text-left">
-          <span class="text-[9px] font-mono font-black text-[#85806B] uppercase tracking-wider block font-bold">CURRENT MILES BALANCE</span>
-          <span class="text-3xl font-mono font-black text-[#FF9F43] tracking-wider leading-none mt-1 block font-black">
+          <span class="text-xs font-system font-black text-[#85806B] uppercase tracking-wider block font-bold">CURRENT MILES BALANCE</span>
+          <span class="text-3xl font-system font-black text-[#FF9F43] tracking-wider leading-none mt-1 block font-black">
             {(passport.miles ?? 2000).toLocaleString()} <span class="text-xs font-sans text-slate-400 font-bold uppercase">Miles</span>
           </span>
         </div>
-        <div class="text-right text-[10px] text-slate-400 font-mono italic max-w-xs leading-normal">
+        <div class="text-right text-sm text-slate-400 font-system italic max-w-xs leading-normal">
           "Gather Dodo Miles by completing airport milestones! Redeem them for safe flight passage or premium pilot credentials."
         </div>
       </div>
@@ -96,7 +96,7 @@
               <!-- Stamp overlay if claimed -->
               {#if isClaimed}
                 <div class="absolute -inset-1 rounded-full bg-red-600/10 border-2 border-red-600 flex items-center justify-center transform rotate-12 select-none pointer-events-none scale-105">
-                  <span class="text-[7.5px] font-system font-black text-red-600 tracking-tighter uppercase leading-none font-bold">OK!</span>
+                  <span class="text-xs font-system font-black text-red-600 tracking-normal uppercase leading-none font-bold">OK!</span>
                 </div>
               {/if}
             </div>
@@ -105,25 +105,25 @@
             <div class="flex-1 min-w-0 text-left">
               <div class="flex items-center justify-between gap-1">
                 <span class="font-system font-black text-xs text-slate-700 truncate leading-none font-bold">{challenge.title}</span>
-                <span class="font-mono text-[9px] text-[#FF9F43] font-black shrink-0 font-bold">+{challenge.miles}</span>
+                <span class="font-system text-xs text-[#FF9F43] font-black shrink-0 font-bold">+{challenge.miles}</span>
               </div>
-              <p class="text-[10px] text-slate-400 mt-1 leading-normal font-sans font-semibold">{challenge.desc}</p>
+              <p class="text-sm text-slate-400 mt-1 leading-normal font-sans font-semibold">{challenge.desc}</p>
               
               <!-- Interactive state buttons -->
               <div class="mt-2.5">
                 {#if isClaimed}
-                  <span class="text-[8.5px] font-mono font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
+                  <span class="text-xs font-system font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
                     🏆 STAMPED & CLAIMED
                   </span>
                 {:else if isAchieved}
                   <button
                     onclick={() => onClaimStamp(challenge.id, challenge.miles)}
-                    class="bg-red-500 hover:bg-red-600 text-white font-mono font-black text-[9px] px-2.5 py-1 rounded-full shadow-xs uppercase tracking-wider animate-pulse transition-all active:scale-95 cursor-pointer font-bold border-none"
+                    class="bg-red-500 hover:bg-red-600 text-white font-system font-black text-xs px-2.5 py-1 rounded-full shadow-xs uppercase tracking-wider animate-pulse transition-all active:scale-95 cursor-pointer font-bold border-none"
                   >
                     🎁 CLAIM {challenge.miles} MILES
                   </button>
                 {:else}
-                  <span class="text-[8.5px] font-mono font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full uppercase">
+                  <span class="text-xs font-system font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full uppercase">
                     🔒 Goal: {challenge.condition}
                   </span>
                 {/if}

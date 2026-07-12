@@ -13,7 +13,7 @@
 
 <svelte:element
 	this={tag}
-	class={cn("text-lg font-semibold leading-none tracking-tight", className)}
+	class={cn("text-lg font-semibold leading-none tracking-normal", className)}
 	{...restProps}
 >
 	{@render children?.()}

@@ -13,24 +13,24 @@
       <Box class="flex items-center gap-2.5">
         <Text tag="span" class="w-2.5 h-2.5 rounded-full bg-[#0084CC] animate-ping" />
         <Box>
-          <Text tag="h2" class="text-base font-mono font-black tracking-wider text-[#0084CC] uppercase leading-none">
+          <Text tag="h2" class="text-base font-system font-black tracking-wider text-[#0084CC] uppercase leading-none">
             DAL DEPARTURES FLIGHT BOARD
           </Text>
-          <Text tag="span" class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-widest mt-0.5 block">
+          <Text tag="span" class="text-xs font-system text-slate-400 font-bold uppercase tracking-widest mt-0.5 block">
             CHOOSE FLIGHT TO REVEAL BOARDING PASS
           </Text>
         </Box>
       </Box>
-      <Text tag="span" class="bg-[#A2D2FF]/20 text-[#0084CC] text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#0084CC]/10">
+      <Text tag="span" class="bg-[#A2D2FF]/20 text-[#0084CC] text-sm font-system font-bold px-2.5 py-1 rounded-full border border-[#0084CC]/10">
         {dalStore.flights.length} SEAPLANES ACTIVE
       </Text>
     </Box>
 
     {#if dalStore.flights.length === 0}
-      <Box class="bg-white border border-[#0084CC]/10 rounded-[32px] py-14 text-center font-mono text-slate-400">
+      <Box class="bg-white border border-[#0084CC]/10 rounded-[32px] py-14 text-center font-system text-slate-400">
         <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
         <Text tag="p" class="text-xs font-bold uppercase">NO ACTIVE DESTINATIONS REGISTERED</Text>
-        <Text tag="p" class="text-[10px] mt-0.5">Switch to 'My Flight Hub' to park your seaplane at the gate!</Text>
+        <Text tag="p" class="text-sm mt-0.5">Switch to 'My Flight Hub' to park your seaplane at the gate!</Text>
       </Box>
     {:else}
       <Box class="space-y-3.5 max-h-[600px] overflow-y-auto pr-1">
@@ -51,19 +51,19 @@
           >
             <Box class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <Box class="flex items-center gap-3">
-                <Box class="w-10 h-10 bg-[#0084CC] rounded-xl flex flex-col items-center justify-center font-mono text-white flex-shrink-0">
-                  <Text tag="span" class="text-[6.5px] uppercase font-bold leading-none text-sky-200">GATE</Text>
+                <Box class="w-10 h-10 bg-[#0084CC] rounded-xl flex flex-col items-center justify-center font-system text-white flex-shrink-0">
+                  <Text tag="span" class="text-xs uppercase font-bold leading-none text-sky-200">GATE</Text>
                   <Text tag="span" class="text-[#FFCC00] font-black text-sm leading-none">{flight.gate}</Text>
-                  <Text tag="span" class="text-[9px] leading-none">{GATE_THEMES[flight.gate]?.icon}</Text>
+                  <Text tag="span" class="text-xs leading-none">{GATE_THEMES[flight.gate]?.icon}</Text>
                 </Box>
                 <Box>
                   <Box class="flex items-center flex-wrap gap-1">
-                    <Text tag="span" class="font-mono text-xs font-black text-[#0084CC] tracking-wider">{flight.id}</Text>
-                    <Text tag="span" class="text-[8.5px] font-mono font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.2 rounded-full">
+                    <Text tag="span" class="font-system text-xs font-black text-[#0084CC] tracking-wider">{flight.id}</Text>
+                    <Text tag="span" class="text-xs font-system font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.2 rounded-full">
                       🌎 {flight.hemisphere}
                     </Text>
                     {#if hasBoarded}
-                      <Text tag="span" class="text-[8.5px] font-mono font-black bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.2 rounded-full uppercase">
+                      <Text tag="span" class="text-xs font-system font-black bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.2 rounded-full uppercase">
                         BOARDED
                       </Text>
                     {/if}
@@ -71,25 +71,25 @@
                   <Text tag="h3" class="font-system font-black text-[#4A4A4A] mt-0.5 leading-snug">
                     {flight.islandName}
                   </Text>
-                  <Text tag="p" class="text-[11px] text-slate-500 font-medium">
+                  <Text tag="p" class="text-sm text-slate-500 font-medium">
                     Captain {flight.hostName} | <Text tag="span" class="italic">"{flight.description}"</Text>
                   </Text>
                 </Box>
               </Box>
               <Box class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-0 border-slate-100 pt-2.5 sm:pt-0 gap-1">
-                <Box class="flex items-center gap-1 font-mono">
-                  <Text tag="span" class="text-[9px] text-slate-400">PAS:</Text>
+                <Box class="flex items-center gap-1 font-system">
+                  <Text tag="span" class="text-xs text-slate-400">PAS:</Text>
                   <Text tag="span" class="text-xs font-bold text-[#4A4A4A]">👤 {flight.passengers.length}</Text>
                 </Box>
                 <Box class="flex items-center gap-2">
-                  <Text tag="span" class={`text-[9px] font-mono font-black px-2 py-0.5 rounded-full ${
+                  <Text tag="span" class={`text-xs font-system font-black px-2 py-0.5 rounded-full ${
                     flight.status === 'Boarding' ? 'bg-[#FFCC00]/20 text-[#006094] border border-[#FFCC00] animate-pulse' :
                     flight.status === 'Closed' || flight.status === 'Departed' ? 'bg-slate-100 text-slate-400 border border-slate-200' :
                     'bg-green-50 text-green-700 border border-green-200'
                   }`}>
                     {flight.status.toUpperCase()}
                   </Text>
-                  <Text tag="span" class="text-[#0084CC] font-mono text-[10px] font-black flex items-center gap-0.5 hover:underline">
+                  <Text tag="span" class="text-[#0084CC] font-system text-sm font-black flex items-center gap-0.5 hover:underline">
                     Tickets <ChevronRight class="w-3 h-3" />
                   </Text>
                 </Box>
@@ -108,7 +108,7 @@
           <Text tag="span" class="text-amber-600 text-lg">🛋️</Text>
           <Box>
             <Text tag="h3" class="font-system font-black text-xs text-[#0084CC] uppercase leading-none">Standby Lounge Radar</Text>
-            <Text tag="span" class="text-[8.5px] font-mono font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</Text>
+            <Text tag="span" class="text-xs font-system font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</Text>
           </Box>
         </Box>
         <Button
@@ -121,7 +121,7 @@
 
       <Box class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
         {#if dalStore.requests.length === 0}
-          <Text tag="p" class="text-[11px] font-mono text-center text-slate-400/80 py-8">
+          <Text tag="p" class="text-sm font-system text-center text-slate-400/80 py-8">
             The standby terminal is currently empty. Clear skies on all runways! 🛩️
           </Text>
         {:else}
@@ -151,20 +151,20 @@
                 <Box class="flex-1 min-w-0">
                   <Box class="flex items-center flex-wrap gap-1">
                     <Text tag="span" class="font-system font-black text-xs text-slate-700">{req.name}</Text>
-                    <Text tag="span" class="text-[8px] font-mono text-slate-400">from {req.island}</Text>
+                    <Text tag="span" class="text-xs font-system text-slate-400">from {req.island}</Text>
                   </Box>
-                  <Text tag="p" class="text-[9px] font-mono text-slate-400 uppercase font-black truncate max-w-full">
+                  <Text tag="p" class="text-xs font-system text-slate-400 uppercase font-black truncate max-w-full">
                     "{req.title}"
                   </Text>
                   <Box class="mt-1.5 flex items-center flex-wrap gap-1.5">
-                    <Text tag="span" class="bg-[#A2D2FF]/20 text-[#006094] text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-full uppercase">
+                    <Text tag="span" class="bg-[#A2D2FF]/20 text-[#006094] text-xs font-system font-black px-1.5 py-0.2 rounded-full uppercase">
                       {GATE_THEMES[req.gateType]?.icon} {GATE_THEMES[req.gateType]?.name}
                     </Text>
-                    <Text tag="span" class="bg-amber-50 text-amber-700 border border-amber-100 text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded-full uppercase">
+                    <Text tag="span" class="bg-amber-50 text-amber-700 border border-amber-100 text-xs font-system font-bold px-1.5 py-0.2 rounded-full uppercase">
                       ⏱️ {req.timePreference}
                     </Text>
                   </Box>
-                  <Text tag="p" class="text-[10.5px] text-slate-500 italic mt-1.5 leading-snug">
+                  <Text tag="p" class="text-sm text-slate-500 italic mt-1.5 leading-snug">
                     "{req.memo}"
                   </Text>
                 </Box>

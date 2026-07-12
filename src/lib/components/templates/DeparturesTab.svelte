@@ -2,9 +2,10 @@
   import { ChevronRight, Plane, PlusCircle, X } from '@lucide/svelte';
   import type { Flight, StandbyRequest, Passport, UserProfile, Passenger } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
-  import { GATE_THEMES, PLANE_COLORS } from '$lib/utils/constants';
+  import { GATE_THEMES, DREAM_THEMES, PLANE_COLORS } from '$lib/utils/constants';
   import { slide, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let {
     flights,
@@ -53,11 +54,11 @@
       <div class="flex items-center gap-2.5">
         <span class="w-2.5 h-2.5 rounded-full bg-[#0084CC] animate-ping shrink-0"></span>
         <div class="text-left">
-          <h2 class="text-base font-mono font-black tracking-wider text-[#0084CC] uppercase leading-none">
-            DAL DEPARTURES FLIGHT BOARD
+          <h2 class="text-base font-system font-black tracking-wider {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} uppercase leading-none transition-colors">
+            {dalStore.systemMode === 'DAL' ? 'DAL DEPARTURES FLIGHT BOARD' : 'LUNA DOZE CODE BOARD'}
           </h2>
-          <span class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-widest mt-1 block">
-            CHOOSE FLIGHT TO REVEAL BOARDING PASS
+          <span class="text-xs font-system text-slate-400 font-bold uppercase tracking-widest mt-1 block">
+            {dalStore.systemMode === 'DAL' ? 'CHOOSE FLIGHT TO REVEAL BOARDING PASS' : 'CHOOSE DREAM TO REVEAL DOZE CODE'}
           </span>
         </div>
       </div>
@@ -65,14 +66,14 @@
       <div class="flex items-center gap-2">
         <button
           onclick={() => { playSound('beep', isMuted); showStatusGuide = !showStatusGuide; }}
-          class="bg-[#FFFCEF] hover:bg-[#FFF9D6] border border-[#FFEAA7] rounded-full px-2.5 py-1 text-[9.5px] font-mono font-black text-amber-800 transition-all flex items-center gap-1 cursor-pointer select-none"
+          class="bg-[#FFFCEF] hover:bg-[#FFF9D6] border border-[#FFEAA7] rounded-full px-2.5 py-1 text-xs font-system font-black text-amber-800 transition-all flex items-center gap-1 cursor-pointer select-none"
         >
           <span>💡</span>
           <span>Status Guide {showStatusGuide ? '▲' : '▼'}</span>
         </button>
 
-        <span class="bg-[#A2D2FF]/20 text-[#0084CC] text-[10px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#0084CC]/10">
-          {flights.length} SEAPLANES ACTIVE
+        <span class="{dalStore.systemMode === 'DAL' ? 'bg-[#A2D2FF]/20 text-[#0084CC] border-[#0084CC]/10' : 'bg-[#DDA0DD]/20 text-[#4B0082] border-[#4B0082]/10'} text-sm font-system font-bold px-2.5 py-1 rounded-full border transition-colors">
+          {flights.length} {dalStore.systemMode === 'DAL' ? 'SEAPLANES ACTIVE' : 'DREAMS ACTIVE'}
         </span>
       </div>
     </div>
@@ -85,12 +86,14 @@
       >
         <div class="flex items-center gap-1.5 border-b border-amber-200/50 pb-2">
           <span class="text-sm">🚦</span>
-          <h4 class="font-system font-black text-[11px] text-[#006094] uppercase tracking-wider font-bold">DAL Runway Status Board Legend</h4>
+          <h4 class="font-system font-black text-sm text-[#006094] uppercase tracking-wider font-bold">
+            {dalStore.systemMode === 'DAL' ? 'DAL Runway Status Board Legend' : 'Luna Dream Status Board Legend'}
+          </h4>
         </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[10px] text-slate-600 font-semibold leading-relaxed">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-600 font-semibold leading-relaxed">
           <div class="flex items-start gap-2.5 p-2 bg-white rounded-xl border border-amber-200/25">
-            <span class="bg-green-50 text-green-700 border border-green-200 px-1.5 py-0.5 rounded-md font-mono text-[8.5px] font-black uppercase shrink-0 mt-0.5 font-bold">
+            <span class="bg-green-50 text-green-700 border border-green-200 px-1.5 py-0.5 rounded-md font-system text-xs font-black uppercase shrink-0 mt-0.5 font-bold">
               Scheduled
             </span>
             <div>
@@ -100,7 +103,7 @@
           </div>
 
           <div class="flex items-start gap-2.5 p-2 bg-white rounded-xl border border-amber-200/25">
-            <span class="bg-[#FFCC00]/20 text-[#006094] border border-[#FFCC00] px-1.5 py-0.5 rounded-md font-mono text-[8.5px] font-black uppercase shrink-0 mt-0.5 animate-pulse font-bold">
+            <span class="bg-[#FFCC00]/20 text-[#006094] border border-[#FFCC00] px-1.5 py-0.5 rounded-md font-system text-xs font-black uppercase shrink-0 mt-0.5 animate-pulse font-bold">
               Boarding
             </span>
             <div>
@@ -110,7 +113,7 @@
           </div>
 
           <div class="flex items-start gap-2.5 p-2 bg-white rounded-xl border border-amber-200/25">
-            <span class="bg-slate-100 text-slate-400 border border-slate-200 px-1.5 py-0.5 rounded-md font-mono text-[8.5px] font-black uppercase shrink-0 mt-0.5 font-bold">
+            <span class="bg-slate-100 text-slate-400 border border-slate-200 px-1.5 py-0.5 rounded-md font-system text-xs font-black uppercase shrink-0 mt-0.5 font-bold">
               Departed
             </span>
             <div>
@@ -120,7 +123,7 @@
           </div>
 
           <div class="flex items-start gap-2.5 p-2 bg-white rounded-xl border border-amber-200/25">
-            <span class="bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md font-mono text-[8.5px] font-black uppercase shrink-0 mt-0.5 font-bold">
+            <span class="bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-md font-system text-xs font-black uppercase shrink-0 mt-0.5 font-bold">
               Delayed
             </span>
             <div>
@@ -130,7 +133,7 @@
           </div>
         </div>
 
-        <div class="pt-2 border-t border-amber-200/30 flex items-center justify-between text-[9px] text-[#85806B] font-mono">
+        <div class="pt-2 border-t border-amber-200/30 flex items-center justify-between text-xs text-[#85806B] font-system">
           <span>💡 Click "Status Guide" to hide this explanation legend.</span>
           <span class="font-black text-[#0084CC]">DODO AIRLINES SECURITY DEPT</span>
         </div>
@@ -139,10 +142,16 @@
 
     <!-- Flights List Card Grid -->
     {#if flights.length === 0}
-      <div class="bg-white border border-[#0084CC]/10 rounded-[32px] py-14 text-center font-mono text-slate-400">
-        <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
+      <div class="bg-white border border-[#0084CC]/10 rounded-[32px] py-14 text-center font-system text-slate-400">
+        {#if dalStore.systemMode === 'DAL'}
+          <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
+        {:else}
+          <div class="text-4xl mx-auto mb-2 text-slate-300 animate-pulse">🛌</div>
+        {/if}
         <p class="text-xs font-bold uppercase">NO ACTIVE DESTINATIONS REGISTERED</p>
-        <p class="text-[10px] mt-0.5">Switch to 'My Flight Hub' to park your seaplane at the gate!</p>
+        <p class="text-sm mt-0.5">
+          {dalStore.systemMode === 'DAL' ? "Switch to 'My Flight Hub' to park your seaplane at the gate!" : "Switch to 'My Dream Hub' to share your dream!"}
+        </p>
       </div>
     {:else}
       <div class="space-y-3.5 max-h-[600px] overflow-y-auto pr-1">
@@ -153,7 +162,7 @@
               ? p.friendCode === passport.friendCode 
               : p.name.toLowerCase() === passport.villagerName.toLowerCase()
           )}
-          {@const activeTheme = GATE_THEMES[flight.gate] || GATE_THEMES[1]}
+          {@const activeTheme = dalStore.systemMode === 'DAL' ? (GATE_THEMES[flight.gate] || GATE_THEMES[1]) : (DREAM_THEMES[flight.gate] || DREAM_THEMES[1])}
           {@const planeColorVal = PLANE_COLORS.find(pc => pc.id === (flight.planeColor || 'orange')) || PLANE_COLORS[0]}
           {@const hostProfile = getHostProfile(flight.hostName, flight.islandName)}
 
@@ -171,24 +180,24 @@
               
               <!-- Theme icon and Gate detail -->
               <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-[#0084CC] rounded-xl flex flex-col items-center justify-center font-mono text-white flex-shrink-0">
-                  <span class="text-[6.5px] uppercase font-bold leading-none text-sky-200">GATE</span>
+                <div class="w-10 h-10 bg-[#0084CC] rounded-xl flex flex-col items-center justify-center font-system text-white flex-shrink-0">
+                  <span class="text-xs uppercase font-bold leading-none text-sky-200">GATE</span>
                   <span class="text-[#FFCC00] font-black text-sm leading-none font-bold">{flight.gate}</span>
-                  <span class="text-[9px] leading-none">{activeTheme.icon}</span>
+                  <span class="text-xs leading-none">{activeTheme.icon}</span>
                 </div>
 
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center flex-wrap gap-1">
-                    <span class="font-mono text-xs font-black text-[#0084CC] tracking-wider font-bold">{flight.id}</span>
-                    <span class="text-[8.5px] font-mono font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.2 rounded-full">
+                    <span class="font-system text-xs font-black text-[#0084CC] tracking-wider font-bold">{flight.id}</span>
+                    <span class="text-xs font-system font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.2 rounded-full">
                       🌎 {flight.hemisphere}
                     </span>
                     {#if flight.passengers.length >= (flight.capacity || (flight.planeType === 'Switch 2' ? 12 : 8))}
-                      <span class="text-[8px] font-mono font-black bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.2 rounded-full uppercase animate-pulse font-bold" title="Plane at maximum capacity. Host can board standby passengers.">
+                      <span class="text-xs font-system font-black bg-amber-100 text-amber-800 border border-amber-200 px-1.5 py-0.2 rounded-full uppercase animate-pulse font-bold" title="Plane at maximum capacity. Host can board standby passengers.">
                         ⚠️ COCKPIT FULL / STANDBY
                       </span>
                     {:else if hasBoarded}
-                      <span class="text-[8.5px] font-mono font-black bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.2 rounded-full uppercase font-bold">
+                      <span class="text-xs font-system font-black bg-green-100 text-green-700 border border-green-200 px-1.5 py-0.2 rounded-full uppercase font-bold">
                         BOARDED
                       </span>
                     {/if}
@@ -196,7 +205,7 @@
                   <h3 class="font-system font-black text-[#4A4A4A] mt-0.5 leading-snug font-bold">
                     {flight.islandName}
                   </h3>
-                  <div class="text-[11px] text-slate-500 font-medium flex items-center flex-wrap gap-1">
+                  <div class="text-sm text-slate-500 font-medium flex items-center flex-wrap gap-1">
                     <span 
                       onclick={(e) => {
                         e.stopPropagation();
@@ -215,7 +224,7 @@
                           e.stopPropagation();
                           openProfileModal(hostProfile.friendCode);
                         }}
-                        class="inline-flex items-center gap-1 ml-1.5 text-[9px] font-mono bg-[#E8F8F5] text-[#117A65] border border-[#A3E4D7] rounded-full px-1.5 py-0.2 font-black cursor-pointer hover:bg-[#D1F2EB]"
+                        class="inline-flex items-center gap-1 ml-1.5 text-xs font-system bg-[#E8F8F5] text-[#117A65] border border-[#A3E4D7] rounded-full px-1.5 py-0.2 font-black cursor-pointer hover:bg-[#D1F2EB]"
                         title="Good Apples count"
                       >
                         🍏 {hostProfile.goodApples || 0}
@@ -225,7 +234,7 @@
                       </span>
                     {/if}
                   </div>
-                  <div class="flex items-center gap-1.5 mt-1 text-[9.5px] font-mono text-slate-400">
+                  <div class="flex items-center gap-1.5 mt-1 text-xs font-system text-slate-400">
                     <span class="font-bold flex items-center gap-0.5" style="color: {planeColorVal.hex}">
                       ✈️ {(flight.planeColor || 'orange').toUpperCase()} PLANE
                     </span>
@@ -238,17 +247,17 @@
               <!-- Status & Boarding Trigger Button -->
               <div class="flex sm:flex-col items-center sm:items-end justify-between border-t sm:border-0 border-slate-100 pt-2.5 sm:pt-0 gap-1 shrink-0">
                 
-                <div class="flex items-center gap-1 font-mono">
-                  <span class="text-[9px] text-slate-400">PAS:</span>
+                <div class="flex items-center gap-1 font-system">
+                  <span class="text-xs text-slate-400">PAS:</span>
                   <span class="text-xs font-bold text-[#4A4A4A]">👤 {flight.passengers.length}</span>
                 </div>
 
                 <div class="flex items-center gap-2">
-                  <span class="text-[9px] font-mono font-black px-2 py-0.5 rounded-full font-bold {flight.status === 'Boarding' ? 'bg-[#FFCC00]/20 text-[#006094] border border-[#FFCC00] animate-pulse' : flight.status === 'Closed' || flight.status === 'Departed' ? 'bg-slate-100 text-slate-400 border border-slate-200' : 'bg-green-50 text-green-700 border border-green-200'}">
+                  <span class="text-xs font-system font-black px-2 py-0.5 rounded-full font-bold {flight.status === 'Boarding' ? 'bg-[#FFCC00]/20 text-[#006094] border border-[#FFCC00] animate-pulse' : flight.status === 'Closed' || flight.status === 'Departed' ? 'bg-slate-100 text-slate-400 border border-slate-200' : 'bg-green-50 text-green-700 border border-green-200'}">
                     {flight.status.toUpperCase()}
                   </span>
                   
-                  <span class="text-[#0084CC] font-mono text-[10px] font-black flex items-center gap-0.5 hover:underline font-bold">
+                  <span class="text-[#0084CC] font-system text-sm font-black flex items-center gap-0.5 hover:underline font-bold">
                     Tickets <ChevronRight class="w-3 h-3" />
                   </span>
                 </div>
@@ -271,7 +280,7 @@
           <span class="text-amber-600 text-lg">🛋️</span>
           <div>
             <h3 class="font-system font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Standby Lounge Radar</h3>
-            <span class="text-[8.5px] font-mono font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</span>
+            <span class="text-xs font-system font-bold text-slate-400 uppercase">PEOPLE SEEKING FLIGHTS</span>
           </div>
         </div>
 
@@ -286,7 +295,7 @@
       <!-- Active Standby Passengers List -->
       <div class="space-y-3 max-h-[450px] overflow-y-auto pr-1">
         {#if requests.length === 0}
-          <p class="text-[11px] font-mono text-center text-slate-400/80 py-8">
+          <p class="text-sm font-system text-center text-slate-400/80 py-8">
             The standby terminal is currently empty. Clear skies on all runways! 🛩️
           </p>
         {:else}
@@ -332,10 +341,10 @@
                     >
                       {req.name}
                     </span>
-                    <span class="text-[8px] font-mono text-slate-400 font-bold">from {req.island}</span>
+                    <span class="text-xs font-system text-slate-400 font-bold">from {req.island}</span>
                     {#if getPassengerProfile(req.name, req.island)}
                       {@const p = getPassengerProfile(req.name, req.island)}
-                      <span class="inline-flex items-center gap-0.5 text-[8px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full px-1.5 py-0.1 font-black">
+                      <span class="inline-flex items-center gap-0.5 text-xs font-system bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full px-1.5 py-0.1 font-black">
                         🍏 {p?.goodApples || 0}
                         {#if p && p.rottenTurnips > 0}
                           <span class="text-rose-700">|🧅 {p.rottenTurnips}</span>
@@ -343,20 +352,20 @@
                       </span>
                     {/if}
                   </div>
-                  <p class="text-[9px] font-mono text-slate-400 uppercase font-black truncate max-w-full">
+                  <p class="text-xs font-system text-slate-400 uppercase font-black truncate max-w-full">
                     "{req.title}"
                   </p>
 
                   <div class="mt-1.5 flex items-center flex-wrap gap-1.5">
-                    <span class="bg-[#A2D2FF]/20 text-[#006094] text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded-full uppercase">
-                      {GATE_THEMES[req.gateType]?.icon} {GATE_THEMES[req.gateType]?.name}
+                    <span class="bg-[#A2D2FF]/20 text-[#006094] text-xs font-system font-black px-1.5 py-0.2 rounded-full uppercase">
+                      {(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES)[req.gateType]?.icon} {(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES)[req.gateType]?.name}
                     </span>
-                    <span class="bg-amber-50 text-amber-700 border border-amber-100 text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded-full uppercase">
+                    <span class="bg-amber-50 text-amber-700 border border-amber-100 text-xs font-system font-bold px-1.5 py-0.2 rounded-full uppercase">
                       ⏱️ {req.timePreference}
                     </span>
                   </div>
 
-                  <p class="text-[10.5px] text-slate-500 italic mt-1.5 leading-snug">
+                  <p class="text-sm text-slate-500 italic mt-1.5 leading-snug">
                     "{req.memo}"
                   </p>
                 </div>
