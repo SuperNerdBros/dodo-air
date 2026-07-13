@@ -286,12 +286,23 @@
         <div class="flex items-start gap-1 sm:gap-2">
           
           <TabButton
+            active={currentTab === 'standby'}
+            systemMode={dalStore.systemMode}
+            isMuted={dalStore.isMuted}
+            onclick={() => { window.location.hash = '#/standby'; }}
+          >
+            <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
+            Travel Plan
+            </span>
+          </TabButton>
+          
+          <TabButton
             active={currentTab === 'book'}
             systemMode={dalStore.systemMode}
             isMuted={dalStore.isMuted}
             onclick={() => { window.location.hash = '#/islands'; }}
           >
-            <PlaneTakeoff class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Flights</span>
+            <PlaneTakeoff class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Departures</span>
           </TabButton>
 
           <TabButton
@@ -300,22 +311,11 @@
             isMuted={dalStore.isMuted}
             onclick={() => { window.location.hash = '#/hub'; }}
           >
-            <PlaneLanding class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">I want visitors!</span>
+            <PlaneLanding class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Arrivals</span>
             {#if myFlight}
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
             {/if}
-          </TabButton>
-          
-          <TabButton
-            active={currentTab === 'standby'}
-            systemMode={dalStore.systemMode}
-            isMuted={dalStore.isMuted}
-            onclick={() => { window.location.hash = '#/standby'; }}
-          >
-            <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
-              Book
-            </span>
           </TabButton>
           
         </div>
