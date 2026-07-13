@@ -15,7 +15,7 @@
   let characterKey = $derived(title.split(/[\s\[]/)[0]?.trim() || '');
   let colors = $derived(CHARACTER_COLORS[characterKey] || { bg: '#dd8530', text: '#482016' });
 
-  let computedIsActive = $derived(isActive && (isIntro || !dalStore.showOrvilleIntro));
+   
 
   let typedText = $state('');
   let textDone = $state(false);
@@ -60,7 +60,7 @@
   }
 </script>
 
-{#if computedIsActive}
+{#if isActive}
   <div class="pointer-events-auto dialogue {className}" style="--dialogue-font: {title ? 'FOT-RodinBokutoh Pro EB' : 'FOT-Seurat Pro B'};">
     <div class="dialogue-blobs drop-shadow-lg relative">
       <div class="dialogue-blob-top"></div>
