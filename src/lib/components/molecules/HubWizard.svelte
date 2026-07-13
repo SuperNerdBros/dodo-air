@@ -6,6 +6,7 @@
   import Input from '$lib/components/atoms/Input.atom.svelte';
   import Select from '$lib/components/atoms/Select.atom.svelte';
   import Textarea from '$lib/components/atoms/Textarea.atom.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import { playSound } from '$lib/utils/audio';
   import { Calendar, Clock, Plus, Trash2 } from '@lucide/svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
@@ -114,7 +115,7 @@
       {#if step === 1}
         <AcnhBubble
           title="Wilbur"
-          dialogText="Roger that! Let's get this seaplane ready for boarding. First, what are the flight details?"
+          dialogText={DIALOGS.hubWizard.step1}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -144,7 +145,7 @@
       {:else if step === 2}
         <AcnhBubble
           title="Wilbur"
-          dialogText="Copy that! Now, what kind of visitors are you looking for? Pick a gate theme category!"
+          dialogText={DIALOGS.hubWizard.step2}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10 pr-4 md:pr-10 max-h-60 overflow-y-auto hide-scrollbar">
@@ -167,7 +168,7 @@
       {:else if step === 3}
         <AcnhBubble
           title="Wilbur"
-          dialogText="We need a flight plan description so passengers know what to expect! Tell 'em what's going on!"
+          dialogText={DIALOGS.hubWizard.step3}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -187,7 +188,7 @@
       {:else if step === 4}
         <AcnhBubble
           title="Wilbur"
-          dialogText="Loud and clear! Provide your 5-digit Dodo Code™ to open the gates now, or leave it blank to create a recurring flight plan for later!"
+          dialogText={DIALOGS.hubWizard.step4}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -240,7 +241,7 @@
       {:else if step === 5}
         <AcnhBubble
           title="Wilbur"
-          dialogText="Got it! Let's set up your routine opening hours so passengers know when to expect you."
+          dialogText={DIALOGS.hubWizard.step5}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10 text-left">

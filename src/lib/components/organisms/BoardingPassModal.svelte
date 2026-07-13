@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Ticket, X, AlertCircle } from '@lucide/svelte';
   import type { Flight, Passport, Passenger } from '$lib/studio-types';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import { playSound } from '$lib/utils/audio';
   import { PLANE_COLORS } from '$lib/utils/constants';
@@ -72,21 +73,21 @@
             <p class="text-xl sm:text-2xl {dalStore.systemMode === 'DAL' ? 'text-[#807256]' : 'text-[#4B0082]'} leading-snug font-medium ">
               {#if isPassengerCheckedIn}
                 {#if dalStore.systemMode === 'DAL'}
-                  You're all set! We've generated your Dodo Code. Safe travels on Flight <strong>{selectedFlight.id}</strong>!
+                  {@html DIALOGS.boardingPassModal.dalCheckedIn(selectedFlight.id)}
                 {:else}
-                  Sweet dreams! Your Doze Code is ready. Enjoy your slumber on Dream <strong>{selectedFlight.id}</strong>!
+                  {@html DIALOGS.boardingPassModal.lunaCheckedIn(selectedFlight.id)}
                 {/if}
               {:else if passengersList.length >= capacity}
                 {#if dalStore.systemMode === 'DAL'}
-                  Oh, bummer! All <strong>{capacity}</strong> seats on this seaplane are taken. Check-in is currently unavailable.
+                  {@html DIALOGS.boardingPassModal.dalFull(capacity)}
                 {:else}
-                  Oh, bummer! All <strong>{capacity}</strong> beds for this dream are taken. Check-in is currently unavailable.
+                  {@html DIALOGS.boardingPassModal.lunaFull(capacity)}
                 {/if}
               {:else}
                 {#if dalStore.systemMode === 'DAL'}
-                  Step up to the counter! Book your Boarding Pass on Flight <strong>{selectedFlight.id}</strong> to receive the Dodo Code.
+                  {@html DIALOGS.boardingPassModal.dalBook(selectedFlight.id)}
                 {:else}
-                  Close your eyes... Request your Dream Ticket for <strong>{selectedFlight.id}</strong> to receive the Doze Code.
+                  {@html DIALOGS.boardingPassModal.lunaBook(selectedFlight.id)}
                 {/if}
               {/if}
             </p>

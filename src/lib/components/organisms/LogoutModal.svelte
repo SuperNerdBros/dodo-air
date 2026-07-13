@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
   import { playSound } from '$lib/utils/audio';
@@ -18,7 +19,7 @@
         
         <div class="flex-1">
           <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
-            Are you sure you want to log out of the Dodo Airlines Terminal? We'll save your passport details!
+            {DIALOGS.logoutModal.prompt}
           </p>
         </div>
       </div>

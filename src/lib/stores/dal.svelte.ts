@@ -30,6 +30,8 @@ export class DalState {
 	mySchedules: any[] = $state([]);
 	views = $state(0);
 	visitors = $state(0);
+	alltimePilots = $state(0);
+	alltimePassengers = $state(0);
 
 	passport: Passport = $state({
 		villagerName: '',
@@ -400,6 +402,8 @@ export class DalState {
 				if (data.analytics) {
 					this.views = data.analytics.views || 0;
 					this.visitors = data.analytics.visitors || 0;
+					this.alltimePilots = data.analytics.alltimePilots || 0;
+					this.alltimePassengers = data.analytics.alltimePassengers || 0;
 				}
 				if (data.myPassport && (!this.passport.hasCreated || data.myPassport.hasCreated)) {
 					const updatedPassport = { ...this.passport, ...data.myPassport };

@@ -5,7 +5,7 @@
     let { children } = $props();
 
   import { fly } from 'svelte/transition';
-  import { Plane, PlaneTakeoff, PlaneLanding, Ticket, Radio, Users, BookOpen, Lock, Clock, Unlock, Moon } from '@lucide/svelte';
+  import { Plane, PlaneTakeoff, PlaneLanding, Ticket, Radio, Users, BookOpen, Lock, Clock, Unlock, Moon, Wifi } from '@lucide/svelte';
   import { playSound } from '$lib/utils/audio';
   import { dalStore } from '$lib/stores/dal.svelte';
   
@@ -73,7 +73,17 @@
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ visitorId })
-    }).catch(err => console.error('Failed to record visit:', err));
+    })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if (data) {
+        dalStore.views = data.views || 0;
+        dalStore.visitors = data.visitors || 0;
+        dalStore.alltimePilots = data.alltimePilots || 0;
+        dalStore.alltimePassengers = data.alltimePassengers || 0;
+      }
+    })
+    .catch(err => console.error('Failed to record visit:', err));
 
     pollTimer = setInterval(() => {
       dalStore.fetchState(false);
@@ -187,6 +197,7 @@
   let totalPassengers = $derived(activeFlights.reduce((sum, f) => sum + (f.passengers?.length || 0), 0));
   let totalStandby = $derived(dalStore.requests.length);
 
+  let liveTime = $derived(dalStore.liveTime);
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   let formattedDay = $derived(days[liveTime.getDay()]);
@@ -244,7 +255,7 @@
       class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
       title="Toggle Radio Tower"
     >
-      <Radio class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
+      <Wifi class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
     </button>
     
     <!-- Login/Logout Button -->
@@ -328,11 +339,10 @@
             onclick={() => { window.location.hash = '#/standby'; }}
           >
             <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
-            Travel Plan
+            Itinerary
             </span>
           </TabButton>
-
-
+        </div>
 
         <div class="flex items-start gap-1 sm:gap-2">
           <TabButton
@@ -368,6 +378,7 @@
           setIsEditingPassport={(v) => dalStore.isEditingPassport = v}
           isMuted={dalStore.isMuted}
           playSound={(id) => playSound(id, dalStore.isMuted)}
+          isActive={currentTab === 'passport'}
         />
       </div>
 
@@ -379,6 +390,7 @@
           profiles={dalStore.profiles}
           openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
           isMuted={dalStore.isMuted}
+          isActive={currentTab === 'book'}
         />
       </div>
 
@@ -429,6 +441,7 @@
           openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
           passport={dalStore.passport}
           isMuted={dalStore.isMuted}
+          isActive={currentTab === 'directory'}
         />
       </div>
     </div>
@@ -451,7 +464,6 @@
         isPostingChat={dalStore.isPostingChat}
         profiles={dalStore.profiles}
         openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
-        setShowFuelModal={(v) => showFuelModal = v}
         passport={dalStore.passport}
         isMuted={dalStore.isMuted}
         onClose={() => { isRadioOpen = false; }}

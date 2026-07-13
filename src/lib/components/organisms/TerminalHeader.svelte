@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Plane, Calendar, Clock, RefreshCw, VolumeX, Volume2, Moon, CloudMoon, Users, Ticket } from '@lucide/svelte';
+  import { Plane, Wifi, Calendar, Clock, RefreshCw, VolumeX, Volume2, Moon, CloudMoon, Users, Ticket } from '@lucide/svelte';
   import Box from '../atoms/Box.atom.svelte';
   import Text from '../atoms/Text.atom.svelte';
   import Button from '../atoms/Button.atom.svelte';

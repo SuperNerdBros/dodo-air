@@ -137,7 +137,9 @@
   onClose={() => dalStore.isTrafficModalOpen = false}
   totalStandby={dalStore.requests.length}
   totalPassengers={dalStore.flights.reduce((acc, f) => acc + Object.keys(f.passengers || {}).length, 0)}
+  alltimePassengers={dalStore.alltimePassengers}
   totalPilots={dalStore.flights.length}
+  alltimePilots={dalStore.alltimePilots}
   totalPassports={dalStore.totalIslanders}
   views={dalStore.views}
   visitors={dalStore.visitors}

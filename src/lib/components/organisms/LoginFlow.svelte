@@ -1,6 +1,7 @@
 <script lang="ts">
   import { dalStore } from '$lib/stores/dal.svelte';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
 
   let { onClose }: { onClose?: () => void } = $props();
   let step: 'email' | 'code' = $state('email');
@@ -80,7 +81,7 @@
   {#if step === 'email'}
     <AcnhBubble title="Orville [DAL Dispatch]" onDismiss={onClose}>
       <div class="text-xl font-bold text-slate-700 leading-relaxed mb-6">
-        Welcome to Dodo Airlines! We'll send you a passcode to access your passport. What's your email address?
+        {DIALOGS.loginFlow.default}
       </div>
       
       <form onsubmit={handleEmailSubmit} class="flex flex-col gap-4 max-w-[500px] mx-auto">

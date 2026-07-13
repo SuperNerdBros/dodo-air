@@ -7,7 +7,8 @@
   import Select from '../atoms/Select.atom.svelte';
   import Textarea from '../atoms/Textarea.atom.svelte';
   import Form from '../atoms/Form.atom.svelte';
-  import AcnhBubble from '../molecules/AcnhBubble.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
   import { GATE_THEMES } from '$lib/types';
   import type { FlightStatus, StandbyRequest } from '$lib/types';
@@ -179,7 +180,7 @@
       
       <AcnhBubble
         title="Wilbur"
-        dialogText="Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
+        dialogText={DIALOGS.hubTab.active}
       >
         <div class="mt-4 flex justify-center">
           <button

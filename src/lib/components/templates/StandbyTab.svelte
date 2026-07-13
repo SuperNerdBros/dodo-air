@@ -5,6 +5,7 @@
   import { playSound } from '$lib/utils/audio';
   import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
   import { dalStore } from '$lib/stores/dal.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
@@ -55,7 +56,7 @@
   {#if isActive}
     <AcnhBubble 
       title="Orville"
-      dialogText="Can't find an open airport gate that matches your travel itinerary? File a Standby Request to alert online pilots looking to match passenger lists! Tell me where and when you want to fly. I'll add you to the global standby radar so Wilbur can find flights for you!"
+      dialogText={DIALOGS.standbyTab.active}
     >
       <div class="mt-4 flex justify-center">
         <button

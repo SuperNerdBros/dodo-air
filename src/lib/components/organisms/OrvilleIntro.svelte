@@ -4,6 +4,7 @@
   import Button from '../atoms/Button.atom.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
   import AcnhBubble from '../molecules/AcnhBubble.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
 </script>
 
 {#if dalStore.showOrvilleIntro}
@@ -11,7 +12,7 @@
     <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
       <AcnhBubble
         title="Orville [Tour Guide]"
-        dialogText="Right-o! Welcome to the Dodo Airlines online terminal! Here you can check the radar for active flights, broadcast your own Dodo Code, and coordinate island visits with pilots across the globe!"
+        dialogText={DIALOGS.orvilleIntro.active}
         onDismiss={() => {
           dalStore.playSound('beep');
           dalStore.showOrvilleIntro = false;

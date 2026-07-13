@@ -59,11 +59,6 @@
     <div class="radio-header__left">
       <div class="radio-header__icon">
         <span class="radio-header__icon-emoji">📻</span>
-        <div class="radio-header__signal">
-          <span class="radio-signal-dot"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
-        </div>
       </div>
       <div>
         <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
@@ -74,6 +69,11 @@
       <Wifi class="w-3 h-3" />
       ON AIR
     </div>
+        <div class="radio-header__signal">
+          <span class="radio-signal-dot"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
+        </div>
   </div>
 
   <!-- ═══ Chat Feed ═══ -->
@@ -240,7 +240,7 @@
 
   .radio-header__signal {
     position: absolute;
-    top: -4px;
+    bottom: -4px;
     right: -4px;
     display: flex;
     gap: 2px;

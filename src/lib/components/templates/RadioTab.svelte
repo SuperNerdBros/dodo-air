@@ -15,7 +15,6 @@
     isPostingChat = false,
     profiles,
     openProfileModal,
-    setShowFuelModal,
     passport,
     isMuted = false
   } = $props<{
@@ -27,7 +26,6 @@
     isPostingChat?: boolean;
     profiles: Record<string, UserProfile>;
     openProfileModal: (friendCode: string) => void;
-    setShowFuelModal: (show: boolean) => void;
     passport: Passport;
     isMuted?: boolean;
     onClose?: () => void;
@@ -69,17 +67,14 @@
     <div class="radio-header__left">
       <div class="radio-header__icon">
         <span class="radio-header__icon-emoji">📻</span>
-        <div class="radio-header__signal">
-          <span class="radio-signal-dot"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
-        </div>
       </div>
       <div>
         <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
         <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
       </div>
     </div>
+
+<div class="flex flex-col justify-center gap-2 items-center">
 
     <button 
       onclick={() => onClose?.()}
@@ -89,6 +84,13 @@
       <Wifi class="w-3 h-3" />
       ON AIR
     </button>
+        <div class="radio-header__signal shrink ">
+          <span class="radio-signal-dot"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
+        </div>
+</div>
+
   </div>
 
   <div class="bg-[#005788] px-4 py-1.5 flex justify-end items-center border-b-2 border-[#003B5C]">
@@ -320,7 +322,7 @@
   }
 
   .radio-header__signal {
-    position: absolute;
+    /* position: absolute; */
     top: -4px;
     right: -4px;
     display: flex;

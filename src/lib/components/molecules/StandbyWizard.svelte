@@ -3,6 +3,7 @@
   import { GATE_THEMES } from '$lib/utils/constants';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import Button from '$lib/components/atoms/Button.atom.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import { playSound } from '$lib/utils/audio';
 
   let {
@@ -99,7 +100,7 @@
       {#if step === 1}
         <AcnhBubble
           title="Orville [Tour Guide]"
-          dialogText="Right-o! Where are you looking to fly today? Pick a destination theme below so we can find the perfect island for you!"
+          dialogText={DIALOGS.standbyWizard.step1}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10 pr-4 md:pr-10">
@@ -119,7 +120,7 @@
       {:else if step === 2}
         <AcnhBubble
           title="Orville [Tour Guide]"
-          dialogText="Got it! {GATE_THEMES[requestGateType]?.name} sounds great. When you plan on traveling?"
+          dialogText={DIALOGS.standbyWizard.step2(GATE_THEMES[requestGateType]?.name)}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-5 relative z-10 pr-4 md:pr-8">
@@ -189,7 +190,7 @@
       {:else if step === 3}
         <AcnhBubble
           title="Orville [Tour Guide]"
-          dialogText="Any special requests or memos for the pilots? A good memo helps them know exactly why you want to visit!"
+          dialogText={DIALOGS.standbyWizard.step3}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -209,7 +210,7 @@
       {:else if step === 4}
         <AcnhBubble
           title="Orville [Tour Guide]"
-          dialogText="All set! Review your ticket details below. Should I put you on the radar?"
+          dialogText={DIALOGS.standbyWizard.step4}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">

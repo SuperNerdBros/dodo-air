@@ -7,6 +7,7 @@
   import { slide, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
   import { dalStore } from '$lib/stores/dal.svelte';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
@@ -15,7 +16,8 @@
     passport,
     profiles,
     openProfileModal,
-    isMuted = false
+    isMuted = false,
+    isActive = false
   } = $props<{
     flights: Flight[];
     selectedFlightId: string | null;
@@ -23,6 +25,7 @@
     profiles: Record<string, UserProfile>;
     openProfileModal: (friendCode: string) => void;
     isMuted?: boolean;
+    isActive?: boolean;
   }>();
 
   let showStatusGuide = $state(false);
@@ -49,11 +52,13 @@
   });
 </script>
 
-<div class="space-y-4">
-  <AcnhBubble 
-    title="Orville"
-    dialogText="Hey hey! Welcome to the Departure Gates. Search for open gates or hop on standby so to put you on the radar. Let's get you checked in and set up with a Dodo Code™!"
-  />
+<div class="space-y-4 pt-5">
+  {#if isActive}
+    <AcnhBubble 
+      title="Orville"
+      dialogText={DIALOGS.departuresTab.active}
+    />
+  {/if}
   <!-- Departures Board - Full Width -->
   <div class="space-y-4">
     <!-- Boarding Desk Heading -->
@@ -173,7 +178,7 @@
       </div>
     {:else}
       <div class="bg-white rounded-[32px] border-2 border-[#0084CC]/10 shadow-sm overflow-hidden">
-        <div class="overflow-x-auto max-h-[600px]">
+        <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse font-system whitespace-nowrap">
             <thead class="sticky top-0 z-10 bg-white">
               <tr class="bg-slate-50/50 border-b-2 border-slate-100 text-[10px] text-slate-400 font-bold uppercase tracking-widest">

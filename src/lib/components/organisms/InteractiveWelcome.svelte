@@ -10,6 +10,7 @@
     PLANE_COLORS,
     generateRandomFriendCode
   } from '$lib/utils/constants';
+  import { DIALOGS } from '$lib/constants/dialogs';
   import { scale, fade, fly } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
   import { Plane, Moon, Ticket, Mail, ShieldAlert, Award } from '@lucide/svelte';
@@ -63,13 +64,13 @@
   });
 
   const dialogues: Record<Step, string> = {
-    welcome: "Right-o! Welcome to the front desk at Dodo Airlines. 🦤 I'm Orville, your dispatcher, gate manager, and personal flight coordinator today!",
-    intro: "This online terminal is the ultimate community hub! Here, you can search active gates to visit other islands, or broadcast your own Dodo Code™ to host guests!",
-    modes: "We support two travel modes depending on your flying preference. We've got standard flight departures and relaxing dream visits! Take a peek at both:",
-    walkthrough: "The flight process is simple: If you're hosting, file a flight plan to list your gate. If you're flying, just browse active departures, check in, get the Dodo Code™, and fly!",
-    auth_choice: "Before you head to the gate, let's look up your Frequent Flyer Passport! This helps builds trust in our community. Enter your email so we can send your a secure access code.",
-    verify_code: "Excellent! I've just sent a 6-digit flight access code to your email. Enter it below to retrieve your passport profile!",
-    print_passport: "Wonderful! We've retrieved your credentials. Let's customize your official Frequent Flyer Passport and register your island seaplane!"
+    welcome: DIALOGS.interactiveWelcome.welcome,
+    intro: DIALOGS.interactiveWelcome.intro,
+    modes: DIALOGS.interactiveWelcome.modes,
+    walkthrough: DIALOGS.interactiveWelcome.walkthrough,
+    auth_choice: DIALOGS.interactiveWelcome.authChoice,
+    verify_code: DIALOGS.interactiveWelcome.verifyCode,
+    print_passport: DIALOGS.interactiveWelcome.printPassport
   };
 
   // Run typewriter effect when step changes
