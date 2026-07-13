@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { PASSPORT_COLORS } from '$lib/utils/constants';
   import type { Passport } from '$lib/studio-types';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
     passport,
@@ -27,6 +28,10 @@
 </script>
 
 <div class="space-y-5 text-left max-w-2xl mx-auto">
+  <AcnhBubble 
+    title="Orville"
+    dialogText="Hey hey! Welcome to Dodo Airlines! Here is your official Frequent Flyer Passport. Keep your details and custom title up-to-date, and make sure to stamp your Stamp Book for FF Miles!"
+  />
   <!-- Tab Header Board -->
   <div class="bg-white rounded-3xl border-2 border-[#0084CC]/10 p-4 lg:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3">

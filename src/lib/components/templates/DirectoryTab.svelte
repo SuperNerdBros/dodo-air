@@ -6,6 +6,7 @@
   import { PASSPORT_COLORS } from '$lib/utils/constants';
   import { scale, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
     profiles,
@@ -62,6 +63,10 @@
 </script>
 
 <div class="space-y-5 text-left">
+  <AcnhBubble 
+    title="Orville"
+    dialogText="Welcome to the DAL Flyers Directory! Check out customized passports from all our active flyers. Give a passport a tap to check trust ratings or vouch for them with a Good Apple!"
+  />
   <!-- Directory Title Board -->
   <div class="bg-white rounded-3xl border-2 border-[#0084CC]/10 p-4 lg:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3">

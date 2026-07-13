@@ -121,9 +121,9 @@
       </div>
 
       <AcnhBubble 
-        title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}
+        title={dalStore.systemMode === 'DAL' ? 'Orville & Wilbur' : 'Luna'}
         dialogText={dalStore.systemMode === 'DAL' 
-          ? "Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!" 
+          ? "Welcome to your Private Flight Hangar! File a Flight Plan and open your gates to the skies. Pick a clear theme, and we'll scan the airwaves to match you with the perfect standby passengers! Roger that! Seaplane engine oil looking steady, props balanced. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!" 
           : "Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island."}
       >
         <div class="mt-4 flex justify-center">

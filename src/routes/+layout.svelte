@@ -5,7 +5,7 @@
     let { children } = $props();
 
   import { fly } from 'svelte/transition';
-  import { Plane, PlaneTakeoff, PlaneLanding, Ticket, Radio, Users, BookOpen, Lock, Clock, CircleQuestionMark, Unlock, Moon } from '@lucide/svelte';
+  import { Plane, PlaneTakeoff, PlaneLanding, Ticket, Radio, Users, BookOpen, Lock, Clock, Unlock, Moon } from '@lucide/svelte';
   import { playSound } from '$lib/utils/audio';
   import { dalStore } from '$lib/stores/dal.svelte';
   
@@ -331,20 +331,7 @@
             Travel Plan
             </span>
           </TabButton>
-          <!-- Right: Ask Orville -->
-          <TabButton
-            active={dalStore.showOrvilleIntro}
-            systemMode={dalStore.systemMode}
-            isMuted={dalStore.isMuted}
-            onclick={() => {
-              dalStore.showOrvilleIntro = true;
-              localStorage.setItem('dal_orville_intro', 'show');
-            }}
-            class={dalStore.showOrvilleIntro ? '' : (dalStore.systemMode === 'DAL' ? 'text-[#FFFCEF]' : 'text-[#F3E8FF]')}
-          >
-            <CircleQuestionMark class="text-base sm:text-lg {dalStore.showOrvilleIntro ? '' : 'opacity-80'}" /> <span class="hidden sm:inline">Ask Orville</span>
-          </TabButton>
-        </div>
+
 
 
         <div class="flex items-start gap-1 sm:gap-2">
@@ -368,32 +355,7 @@
       </div>
       </div>
 
-    <!-- ORVILLE'S COZY GUIDANCE SPEECH BALLOON -->
-    {#if dalStore.showOrvilleIntro}
-      <div class="fixed inset-0 z-[100] pointer-events-none flex flex-col justify-end p-4 pb-8 sm:p-8">
-        <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
-          <AcnhBubble 
-            title="Orville [Tour Guide]"
-            dialogText={orvilleMessage}
-            onDismiss={() => {
-              playSound('beep', dalStore.isMuted);
-              dalStore.showOrvilleIntro = false;
-              localStorage.setItem('dal_orville_intro', 'hidden');
-            }}
-          >
-            <!-- Quick actions inside the bubble -->
-            <div class="flex flex-wrap gap-3 justify-end pt-2 hidden">
-              <button
-                onclick={() => { playSound('beep', dalStore.isMuted); dalStore.showMilesModal = true; }}
-                class="btn-acnh btn-acnh-secondary px-6 py-2 text-sm rounded-full"
-              >
-                🎯 Open Stamp Book
-              </button>
-            </div>
-          </AcnhBubble>
-        </div>
-      </div>
-    {/if}
+
 
     <!-- Ask Orville Floating Helper Removed (Now a top tab) -->
 

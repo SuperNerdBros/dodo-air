@@ -55,7 +55,7 @@
   {#if isActive}
     <AcnhBubble 
       title="Orville"
-      dialogText="Tell me where and when you want to fly. I'll add you to the global standby radar so Wilbur can find flights for you!"
+      dialogText="Can't find an open airport gate that matches your travel itinerary? File a Standby Request to alert online pilots looking to match passenger lists! Tell me where and when you want to fly. I'll add you to the global standby radar so Wilbur can find flights for you!"
     >
       <div class="mt-4 flex justify-center">
         <button

@@ -7,6 +7,7 @@
   import { slide, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
   import { dalStore } from '$lib/stores/dal.svelte';
+  import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
     flights,
@@ -49,6 +50,10 @@
 </script>
 
 <div class="space-y-4">
+  <AcnhBubble 
+    title="Orville"
+    dialogText="Hey hey! Welcome to the Departure Gates. Search for open gates or hop on standby so to put you on the radar. Let's get you checked in and set up with a Dodo Code™!"
+  />
   <!-- Departures Board - Full Width -->
   <div class="space-y-4">
     <!-- Boarding Desk Heading -->
