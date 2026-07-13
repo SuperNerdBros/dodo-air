@@ -56,7 +56,7 @@
 {#if dalStore.isEditingPassport}
   <div transition:fade={{ duration: 200 }} class="fixed inset-0 z-[100] flex items-center justify-center">
     <PassportEditModal
-      passport={dalStore.passportForm}
+      passport={dalStore.passport}
       onSave={handleSavePassport}
       onClose={() => dalStore.isEditingPassport = false}
       isMuted={dalStore.isMuted}

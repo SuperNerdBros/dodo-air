@@ -200,7 +200,7 @@
             
             <div class="flex flex-col items-center gap-4 my-4">
               <div class="w-full max-w-[800px]">
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">DODO CODE™</label>
+                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">DODO CODE</label>
                 <Input 
                   type="text" 
                   bind:value={formDodo} 
@@ -210,7 +210,7 @@
                 />
               </div>
               <div class="w-full max-w-[800px]">
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">MILES TO REVEAL CODE</label>
+                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">FF MILES COST TO REVEAL CODE</label>
                 <Input 
                   type="number" 
                   bind:value={formMilesCost} 
@@ -219,7 +219,7 @@
                   max="10000"
                   class="w-full bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-black tracking-widest text-center text-sm sm:text-lg outline-none focus:border-[#0084CC] text-[#4A4A4A]" 
                 />
-                <p class="text-xs text-center text-slate-500 mt-2 font-medium">Set a cost to filter out spam. Passengers must spend these miles to reveal your gate code. You earn the miles they spend!</p>
+                <p class="text-xs text-center text-slate-500 mt-2 font-medium">Price your reveal. Passengers must spend these miles to reveal your gate code. You earn the miles they spend! The higher the cost, the higher quality / more trusted vistors.</p>
               </div>
             </div>
 

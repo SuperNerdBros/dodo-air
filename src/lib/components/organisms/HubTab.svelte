@@ -181,6 +181,7 @@
       <AcnhBubble
         title="Wilbur"
         dialogText={DIALOGS.hubTab.active}
+        isActive={dalStore.currentTab === 'hub'}
       >
         <div class="mt-4 flex justify-center">
           <button

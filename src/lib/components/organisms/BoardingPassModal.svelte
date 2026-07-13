@@ -59,40 +59,16 @@
     <!-- Dialogue Bubble -->
     <div class="w-full max-w-4xl shrink-0 mt-8 md:mt-0" transition:scale={{ duration: 300, start: 0.95, easing: backOut }}>
       <AcnhBubble 
-        title={dalStore.systemMode === 'DAL' ? 'Orville [DAL Dispatch]' : 'Luna [Dream Suite]'}
+        title={dalStore.systemMode === 'DAL' ? 'Orville' : 'Luna'}
         onDismiss={() => { playSound('beep', isMuted); onClose(); }}
+        dialogText={
+          isPassengerCheckedIn
+            ? (dalStore.systemMode === 'DAL' ? DIALOGS.boardingPassModal.dalCheckedIn(selectedFlight.id) : DIALOGS.boardingPassModal.lunaCheckedIn(selectedFlight.id))
+            : passengersList.length >= capacity
+              ? (dalStore.systemMode === 'DAL' ? DIALOGS.boardingPassModal.dalFull(capacity) : DIALOGS.boardingPassModal.lunaFull(capacity))
+              : (dalStore.systemMode === 'DAL' ? DIALOGS.boardingPassModal.dalBook(selectedFlight.id) : DIALOGS.boardingPassModal.lunaBook(selectedFlight.id))
+        }
       >
-        <div class="flex gap-4 items-start relative z-10 pb-4">
-          {#if dalStore.systemMode === 'DAL'}
-            <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
-          {:else}
-            <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#F4EEFF] border-[3px] border-[#DDA0DD] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🛌</div>
-          {/if}
-          
-          <div class="flex-1 flex flex-col justify-center mt-2 sm:mt-0">
-            <p class="text-xl sm:text-2xl {dalStore.systemMode === 'DAL' ? 'text-[#807256]' : 'text-[#4B0082]'} leading-snug font-medium ">
-              {#if isPassengerCheckedIn}
-                {#if dalStore.systemMode === 'DAL'}
-                  {@html DIALOGS.boardingPassModal.dalCheckedIn(selectedFlight.id)}
-                {:else}
-                  {@html DIALOGS.boardingPassModal.lunaCheckedIn(selectedFlight.id)}
-                {/if}
-              {:else if passengersList.length >= capacity}
-                {#if dalStore.systemMode === 'DAL'}
-                  {@html DIALOGS.boardingPassModal.dalFull(capacity)}
-                {:else}
-                  {@html DIALOGS.boardingPassModal.lunaFull(capacity)}
-                {/if}
-              {:else}
-                {#if dalStore.systemMode === 'DAL'}
-                  {@html DIALOGS.boardingPassModal.dalBook(selectedFlight.id)}
-                {:else}
-                  {@html DIALOGS.boardingPassModal.lunaBook(selectedFlight.id)}
-                {/if}
-              {/if}
-            </p>
-          </div>
-        </div>
       </AcnhBubble>
     </div>
 
@@ -245,7 +221,7 @@
                 class="bp-board-btn {dalStore.systemMode === 'DAL' ? 'bp-board-btn--dal' : 'bp-board-btn--luna'}"
               >
                 <Ticket class="w-4 h-4 shrink-0" />
-                {dalStore.systemMode === 'DAL' ? 'BOARD SEAPLANE (GET DODO CODE™)' : 'ENTER DREAM (GET DOZE CODE)'}
+                {dalStore.systemMode === 'DAL' ? 'BOARD SEAPLANE (GET DODO CODE)' : 'ENTER DREAM (GET DOZE CODE)'}
               </button>
             </div>
           {/if}

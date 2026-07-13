@@ -89,10 +89,11 @@
   <!-- Unregistered or not currently hosting seaplane layout -->
   {#if !myFlight}
       <AcnhBubble 
-        title={dalStore.systemMode === 'DAL' ? 'Orville & Wilbur' : 'Luna'}
+        title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}
         dialogText={dalStore.systemMode === 'DAL' 
           ? DIALOGS.cockpitTab.dalIntro 
           : DIALOGS.cockpitTab.lunaIntro}
+        isActive={isActive}
       >
         <div class="mt-4 flex justify-center">
           <button
@@ -145,6 +146,7 @@
           dialogText={dalStore.systemMode === 'DAL'
             ? DIALOGS.cockpitTab.dalScheduled
             : DIALOGS.cockpitTab.lunaScheduled}
+          isActive={isActive}
         >
           <div class="flex gap-2 max-w-sm mt-3">
             <input

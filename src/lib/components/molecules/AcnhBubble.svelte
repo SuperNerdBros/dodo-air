@@ -22,8 +22,12 @@
   let textTimer: ReturnType<typeof setInterval> | null = null;
 
   $effect(() => {
-    if (dialogText) {
+    if (dialogText && isActive) {
       startTypewriter(dialogText);
+    } else if (!isActive) {
+      if (textTimer) clearInterval(textTimer);
+      typedText = '';
+      textDone = false;
     }
   });
 

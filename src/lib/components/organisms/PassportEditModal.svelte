@@ -17,12 +17,16 @@
     passport,
     onSave,
     onClose,
-    isMuted = false
+    isMuted = false,
+    isCreating = false,
+    showBackdrop = true
   } = $props<{
     passport: Passport;
     onSave: (updated: Passport) => void;
     onClose: () => void;
     isMuted?: boolean;
+    isCreating?: boolean;
+    showBackdrop?: boolean;
   }>();
 
   let form = $state({ ...passport });
@@ -66,7 +70,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50" transition:fade={{ duration: 200 }}>
+<div class={showBackdrop ? 'fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50' : 'w-full flex items-center justify-center relative z-10'} transition:fade={{ duration: 200 }}>
   <div
     class="bg-[#FAF8F2] rounded-[36px] border-4 border-[#E6DFC7] p-5 max-w-sm w-full shadow-2xl relative text-[#4A4A4A] flex flex-col max-h-[90vh]"
     transition:scale={{ duration: 300, start: 0.95, easing: backOut }}
@@ -74,7 +78,7 @@
     <div class="flex flex-col gap-3 border-b border-[#E6DFC7] pb-3 mb-3">
       <div class="flex items-center gap-2">
         <span class="text-xl">📖</span>
-        <h3 class="font-system font-black text-sm text-[#0084CC] uppercase">Update Passport Credentials</h3>
+        <h3 class="font-system font-black text-sm text-[#0084CC] uppercase">{isCreating ? 'Create Passport' : 'Update Passport Credentials'}</h3>
       </div>
       
       <div class="flex gap-2 p-1 bg-[#E6DFC7]/40 rounded-xl">
@@ -257,21 +261,32 @@
         {/if}
       </div>
 
-      <div class="grid grid-cols-2 gap-3 pt-3 mt-2 border-t border-[#E6DFC7]">
-        <button
-          type="button"
-          onclick={() => { playSound('beep', isMuted); onClose(); }}
-          class="btn-acnh btn-acnh-outline"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="btn-acnh btn-acnh-primary py-2"
-        >
-          Save Details
-        </button>
-      </div>
+      {#if isCreating}
+        <div class="pt-3 mt-2 border-t border-[#E6DFC7]">
+          <button
+            type="submit"
+            class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3.5 rounded-2xl border-b-4 border-[#CC9900] shadow-md transition-all uppercase tracking-wide text-xs cursor-pointer"
+          >
+            Save Passport & Access Terminal
+          </button>
+        </div>
+      {:else}
+        <div class="grid grid-cols-2 gap-3 pt-3 mt-2 border-t border-[#E6DFC7]">
+          <button
+            type="button"
+            onclick={() => { playSound('beep', isMuted); onClose(); }}
+            class="btn-acnh btn-acnh-outline"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn-acnh btn-acnh-primary py-2"
+          >
+            Save Details
+          </button>
+        </div>
+      {/if}
     </form>
   </div>
 </div>

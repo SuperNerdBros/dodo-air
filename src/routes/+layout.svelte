@@ -165,12 +165,17 @@
   import TerminalModals from '$lib/components/organisms/TerminalModals.svelte';
   import { TerminalActions } from '$lib/stores/TerminalActions';
   
-  function handleSavePassport(e?: Event) {
-    e?.preventDefault();
-    if (!dalStore.passportForm.villagerName.trim() || !dalStore.passportForm.islandName.trim()) return;
+  function handleSavePassport(payload?: any) {
+    if (payload && typeof payload.preventDefault === 'function') {
+      payload.preventDefault();
+    }
+
+    const dataToSave = (payload && payload.villagerName !== undefined) ? payload : dalStore.passportForm;
+
+    if (!dataToSave.villagerName?.trim() || !dataToSave.islandName?.trim()) return;
     
     dalStore.passport = {
-      ...dalStore.passportForm,
+      ...dataToSave,
       hasCreated: true,
       hasCustomized: true
     };
@@ -205,7 +210,7 @@
   let formattedTime = $derived(liveTime.toTimeString().split(' ')[0]);
 
   let orvilleMessage = $derived(
-    currentTab === 'book' ? "Hey hey! Welcome to the Departure Gates. Search for open gates or hop on standby so to put you on the radar. Let's get you checked in and set up with a Dodo Code™!" :
+    currentTab === 'book' ? "Hey hey! Welcome to the Departure Gates. Search for open gates or hop on standby so to put you on the radar. Let's get you checked in and set up with a DODO CODE!" :
     currentTab === 'hub' ? "Welcome to your Private Flight Hangar! File a Flight Plan and open your gates to the skies. Pick a clear theme, and we'll scan the airwaves to match you with the perfect standby passengers!" :
     currentTab === 'directory' ? "Welcome to the DAL Flyers Directory! Check out customized passports from all our active flyers. Give a passport a tap to check trust ratings or vouch for them with a Good Apple!" :
     currentTab === 'standby' ? "Can't find an open airport gate that matches your travel itinerary? File a Standby Request above to alert online pilots looking to match passenger lists!" :
@@ -219,94 +224,73 @@
   <!-- Main Left Column -->
   <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-6 pb-28">
 
-    <!-- Dynamic Header & Flight Control Tower -->
-    <TerminalHeader>
-    <!-- Sound Slider -->
-    <SoundToggle isMuted={dalStore.isMuted} onToggle={() => {
-      dalStore.isMuted = !dalStore.isMuted;
-      if (!dalStore.isMuted) playSound('success', false);
-    }} />
+    <!-- Sticky Header & Tabs Group -->
+    <div class="sticky top-0 z-40 flex flex-col">
+      <!-- Dynamic Header & Flight Control Tower -->
+      <TerminalHeader>
+        
+        <!-- Mode Toggle Button -->
+        <button 
+          onclick={() => { playSound('beep', dalStore.isMuted); dalStore.toggleSystemMode(); }}
+          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
+          title="Switch between Dodo Airlines & Luna's Dreamscape"
+        >
+          {#if dalStore.systemMode === 'DAL'}
+            <Moon class="w-5 h-5" />
+          {:else}
+            <Plane class="w-5 h-5" />
+          {/if}
+        </button>
+        
+        <!-- Sound Slider -->
+        <SoundToggle isMuted={dalStore.isMuted} onToggle={() => {
+          dalStore.isMuted = !dalStore.isMuted;
+          if (!dalStore.isMuted) playSound('success', false);
+        }} />
 
-    <!-- Traffic Control Button -->
-    <button 
-      onclick={() => { playSound('beep', dalStore.isMuted); dalStore.isTrafficModalOpen = true; }}
-      class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
-      title="Traffic Control & Radar Center"
-    >
-      <Radio class="w-5 h-5" />
-    </button>
-    
-    <!-- Mode Toggle Button -->
-    <button 
-      onclick={() => { playSound('beep', dalStore.isMuted); dalStore.toggleSystemMode(); }}
-      class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
-      title="Switch between Dodo Airlines & Luna's Dreamscape"
-    >
-      {#if dalStore.systemMode === 'DAL'}
-        <Moon class="w-5 h-5" />
-      {:else}
-        <Plane class="w-5 h-5" />
-      {/if}
-    </button>
-    
-    <!-- Radio Toggle Button -->
-    <button 
-      onclick={() => { playSound('beep', dalStore.isMuted); isRadioOpen = !isRadioOpen; }}
-      class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
-      title="Toggle Radio Tower"
-    >
-      <Wifi class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
-    </button>
-    
-    <!-- Login/Logout Button -->
-    <button
-      onclick={() => { 
-        playSound('beep', dalStore.isMuted); 
-        if (dalStore.isLoggedIn) {
-          showLogoutModal = true;
-        } else {
-          showLoginModal = true; 
-        }
-      }}
-      class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {dalStore.isLoggedIn ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
-      title={dalStore.isLoggedIn ? 'Logout' : 'Login'}
-    >
-      {#if dalStore.isLoggedIn}
-        <Lock class="w-5 h-5 opacity-70" />
-      {:else}
-        <Unlock class="w-5 h-5" />
-      {/if}
-    </button>
-  </TerminalHeader>
+        <!-- Traffic Control Button -->
+        <button 
+          onclick={() => { playSound('beep', dalStore.isMuted); dalStore.isTrafficModalOpen = true; }}
+          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
+          title="Traffic Control & Radar Center"
+        >
+          <Radio class="w-5 h-5" />
+        </button>
+        
+        <!-- Radio Toggle Button -->
+        <button 
+          onclick={() => { playSound('beep', dalStore.isMuted); isRadioOpen = !isRadioOpen; }}
+          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
+          title="Toggle Radio Tower"
+        >
+          <Wifi class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
+        </button>
+        
+        <!-- Login/Logout Button -->
+        <button
+          onclick={() => { 
+            playSound('beep', dalStore.isMuted); 
+            if (dalStore.isLoggedIn) {
+              showLogoutModal = true;
+            } else {
+              showLoginModal = true; 
+            }
+          }}
+          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {dalStore.isLoggedIn ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
+          title={dalStore.isLoggedIn ? 'Logout' : 'Login'}
+        >
+          {#if dalStore.isLoggedIn}
+            <Lock class="w-5 h-5 opacity-70" />
+          {:else}
+            <Unlock class="w-5 h-5" />
+          {/if}
+        </button>
+      </TerminalHeader>
 
-  <PassportTopsheet
-    passport={dalStore.passport}
-    bind:showPassportDrawer={dalStore.showPassportDrawer}
-    setShowMilesModal={(v: boolean) => dalStore.showMilesModal = v}
-    setIsEditingPassport={(v: boolean) => dalStore.isEditingPassport = v}
-    isMuted={dalStore.isMuted}
-    playSound={(id) => playSound(id as any, dalStore.isMuted)}
-  />
-
-  <!-- Onboarding & Login Screen: Interactive typewriter walkthrough and registration dialog -->
-  {#if !dalStore.passport.hasCreated && !dalStore.isAuthChecking}
-    <InteractiveWelcome
-      onSavePassport={handleSavePassport}
-      isMuted={dalStore.isMuted}
-    />
-  {/if}
-
-  <!-- Main Terminal Grid System -->
-  <div class="w-full flex-1 flex flex-col relative mt-2 gap-4">
-    <main class="flex-1 flex flex-col gap-4 items-stretch min-w-0">
-      
       <!-- Tab Teeth for the Header -->
       <div class="w-full flex justify-between items-start px-2 sm:px-8 lg:px-6 -mt-10 z-40 relative">
-        
         <!-- Left: Area Tabs -->
         <div class="flex items-start gap-1 sm:gap-2">
-          
-          
           <TabButton
             active={currentTab === 'book'}
             systemMode={dalStore.systemMode}
@@ -328,7 +312,6 @@
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
             {/if}
           </TabButton>
-          
         </div>
 
         <div class="flex items-start gap-1 sm:gap-2">
@@ -362,13 +345,30 @@
           >
             <BookOpen class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'passport' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Passport</span>
           </TabButton>
+        </div>
       </div>
-      </div>
+    </div>
 
+    <PassportTopsheet
+      passport={dalStore.passport}
+      bind:showPassportDrawer={dalStore.showPassportDrawer}
+      setShowMilesModal={(v: boolean) => dalStore.showMilesModal = v}
+      setIsEditingPassport={(v: boolean) => dalStore.isEditingPassport = v}
+      isMuted={dalStore.isMuted}
+      playSound={(id) => playSound(id as any, dalStore.isMuted)}
+    />
 
+    <!-- Onboarding & Login Screen: Interactive typewriter walkthrough and registration dialog -->
+    {#if !dalStore.passport.hasCreated && !dalStore.isAuthChecking}
+      <InteractiveWelcome
+        onSavePassport={handleSavePassport}
+        isMuted={dalStore.isMuted}
+      />
+    {/if}
 
-    <!-- Ask Orville Floating Helper Removed (Now a top tab) -->
-
+    <!-- Main Terminal Grid System -->
+    <div class="w-full flex-1 flex flex-col relative mt-2 gap-4">
+      <main class="flex-1 flex flex-col gap-4 items-stretch min-w-0">
         <!-- Dynamic Multi-Tab Content View -->
     <div class="w-full relative">
       <div class="{currentTab === 'passport' ? 'block' : 'hidden'}">

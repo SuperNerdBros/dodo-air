@@ -158,7 +158,7 @@
                   class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] disabled:opacity-50 text-[#006094] font-system font-black py-3 px-4 rounded-xl shadow border-b-4 border-[#CC9900] text-center text-xs transition-all active:scale-95 flex items-center justify-center gap-1.5"
                 >
                   <Ticket class="w-4 h-4" />
-                  BOARD SEAPLANE (GET DODO CODE™)
+                  BOARD SEAPLANE (GET DODO CODE)
                 </Button>
               </Box>
             {/if}

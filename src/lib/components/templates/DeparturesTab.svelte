@@ -131,7 +131,7 @@
             </span>
             <div>
               <p class="font-bold text-[#006094]">Gate is open & welcoming visitors!</p>
-              <p class="text-slate-500 font-medium">Clearance granted. Travelers can obtain the Dodo Code™ and board the seaplane immediately.</p>
+              <p class="text-slate-500 font-medium">Clearance granted. Travelers can obtain the DODO CODE and board the seaplane immediately.</p>
             </div>
           </div>
 
