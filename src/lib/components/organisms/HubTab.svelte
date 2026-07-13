@@ -49,7 +49,8 @@
           hemisphere: dalStore.formHemisphere,
           gate: Number(dalStore.formGate),
           description: dalStore.formDesc.trim() || `Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
-          planeType: dalStore.formPlaneType
+          planeType: dalStore.formPlaneType,
+          milesCost: Number(dalStore.formMilesCost)
         })
       });
 

@@ -5,7 +5,6 @@
   import { playSound } from '$lib/utils/audio';
   import { GATE_THEMES, DREAM_THEMES, PLANE_COLORS } from '$lib/utils/constants';
   import { dalStore } from '$lib/stores/dal.svelte';
-  import ScheduledTab from './ScheduledTab.svelte';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
   let {
@@ -30,7 +29,8 @@
     isMuted = false,
     mySchedules = [],
     handleAddSchedule,
-    handleDeleteSchedule
+    handleDeleteSchedule,
+    isActive,
   } = $props<{
     myFlight: Flight | null;
     handleHostFlight: (e: SubmitEvent) => void;
@@ -54,6 +54,7 @@
     mySchedules?: any[];
     handleAddSchedule?: (e: Event, dateStr: string) => void;
     handleDeleteSchedule?: (scheduleId: string) => void;
+    isActive?: boolean;
   }>();
 
   let activeGateTheme = $derived(dalStore.systemMode === 'DAL' ? (GATE_THEMES[formGate] || GATE_THEMES[1]) : (DREAM_THEMES[formGate] || DREAM_THEMES[1]));
@@ -83,7 +84,7 @@
   });
 </script>
 
-<div class="max-w-4xl mx-auto">
+<div class="w-100 mx-auto pt-5">
   <!-- Unregistered or not currently hosting seaplane layout -->
   {#if !myFlight}
     <div class="bg-white rounded-[36px] border-4 border-[#0084CC]/10 shadow-[0_8px_0_0_rgba(0,132,204,0.05)] p-6 text-center space-y-6 text-left">
@@ -119,27 +120,15 @@
         </div>
       </div>
 
-      <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}>
-        <div class="flex gap-4 items-start relative z-10 text-left">
-          <!-- Character Icon -->
-          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
-            {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
-          </div>
-          
-          <!-- Text Content -->
-          <div class="flex-1">
-            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
-              {#if dalStore.systemMode === 'DAL'}
-                Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!
-              {:else}
-                Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island.
-              {/if}
-            </p>
-          </div>
-        </div>
+      <AcnhBubble 
+        title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}
+        dialogText={dalStore.systemMode === 'DAL' 
+          ? "Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!" 
+          : "Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island."}
+      >
         <div class="mt-4 flex justify-center">
           <button
-            onclick={() => { playSound('beep', isMuted); dalStore.showHubModal = true; }}
+            onclick={() => { playSound('beep', isMuted); dalStore.hubWizardInitialStep = 1; dalStore.showHubModal = true; }}
             class="w-full max-w-sm {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900]' : 'bg-[#DDA0DD] hover:bg-[#e8b5e8] text-[#4B0082] border-[#ba80ba]'} font-system font-black py-3 rounded-2xl border-b-4 shadow transition-all uppercase tracking-wide text-xs cursor-pointer active:translate-y-1 active:border-b-0"
           >
             {dalStore.systemMode === 'DAL' ? '📡 Prepare Flight Plan' : '✨ Prepare Dream State'}
@@ -149,8 +138,32 @@
 
     </div>
   {:else}
+      {#if !myFlight.dodoCode && isActive}
+        <AcnhBubble 
+          title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}
+          dialogText={dalStore.systemMode === 'DAL'
+            ? "Your flight is scheduled! Whenever you're ready to open the gates, just give me your 5-digit Dodo Code™ and we'll clear you for boarding."
+            : "Your dream is scheduled... Provide your Doze Code when you are ready to let others drift into your island's slumber."}
+        >
+          <div class="flex gap-2 max-w-sm mt-3">
+            <input
+              type="text"
+              bind:value={pendingDodoCode}
+              placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01' : 'e.g. DZ123'}
+              class="flex-1 bg-white border border-[#E6DFC7] rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest uppercase outline-none focus:border-[#0084CC] text-center"
+              maxlength="5"
+            />
+            <button
+              onclick={() => handleProvideDodoCode(pendingDodoCode)}
+              class="bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900] border-b-4 font-system font-black px-4 py-2 rounded-xl text-xs uppercase cursor-pointer"
+            >
+              {dalStore.systemMode === 'DAL' ? 'Submit' : 'Awaken'}
+            </button>
+          </div>
+        </AcnhBubble>
+      {/if}
     <!-- Active hosting cockpit panel -->
-    <div class="space-y-5 text-left">
+    <div class="space-y-5 text-left mt-5">
       <!-- Cockpit Card Header -->
       <div class="{dalStore.systemMode === 'DAL' ? 'bg-[#006094] border-[#FFCC00]' : 'bg-[#4B0082] border-[#DDA0DD]'} text-white rounded-[32px] p-5 shadow border-b-4 relative overflow-hidden transition-colors duration-500">
         <div class="absolute right-0 top-0 opacity-10 text-9xl pointer-events-none select-none">
@@ -181,42 +194,6 @@
           </div>
         </div>
       </div>
-
-      {#if !myFlight.dodoCode}
-        <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur ' : 'Luna'}>
-          <div class="flex gap-4 items-start relative z-10 text-left">
-            <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
-              {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
-            </div>
-            
-            <div class="flex-1 space-y-3">
-              <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
-                {#if dalStore.systemMode === 'DAL'}
-                  "Your flight is scheduled! Whenever you're ready to open the gates, just give me your 5-digit Dodo Code™ and we'll clear you for boarding."
-                {:else}
-                  "Your dream is scheduled... Provide your Doze Code when you are ready to let others drift into your island's slumber."
-                {/if}
-              </p>
-              
-              <div class="flex gap-2 max-w-sm">
-                <input
-                  type="text"
-                  bind:value={pendingDodoCode}
-                  placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01' : 'e.g. DZ123'}
-                  class="flex-1 bg-white border border-[#E6DFC7] rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest uppercase outline-none focus:border-[#0084CC] text-center"
-                  maxlength="5"
-                />
-                <button
-                  onclick={() => handleProvideDodoCode(pendingDodoCode)}
-                  class="bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900] border-b-4 font-system font-black px-4 py-2 rounded-xl text-xs uppercase cursor-pointer"
-                >
-                  {dalStore.systemMode === 'DAL' ? 'Submit' : 'Awaken'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </AcnhBubble>
-      {/if}
 
       <!-- Cockpit controls grid -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
@@ -249,14 +226,33 @@
             </div>
           </div>
 
-          {#if myFlight.status === 'Scheduled' && handleAddSchedule && handleDeleteSchedule}
+          {#if myFlight.status === 'Scheduled'}
             <div class="mt-4">
-              <ScheduledTab
-                {mySchedules}
-                onAddSchedule={handleAddSchedule as any}
-                onDeleteSchedule={handleDeleteSchedule as any}
-                {isMuted}
-              />
+              <div class="bg-[#FFFCEF] rounded-[32px] border-4 border-[#FFEAA7] p-5 shadow-sm text-left">
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl shadow-inner border-2 border-[#D1BFAe] shrink-0">
+                    {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
+                  </div>
+                  <div>
+                    <h3 class="font-system font-black text-sm {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} uppercase tracking-wide">
+                      {dalStore.systemMode === 'DAL' ? 'Flight Schedule Active' : 'Dream Schedule Active'}
+                    </h3>
+                    <p class="text-xs text-slate-600 mt-1 mb-3 font-medium leading-relaxed">
+                      {#if dalStore.systemMode === 'DAL'}
+                        "Roger that! You have {dalStore.mySchedules.length} routine flight times registered. Keep your Dodo Code blank when offline, and we'll automatically notify standby passengers during these hours!"
+                      {:else}
+                        "Your dream is scheduled... You have {dalStore.mySchedules.length} slumber times registered. Others will be drawn to your island during these peaceful moments."
+                      {/if}
+                    </p>
+                    <button
+                      onclick={() => { playSound('beep', isMuted); dalStore.hubWizardInitialStep = 5; dalStore.showHubModal = true; }}
+                      class="bg-white hover:bg-slate-50 text-[#4A4A4A] border-2 border-[#FFEAA7] font-system font-black px-4 py-2 rounded-xl text-xs uppercase cursor-pointer transition-all shadow-sm active:translate-y-0.5"
+                    >
+                      ✏️ Edit Schedule
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           {/if}
 

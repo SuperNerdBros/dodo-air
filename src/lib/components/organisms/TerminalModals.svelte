@@ -84,6 +84,7 @@
   bind:formGate={dalStore.formGate}
   bind:formDesc={dalStore.formDesc}
   bind:formPlaneType={dalStore.formPlaneType}
+  bind:formMilesCost={dalStore.formMilesCost}
   onSubmit={(e) => {
     dalStore.showHubModal = false;
     TerminalActions.hostFlight(e);

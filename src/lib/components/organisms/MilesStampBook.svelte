@@ -44,7 +44,7 @@
     transition:fade={{ duration: 200 }}
   >
     <div
-      class="bg-[#FFFCEF] rounded-[36px] border-4 border-[#FFCC00] max-w-2xl w-full p-6 shadow-2xl relative text-[#4A4A4A] my-8"
+      class="bg-[#FFFCEF] rounded-[36px] border-4 border-[#FFCC00] max-w-5xl w-full h-[90vh] p-6 shadow-2xl relative text-[#4A4A4A] my-8 flex flex-col"
       transition:scale={{ duration: 300, start: 0.95, easing: backOut }}
     >
       <!-- Header -->
@@ -80,7 +80,7 @@
       </div>
 
       <!-- Stamps grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[380px] overflow-y-auto pr-1">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-1 overflow-y-auto pr-1">
         {#each STAMP_CHALLENGES as challenge}
           {@const isAchieved = checkAchieved(challenge.id)}
           {@const isClaimed = passport.claimedStampIds?.includes(challenge.id)}

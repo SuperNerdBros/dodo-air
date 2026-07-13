@@ -33,8 +33,25 @@ export const TerminalActions = {
 					`Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
 				planeType: dalStore.formPlaneType,
 				planeColor: dalStore.passport.planeColor || 'orange',
-				hostFriendCode: dalStore.passport.friendCode
+				hostFriendCode: dalStore.passport.friendCode,
+				milesCost: Number(dalStore.formMilesCost)
 			});
+
+			// If the event provided pending schedules, save them now
+			const pendingSchedules = (e as any).pendingSchedules;
+			if (pendingSchedules && pendingSchedules.length > 0) {
+				for (const schedule of pendingSchedules) {
+					// We pass the new flight's id implicitly or just rely on the API to link them
+					// Assuming the API links schedule to user, which it does in addSchedule
+					await TerminalActions.addSchedule({
+						day: schedule.day,
+						startTime: schedule.startTime,
+						endTime: schedule.endTime,
+						mode: schedule.mode
+					});
+				}
+			}
+
 			if (dalStore.systemMode === 'DAL') {
 				dalStore.playSound('airplane');
 				dalStore.flights = [newFlight, ...dalStore.flights];

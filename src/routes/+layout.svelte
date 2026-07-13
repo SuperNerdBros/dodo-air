@@ -55,6 +55,7 @@
 
     let showLoginModal = $state(false);
   let showLogoutModal = $state(false);
+  let isRadioOpen = $state(true);
 
   let pollTimer: ReturnType<typeof setInterval>;
 
@@ -235,6 +236,15 @@
       {:else}
         <Plane class="w-5 h-5" />
       {/if}
+    </button>
+    
+    <!-- Radio Toggle Button -->
+    <button 
+      onclick={() => { playSound('beep', dalStore.isMuted); isRadioOpen = !isRadioOpen; }}
+      class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
+      title="Toggle Radio Tower"
+    >
+      <Radio class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
     </button>
     
     <!-- Login/Logout Button -->
@@ -447,6 +457,7 @@
           mySchedules={dalStore.mySchedules}
           handleAddSchedule={TerminalActions.addSchedule}
           handleDeleteSchedule={TerminalActions.deleteSchedule}
+          isActive={currentTab === 'hub'}
         />
       </div>
 
@@ -467,8 +478,8 @@
   </div> <!-- End Main Left Column -->
 
   <!-- Permanent Radio Sidebar Right Column -->
-  <aside class="hidden xl:block w-full sm:w-[400px] shrink-0 h-full overflow-y-auto custom-scrollbar transition-colors duration-500">
-    <div class="py-2 pr-1 pl-3 sm:py-4 sm:pr-4 lg:py-3 lg:pr-2 h-full">
+  <aside class="hidden xl:block shrink-0 h-full overflow-y-auto custom-scrollbar transition-all duration-500 ease-in-out {isRadioOpen ? 'w-full sm:w-[400px] translate-x-0 opacity-100' : 'w-0 translate-x-[110%] opacity-0 overflow-hidden'}">
+    <div class="py-2 pr-1 pl-3 sm:py-4 sm:pr-4 lg:py-3 lg:pr-2 h-full w-[400px]">
       <RadioTab
         chatter={dalStore.chatter}
         bind:chatSender={dalStore.chatSender}
@@ -481,6 +492,7 @@
         setShowFuelModal={(v) => showFuelModal = v}
         passport={dalStore.passport}
         isMuted={dalStore.isMuted}
+        onClose={() => { isRadioOpen = false; }}
       />
     </div>
   </aside>

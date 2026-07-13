@@ -78,7 +78,7 @@
 
   <!-- ═══ Chat Feed ═══ -->
   <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
-    {#each dalStore.chatter as msg (msg.id)}
+    {#each [...dalStore.chatter].reverse() as msg (msg.id)}
       {@const isOrville = msg.type === 'orville'}
       {@const isWilbur = msg.type === 'wilbur'}
       {@const isSystem = msg.type === 'system'}

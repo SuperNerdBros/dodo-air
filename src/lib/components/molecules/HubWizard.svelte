@@ -7,6 +7,8 @@
   import Select from '$lib/components/atoms/Select.atom.svelte';
   import Textarea from '$lib/components/atoms/Textarea.atom.svelte';
   import { playSound } from '$lib/utils/audio';
+  import { Calendar, Clock, Plus, Trash2 } from '@lucide/svelte';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let {
     isOpen = false,
@@ -16,6 +18,7 @@
     formGate = $bindable(1),
     formDesc = $bindable(''),
     formPlaneType = $bindable('Switch'),
+    formMilesCost = $bindable(0),
     onSubmit,
     formError = '',
     isSubmittingHost = false,
@@ -28,6 +31,7 @@
     formGate?: number;
     formDesc?: string;
     formPlaneType?: string;
+    formMilesCost?: number;
     onSubmit: (e: SubmitEvent | Event) => void;
     formError?: string;
     isSubmittingHost?: boolean;
@@ -35,18 +39,58 @@
   }>();
 
   let step = $state(1);
+  let pendingSchedules = $state<any[]>([]);
+
+  // Scheduler state
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let selectedDay = $state(days[new Date().getDay()]);
+  let sliderStart = $state(40);
+  let sliderEnd = $state(48);
+  let actualStart = $derived(Math.min(sliderStart, sliderEnd));
+  let actualEnd = $derived(Math.max(sliderStart, sliderEnd));
+
+  function formatTime(val: number) {
+    const h24 = Math.floor(val / 4);
+    const m = (val % 4) * 15;
+    const period = h24 < 12 || h24 === 24 ? 'AM' : 'PM';
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    return `${h12}:${m.toString().padStart(2, '0')} ${period}`;
+  }
+
+  let formStartTime = $derived(formatTime(actualStart));
+  let formEndTime = $derived(formatTime(actualEnd));
+  let activeSchedules = $derived(pendingSchedules.filter((s: any) => s.day === selectedDay));
+
+  function handleAddScheduleLocal(e: Event) {
+    e.preventDefault();
+    if (!formStartTime || !formEndTime) return;
+    pendingSchedules = [...pendingSchedules, {
+      id: `tmp_${Date.now()}_${Math.random()}`,
+      day: selectedDay,
+      startTime: formStartTime,
+      endTime: formEndTime,
+      mode: dalStore.systemMode
+    }];
+    playSound('success', isMuted);
+  }
+
+  function handleDeleteScheduleLocal(id: string) {
+    pendingSchedules = pendingSchedules.filter(s => s.id !== id);
+    playSound('beep', isMuted);
+  }
 
   let wasOpen = false;
   $effect(() => {
     if (isOpen && !wasOpen) {
-      step = 1;
+      step = dalStore.hubWizardInitialStep;
+      pendingSchedules = dalStore.mySchedules || [];
     }
     wasOpen = isOpen;
   });
 
   const nextStep = () => {
     playSound('beep', isMuted);
-    if (step < 4) step++;
+    if (step < 5) step++;
   };
 
   const prevStep = () => {
@@ -56,6 +100,8 @@
 
   const submitWizard = (e: Event) => {
     e.preventDefault();
+    // Dispatch the custom event data via the event object or a store
+    (e as any).pendingSchedules = pendingSchedules;
     onSubmit(e);
   };
 </script>
@@ -151,31 +197,116 @@
               </div>
             {/if}
             
-            <div class="flex justify-center my-4">
-              <Input 
-                type="text" 
-                bind:value={formDodo} 
-                placeholder="e.g. D0D01 (Leave blank to schedule)" 
-                class="w-full max-w-[800px] bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-black tracking-widest text-center text-sm sm:text-lg uppercase outline-none focus:border-[#0084CC] text-[#0084CC]" 
-                maxlength={5} 
-              />
+            <div class="flex flex-col items-center gap-4 my-4">
+              <div class="w-full max-w-[800px]">
+                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">DODO CODE™</label>
+                <Input 
+                  type="text" 
+                  bind:value={formDodo} 
+                  placeholder="e.g. D0D01 (Leave blank to schedule)" 
+                  class="w-full bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-black tracking-widest text-center text-sm sm:text-lg uppercase outline-none focus:border-[#0084CC] text-[#0084CC]" 
+                  maxlength={5} 
+                />
+              </div>
+              <div class="w-full max-w-[800px]">
+                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">MILES TO REVEAL CODE</label>
+                <Input 
+                  type="number" 
+                  bind:value={formMilesCost} 
+                  placeholder="0" 
+                  min="0"
+                  max="10000"
+                  class="w-full bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-black tracking-widest text-center text-sm sm:text-lg outline-none focus:border-[#0084CC] text-[#4A4A4A]" 
+                />
+                <p class="text-xs text-center text-slate-500 mt-2 font-medium">Set a cost to filter out spam. Passengers must spend these miles to reveal your gate code. You earn the miles they spend!</p>
+              </div>
             </div>
 
             <div class="flex justify-between pt-2">
               <Button variant="secondary" onclick={prevStep}>Make Changes</Button>
-              <Button
-                variant="primary"
-                onclick={submitWizard}
-                disabled={isSubmittingHost || (formDodo.length > 0 && formDodo.length !== 5)}
-              >
-                {#if isSubmittingHost}
-                  Dispatching...
-                {:else if formDodo.trim().length === 5}
-                  Open Gate Now!
-                {:else}
-                Add Flight Plan
+              {#if formDodo.trim().length === 5}
+                <Button variant="primary" onclick={submitWizard} disabled={isSubmittingHost}>
+                  {isSubmittingHost ? 'Dispatching...' : 'Open Gate Now!'}
+                </Button>
+              {:else}
+                <Button variant="primary" onclick={nextStep}>
+                  Next: Set Schedule
+                </Button>
+              {/if}
+            </div>
+          </div>
+        </AcnhBubble>
 
+      {:else if step === 5}
+        <AcnhBubble
+          title="Wilbur"
+          dialogText="Got it! Let's set up your routine opening hours so passengers know when to expect you."
+          onDismiss={() => { playSound('beep', isMuted); onClose(); }}
+        >
+          <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10 text-left">
+            <!-- Week Slider -->
+            <div class="flex overflow-x-auto gap-2 pb-2 hide-scrollbar">
+              {#each days as day}
+                {@const hasSchedule = pendingSchedules.some((s: any) => s.day === day)}
+                <button
+                  onclick={() => { playSound('beep', isMuted); selectedDay = day; }}
+                  class="relative flex-shrink-0 px-3 py-2 rounded-2xl font-system font-black tracking-wide text-[10px] transition-all border-b-4 cursor-pointer font-bold select-none
+                  {selectedDay === day 
+                    ? (dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094] border-[#CC9900] translate-y-0.5 !border-b-2' : 'bg-[#DDA0DD] text-[#4B0082] border-[#ba80ba] translate-y-0.5 !border-b-2') 
+                    : 'bg-white text-slate-400 border-slate-200 hover:bg-slate-50 hover:-translate-y-0.5'}"
+                >
+                  {day}
+                  {#if hasSchedule}
+                    <span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full {selectedDay === day ? (dalStore.systemMode === 'DAL' ? 'bg-[#006094]' : 'bg-[#4B0082]') : (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC]' : 'bg-[#DDA0DD]')}"></span>
+                  {/if}
+                </button>
+              {/each}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Add Form -->
+              <div class="bg-white rounded-2xl p-3 border-2 border-slate-100 shadow-sm">
+                <form onsubmit={handleAddScheduleLocal} class="space-y-4">
+                  <div style="--thumb-color: {dalStore.systemMode === 'DAL' ? '#0084CC' : '#4B0082'};">
+                    <div class="flex justify-between items-end mb-2">
+                      <span class="text-xs font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'}">{formStartTime} - {formEndTime}</span>
+                    </div>
+                    <div class="relative w-full h-6 flex items-center">
+                      <div class="absolute w-full h-2 bg-slate-100 border border-slate-200 rounded-full shadow-inner"></div>
+                      <div class="absolute h-2 {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] border-[#CC9900]' : 'bg-[#DDA0DD] border-[#ba80ba]'} border rounded-full transition-all duration-75" style="left: {(actualStart / 96) * 100}%; right: {100 - ((actualEnd / 96) * 100)}%;"></div>
+                      <input type="range" min="0" max="96" bind:value={sliderStart} class="multi-range absolute w-full appearance-none bg-transparent pointer-events-none z-10" />
+                      <input type="range" min="0" max="96" bind:value={sliderEnd} class="multi-range absolute w-full appearance-none bg-transparent pointer-events-none z-20" />
+                    </div>
+                  </div>
+                  <button type="submit" class="w-full {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900]' : 'bg-[#DDA0DD] hover:bg-[#e8b5e8] text-[#4B0082] border-[#ba80ba]'} font-system font-black py-2 rounded-xl border-b-4 shadow transition-all uppercase tracking-wide text-[10px] cursor-pointer flex items-center justify-center gap-1">
+                    <Plus class="w-3 h-3" /> Register Hours
+                  </button>
+                </form>
+              </div>
+
+              <!-- List -->
+              <div class="bg-slate-50 rounded-2xl p-3 border-2 border-slate-100 max-h-32 overflow-y-auto hide-scrollbar">
+                {#if activeSchedules.length === 0}
+                  <p class="text-[10px] text-center text-slate-400 font-system font-bold pt-4">No hours for {selectedDay}</p>
+                {:else}
+                  <div class="space-y-2">
+                    {#each activeSchedules as schedule}
+                      <div class="flex items-center justify-between bg-white border border-slate-200 p-2 rounded-xl">
+                        <span class="font-system font-black text-slate-700 text-[10px]">{schedule.startTime} - {schedule.endTime}</span>
+                        <button type="button" onclick={() => handleDeleteScheduleLocal(schedule.id)} class="text-red-500 hover:scale-110 transition-transform cursor-pointer border-none bg-transparent" title="Remove">
+                          <Trash2 class="w-3 h-3" />
+                        </button>
+                      </div>
+                    {/each}
+                  </div>
                 {/if}
+              </div>
+            </div>
+
+            <div class="flex justify-between pt-2">
+              <Button variant="secondary" onclick={prevStep}>Back</Button>
+              <Button variant="primary" onclick={submitWizard} disabled={isSubmittingHost}>
+                {isSubmittingHost ? 'Dispatching...' : 'Complete Flight Plan'}
               </Button>
             </div>
           </div>
@@ -192,5 +323,40 @@
   .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  .multi-range::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border: 3px solid var(--thumb-color, #0084CC);
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.1s;
+  }
+  .multi-range::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.15);
+  }
+  
+  .multi-range::-moz-range-thumb {
+    pointer-events: auto;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: white;
+    border: 3px solid var(--thumb-color, #0084CC);
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.1s;
+  }
+  .multi-range::-moz-range-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.15);
   }
 </style>

@@ -63,6 +63,7 @@ export class DalState {
 	requestMemo = $state('');
 	showStandbyModal = $state(false);
 	showHubModal = $state(false);
+	hubWizardInitialStep = $state(1);
 	requestError = $state('');
 	isSubmittingRequest = $state(false);
 
@@ -72,6 +73,7 @@ export class DalState {
 	formGate = $state(1);
 	formDesc = $state('');
 	formPlaneType: 'Switch' | 'Switch 2' = $state('Switch');
+	formMilesCost = $state(0);
 	formError = $state('');
 	isSubmittingHost = $state(false);
 
@@ -295,6 +297,36 @@ export class DalState {
 			} catch (e) {
 				console.error('Failed to sync progress with backend', e);
 			}
+		}
+		this.playSound('success');
+	}
+
+	async rerollFlightNumber() {
+		if (this.passport.miles < 500) {
+			throw new Error('Not enough FF Miles! Need 500.');
+		}
+		
+		const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+		if ((window as any).wpApiSettings?.nonce) {
+			headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
+		}
+
+		const res = await fetch('/wp-json/dodo-air/v1/flights/reroll-number', {
+			method: 'POST',
+			headers
+		});
+		
+		if (!res.ok) {
+			const data = await res.json();
+			throw new Error(data.message || data.error || 'Failed to re-roll flight number');
+		}
+		
+		const data = await res.json();
+		this.passport.flightNumber = data.flightNumber;
+		this.passport.miles = data.miles;
+		
+		if (typeof window !== 'undefined') {
+			localStorage.setItem('dal_passport', JSON.stringify(this.passport));
 		}
 		this.playSound('success');
 	}

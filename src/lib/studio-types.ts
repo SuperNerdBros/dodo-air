@@ -31,6 +31,7 @@ export interface Flight {
 	capacity?: number;
 	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
 	hostFriendCode?: string;
+	milesCost?: number;
 }
 
 export interface ChatterMessage {
@@ -82,6 +83,7 @@ export interface Passport {
 	nativeFruit?: string;
 	planeType?: 'Switch' | 'Switch 2';
 	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
+	flightNumber?: string;
 }
 
 export interface FeedbackReview {
@@ -107,4 +109,5 @@ export interface UserProfile {
 	rottenTurnips: number;
 	vouchers?: Record<string, 'apple' | 'turnip'>;
 	updatedAt: string;
+	flightNumber?: string;
 }

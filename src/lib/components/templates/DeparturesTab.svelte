@@ -25,6 +25,8 @@
   }>();
 
   let showStatusGuide = $state(false);
+  let activeFilter = $state<'All' | 'Scheduled' | 'Boarding'>('All');
+  let filteredFlights = $derived(flights.filter(f => activeFilter === 'All' || f.status === activeFilter));
 
   function getHostProfile(hostName: string, islandName: string) {
     return (Object.values(profiles) as UserProfile[]).find(
@@ -63,7 +65,18 @@
         </div>
       </div>
       
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap justify-end">
+        <div class="flex bg-slate-100/80 border border-slate-200/50 rounded-full p-0.5">
+          {#each ['All', 'Scheduled', 'Boarding'] as filterType}
+            <button
+              class="px-3 py-1 text-xs font-system font-bold rounded-full transition-all {activeFilter === filterType ? 'bg-white shadow-sm text-[#0084CC]' : 'text-slate-500 hover:text-slate-700'}"
+              onclick={() => { playSound('beep', isMuted); activeFilter = filterType as any; }}
+            >
+              {filterType}
+            </button>
+          {/each}
+        </div>
+
         <button
           onclick={() => { playSound('beep', isMuted); showStatusGuide = !showStatusGuide; }}
           class="bg-[#FFFCEF] hover:bg-[#FFF9D6] border border-[#FFEAA7] rounded-full px-2.5 py-1 text-xs font-system font-black text-amber-800 transition-all flex items-center gap-1 cursor-pointer select-none"
@@ -73,7 +86,7 @@
         </button>
 
         <span class="{dalStore.systemMode === 'DAL' ? 'bg-[#A2D2FF]/20 text-[#0084CC] border-[#0084CC]/10' : 'bg-[#DDA0DD]/20 text-[#4B0082] border-[#4B0082]/10'} text-sm font-system font-bold px-2.5 py-1 rounded-full border transition-colors">
-          {flights.length} {dalStore.systemMode === 'DAL' ? 'SEAPLANES ACTIVE' : 'DREAMS ACTIVE'}
+          {filteredFlights.length} {dalStore.systemMode === 'DAL' ? 'SEAPLANES ACTIVE' : 'DREAMS ACTIVE'}
         </span>
       </div>
     </div>
@@ -141,7 +154,7 @@
     {/if}
 
     <!-- Flights List Table View -->
-    {#if flights.length === 0}
+    {#if filteredFlights.length === 0}
       <div class="bg-white border-2 border-[#0084CC]/10 rounded-[32px] py-14 text-center font-system text-slate-400">
         {#if dalStore.systemMode === 'DAL'}
           <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
@@ -162,14 +175,14 @@
                 <th class="px-5 py-3 text-center">Gate</th>
                 <th class="px-5 py-3">Flight</th>
                 <th class="px-5 py-3 text-center">Passengers</th>
-                <th class="px-5 py-3">Host</th>
+                <th class="px-5 py-3 text-center">Host</th>
                 <th class="px-5 py-3">Destination</th>
                 <th class="px-5 py-3 pr-6 text-right"></th>
                 <th class="px-5 py-3 text-center">Status</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
-              {#each flights as flight (flight.id)}
+              {#each filteredFlights as flight (flight.id)}
                 {@const isSelected = selectedFlightId === flight.id}
                 {@const hasBoarded = flight.passengers.some((p: Passenger) => 
                   p.friendCode 
@@ -239,7 +252,7 @@
 
                   <!-- HOST -->
                   <td class="px-5 py-3">
-                    <div class="flex flex-col items-start gap-1">
+                    <div class="flex flex-col items-center gap-1 text-center">
                       <span 
                         onclick={(e) => {
                           e.stopPropagation();
@@ -272,6 +285,9 @@
                   <td class="px-5 py-3">
                     <div class="font-black text-[#4A4A4A] text-sm">{flight.islandName}</div>
                     <div class="text-[10px] text-slate-500 max-w-[150px] mt-0.5">"{flight.description}"</div>
+                    <div class="text-[9px] text-slate-400 mt-1 font-bold tracking-wider uppercase">
+                      DEPARTS: {new Date(flight.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </div>
                   </td>
 
                   <!-- ACTION -->

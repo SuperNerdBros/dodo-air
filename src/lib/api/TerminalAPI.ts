@@ -105,6 +105,14 @@ export const TerminalAPI = {
 		return await res.json();
 	},
 
+	async rerollNumber() {
+		const res = await fetch('/wp-json/dodo-air/v1/flights/reroll-number', {
+			method: 'POST'
+		});
+		if (!res.ok) throw await res.json();
+		return await res.json();
+	},
+
 	async generateAIReview(flightId: string) {
 		const res = await fetch('/wp-json/dodo-air/v1/ai/review', {
 			method: 'POST',

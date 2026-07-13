@@ -30,9 +30,20 @@
     setShowFuelModal: (show: boolean) => void;
     passport: Passport;
     isMuted?: boolean;
+    onClose?: () => void;
   }>();
 
   let chatContainerRef: HTMLDivElement;
+  let durationHours = $state(1);
+
+  let filteredChatter = $derived(
+    chatter.filter(msg => {
+      if (!msg.timestamp) return true;
+      const msgTime = new Date(msg.timestamp).getTime();
+      const cutoff = Date.now() - (durationHours * 60 * 60 * 1000);
+      return msgTime >= cutoff;
+    })
+  );
 
   $effect(() => {
     if (chatter && chatContainerRef) {
@@ -69,15 +80,36 @@
         <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
       </div>
     </div>
-    <div class="radio-header__badge font-system">
+
+    <button 
+      onclick={() => onClose?.()}
+      class="radio-header__badge font-system cursor-pointer hover:scale-105 transition-transform z-10"
+      title="Hide Radio Tower"
+    >
       <Wifi class="w-3 h-3" />
       ON AIR
+    </button>
+  </div>
+
+  <div class="bg-[#005788] px-4 py-1.5 flex justify-end items-center border-b-2 border-[#003B5C]">
+    <div class="flex items-center gap-2 text-[10px] font-system text-white/90 bg-black/25 rounded-full px-2.5 py-0.5 shadow-inner">
+      <button 
+        type="button"
+        class="hover:text-[#FFCC00] text-white cursor-pointer font-black text-[11px] px-1 transition-colors"
+        onclick={() => durationHours = Math.max(1, durationHours - 1)}
+      >-</button>
+      <span class="font-bold tracking-widest">{durationHours} HR</span>
+      <button 
+        type="button"
+        class="hover:text-[#FFCC00] text-white cursor-pointer font-black text-[11px] px-1 transition-colors"
+        onclick={() => durationHours++}
+      >+</button>
     </div>
   </div>
 
   <!-- ═══ Chat Feed ═══ -->
   <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
-    {#each chatter as msg (msg.id)}
+    {#each [...filteredChatter].reverse() as msg (msg.id)}
       {@const isOrville = msg.type === 'orville'}
       {@const isWilbur = msg.type === 'wilbur'}
       {@const isSystem = msg.type === 'system'}
@@ -90,8 +122,15 @@
         </div>
       {:else if isNpc}
         <div class="radio-msg radio-msg--npc" transition:slide={{ duration: 200 }}>
-          <div class="radio-avatar radio-avatar--npc">
-            {isOrville ? '🦤' : '🕶️'}
+          <div class="flex flex-col items-center gap-1">
+            <div class="radio-avatar radio-avatar--npc">
+              {isOrville ? '🦤' : '🕶️'}
+            </div>
+            {#if msg.timestamp}
+              <span class="text-[8px] font-bold text-[#0084CC]/60 font-system text-center" style="letter-spacing:-0.5px">
+                {new Date(msg.timestamp).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'})}
+              </span>
+            {/if}
           </div>
           <div class="radio-bubble radio-bubble--npc">
             <span class="radio-bubble__sender font-system">
@@ -103,21 +142,28 @@
         </div>
       {:else}
         <div class="radio-msg radio-msg--user" transition:slide={{ duration: 200 }}>
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <div 
-            class="radio-avatar radio-avatar--user font-system"
-            onclick={() => {
-              const p = getProfile(msg.sender, msg.island);
-              if (p) {
-                openProfileModal(p.friendCode);
-              } else {
-                openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
-              }
-            }}
-            title="View profile"
-          >
-            {getInitials(msg.sender)}
+          <div class="flex flex-col items-center gap-1">
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div 
+              class="radio-avatar radio-avatar--user font-system"
+              onclick={() => {
+                const p = getProfile(msg.sender, msg.island);
+                if (p) {
+                  openProfileModal(p.friendCode);
+                } else {
+                  openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
+                }
+              }}
+              title="View profile"
+            >
+              {getInitials(msg.sender)}
+            </div>
+            {#if msg.timestamp}
+              <span class="text-[8px] font-bold text-[#8C7A5A]/60 font-system text-center" style="letter-spacing:-0.5px">
+                {new Date(msg.timestamp).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'})}
+              </span>
+            {/if}
           </div>
           <div class="radio-bubble radio-bubble--user">
             <span class="radio-bubble__sender font-system">
@@ -233,7 +279,6 @@
     justify-content: space-between;
     padding: 14px 18px;
     background: linear-gradient(135deg, #0084CC 0%, #0095E8 100%);
-    border-bottom: 4px solid #005788;
     position: relative;
     overflow: hidden;
   }
@@ -416,6 +461,10 @@
     background: linear-gradient(135deg, #EBF8FF 0%, #D6F0FF 100%);
     border-color: #0084CC;
     box-shadow: 0 3px 0 0 rgba(0, 132, 204, 0.15);
+  }
+
+  .radio-msg--user {
+    flex-direction: row-reverse;
   }
 
   .radio-avatar--user {

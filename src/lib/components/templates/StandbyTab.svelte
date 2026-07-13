@@ -49,13 +49,13 @@
   }
 </script>
 
-<div class="space-y-4">
+<div class="space-y-4 pt-5">
 
   <!-- Booking Action Area -->
   {#if isActive}
     <AcnhBubble 
       title="Orville"
-      dialogText="Tell me where and when you want to fly. We'll add you to the global standby radar so pilots can find you and clear you for boarding!"
+      dialogText="Tell me where and when you want to fly. I'll add you to the global standby radar so Wilbur can find flights for you!"
     >
       <div class="mt-4 flex justify-center">
         <button

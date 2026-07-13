@@ -103,6 +103,31 @@
             <span class="block text-[10px] font-system font-bold text-[#85806B] uppercase">DREAM ADDRESS</span>
             <span class="font-system font-black tracking-wide text-purple-600 text-sm block bg-purple-50 p-1.5 rounded-lg text-center border border-purple-200">{isGuest ? 'Not registered' : (passport.dreamAddress || 'Not set')}</span>
           </div>
+
+          <div class="space-y-1 col-span-2 sm:col-span-1">
+            <span class="block text-[10px] font-system font-bold text-[#85806B] uppercase">FLIGHT NUMBER</span>
+            <div class="flex items-center gap-2">
+              <span class="font-system font-black tracking-wide text-[#0084CC] text-sm block bg-sky-50 p-1.5 rounded-lg text-center border border-sky-200 flex-1">{isGuest ? 'Not registered' : (passport.flightNumber || 'Not set')}</span>
+              {#if !isGuest && passport.flightNumber}
+                <button 
+                  class="bg-amber-100 hover:bg-amber-200 text-amber-700 font-system font-black text-[10px] px-2 py-1.5 rounded-lg border border-amber-300 transition-colors uppercase cursor-pointer"
+                  onclick={async () => {
+                    playSound('beep', isMuted);
+                    try {
+                      // @ts-ignore
+                      const { dalStore } = await import('$lib/stores/dal.svelte');
+                      await dalStore.rerollFlightNumber();
+                    } catch (e: any) {
+                      alert(e.error || e.message || 'Error rerolling');
+                    }
+                  }}
+                  title="Costs 500 FF Miles to re-roll"
+                >
+                  Re-roll (-500)
+                </button>
+              {/if}
+            </div>
+          </div>
         </div>
 
         <div class="flex items-center justify-between bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 text-sm font-bold mt-2">
