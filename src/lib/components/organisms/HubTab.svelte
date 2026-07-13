@@ -7,6 +7,7 @@
   import Select from '../atoms/Select.atom.svelte';
   import Textarea from '../atoms/Textarea.atom.svelte';
   import Form from '../atoms/Form.atom.svelte';
+  import AcnhBubble from '../molecules/AcnhBubble.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
   import { GATE_THEMES } from '$lib/types';
   import type { FlightStatus, StandbyRequest } from '$lib/types';
@@ -174,74 +175,23 @@
           PARKED & FUELED - READY TO WELCOME VISITORS
         </Text>
       </Box>
-      <Box class="bg-[#FFFCEF] border border-[#E6DFC7] p-3.5 rounded-2xl max-w-xl mx-auto text-left flex gap-3">
-        <Text tag="span" class="text-2xl">👷</Text>
-        <Text tag="p" class="text-xs text-[#4A4A4A] leading-relaxed">
-          <Text tag="strong">Wilbur:</Text> "Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
-        </Text>
-      </Box>
       
-      <Form onsubmit={handleHostFlight} class="max-w-xl mx-auto text-left space-y-4 border-t border-slate-100 pt-5 text-xs">
-        {#if dalStore.formError}
-          <Text tag="p" class="text-xs font-bold text-red-600 flex items-center gap-1 font-system bg-red-50 p-2.5 rounded-xl border border-red-100">
-            <AlertCircle class="w-4 h-4" /> {dalStore.formError}
-          </Text>
-        {/if}
-        <Box class="grid grid-cols-2 gap-3">
-          <Box>
-            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOST NAME</Text>
-            <Input type="text" value={dalStore.passport.villagerName} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none" disabled />
-          </Box>
-          <Box>
-            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider">HOME ISLAND</Text>
-            <Input type="text" value={dalStore.passport.islandName} class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none" disabled />
-          </Box>
-        </Box>
-        <Box class="grid grid-cols-2 gap-3">
-          <Box>
-            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">DODO CODE</Text>
-            <Input type="text" bind:value={dalStore.formDodo} placeholder="e.g. D0D01" class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest text-center uppercase outline-none focus:bg-white text-[#0084CC]" maxlength={5} required />
-          </Box>
-          <Box>
-            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">HEMISPHERE</Text>
-            <Select bind:value={dalStore.formHemisphere} class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 font-bold outline-none focus:bg-white text-[#0084CC]">
-              <option value="Northern">Northern</option>
-              <option value="Southern">Southern</option>
-            </Select>
-          </Box>
-        </Box>
-        <Box class="grid grid-cols-1 gap-3">
-          <Box>
-            <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">SEAPLANE MODEL</Text>
-            <Select bind:value={dalStore.formPlaneType} class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-3 py-2 font-bold outline-none focus:bg-white text-[#0084CC]">
-              <option value="Switch">🛩️ Switch Model (8 seats)</option>
-              <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
-            </Select>
-          </Box>
-        </Box>
-        <Box>
-          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">GATE THEME CATEGORY</Text>
-          <Box class="flex flex-col gap-2">
-            {#each Object.entries(GATE_THEMES) as [numStr, theme]}
-              {@const num = Number(numStr)}
-              <Box class="flex items-start gap-2 bg-[#FAF8F2] p-2 border rounded-xl" onclick={() => dalStore.formGate = num} style={dalStore.formGate === num ? `border-color: ${theme.color}; background-color: ${theme.bg};` : 'border-color: #E6DFC7;'}>
-                <input type="radio" checked={dalStore.formGate === num} class="mt-1" />
-                <Box>
-                  <span class="font-bold text-xs" style={dalStore.formGate === num ? `color: ${theme.color};` : 'color: #4A4A4A;'}>{theme.icon} {theme.name}</span>
-                  <span class="text-sm text-slate-500 block leading-normal">{theme.desc}</span>
-                </Box>
-              </Box>
-            {/each}
-          </Box>
-        </Box>
-        <Box>
-          <Text tag="label" class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">FLIGHT PLAN DESCRIPTION</Text>
-          <Textarea bind:value={dalStore.formDesc} placeholder="e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach." class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-semibold h-16 resize-none outline-none focus:bg-white focus:border-[#0084CC]" maxlength={180} />
-        </Box>
-        <Button type="submit" disabled={dalStore.isSubmittingHost} class="w-full bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] font-system font-black py-3 rounded-2xl border-b-4 border-[#CC9900] shadow transition-all uppercase tracking-wide text-xs">
-          {dalStore.isSubmittingHost ? 'Dispatching Hangar...' : '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE'}
-        </Button>
-      </Form>
+      <AcnhBubble
+        title="Wilbur"
+        dialogText="Roger that! Seaplane engine oil looking steady, props balanced. All we need is your 5-digit Dodo Code™ and we'll connect your airport terminal gateway so other islanders can book tickets!"
+      >
+        <div class="mt-4 flex justify-center">
+          <button
+            onclick={() => { dalStore.playSound('beep'); dalStore.showHubModal = true; }}
+            class="bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900] border-b-4 font-system font-black px-6 py-3 rounded-2xl text-sm uppercase cursor-pointer transition-all shadow active:translate-y-1 active:border-b-0 w-full max-w-sm"
+          >
+            <span class="flex items-center justify-center gap-2">
+              <Plane class="w-5 h-5" />
+              Prepare Flight Plan
+            </span>
+          </button>
+        </div>
+      </AcnhBubble>
     </Box>
   {:else}
     <Box class="space-y-5">

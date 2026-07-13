@@ -6,8 +6,8 @@ let layout = fs.readFileSync(layoutPath, 'utf8');
 
 // 1. Imports and Setup
 layout = layout.replace(
-  `import { onMount, onDestroy, tick } from 'svelte';`,
-  `import { onMount, onDestroy, tick } from 'svelte';
+	`import { onMount, onDestroy, tick } from 'svelte';`,
+	`import { onMount, onDestroy, tick } from 'svelte';
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
   import { setAppState } from '$lib/appState';
@@ -17,8 +17,8 @@ layout = layout.replace(
 
 // 2. Remove currentTab state variable and make it derived
 layout = layout.replace(
-  `let currentTab = $state<'passport' | 'book' | 'hub' | 'directory'>('passport');`,
-  `let currentTab = $derived(
+	`let currentTab = $state<'passport' | 'book' | 'hub' | 'directory'>('passport');`,
+	`let currentTab = $derived(
     $page.url.pathname.includes('islands') ? 'book' :
     $page.url.pathname.includes('hub') ? 'hub' :
     $page.url.pathname.includes('directory') ? 'directory' : 'passport'
@@ -40,14 +40,16 @@ const startIdx = layout.indexOf(`<!-- Dynamic Multi-Tab Content View -->`);
 const endIdx = layout.indexOf(`    </main>`, startIdx);
 
 if (startIdx !== -1 && endIdx !== -1) {
-    layout = layout.substring(0, startIdx) + 
-`    <!-- Dynamic Multi-Tab Content View -->
+	layout =
+		layout.substring(0, startIdx) +
+		`    <!-- Dynamic Multi-Tab Content View -->
     <div class="w-full">
       {@render children()}
     </div>
-` + layout.substring(endIdx);
+` +
+		layout.substring(endIdx);
 } else {
-    console.error("Could not find Tab Render area");
+	console.error('Could not find Tab Render area');
 }
 
 // 4. Wrap all variables and functions in setAppState()
@@ -88,13 +90,25 @@ const setAppCode = `
   });
 `;
 
-layout = layout.replace(`let formattedTime = $derived(liveTime.toTimeString().split(' ')[0]);`, `let formattedTime = $derived(liveTime.toTimeString().split(' ')[0]);\n\n${setAppCode}\n`);
+layout = layout.replace(
+	`let formattedTime = $derived(liveTime.toTimeString().split(' ')[0]);`,
+	`let formattedTime = $derived(liveTime.toTimeString().split(' ')[0]);\n\n${setAppCode}\n`
+);
 
 // 5. Update TabButtons routing
-layout = layout.replace(/onclick=\{.*?currentTab = 'passport';.*?\}/g, `onclick={() => goto('/passport')}`);
-layout = layout.replace(/onclick=\{.*?currentTab = 'book';.*?\}/g, `onclick={() => goto('/islands')}`);
+layout = layout.replace(
+	/onclick=\{.*?currentTab = 'passport';.*?\}/g,
+	`onclick={() => goto('/passport')}`
+);
+layout = layout.replace(
+	/onclick=\{.*?currentTab = 'book';.*?\}/g,
+	`onclick={() => goto('/islands')}`
+);
 layout = layout.replace(/onclick=\{.*?currentTab = 'hub';.*?\}/g, `onclick={() => goto('/hub')}`);
-layout = layout.replace(/onclick=\{.*?currentTab = 'directory';.*?\}/g, `onclick={() => goto('/directory')}`);
+layout = layout.replace(
+	/onclick=\{.*?currentTab = 'directory';.*?\}/g,
+	`onclick={() => goto('/directory')}`
+);
 
 fs.writeFileSync(layoutPath, layout);
-console.log("Layout patched successfully.");
+console.log('Layout patched successfully.');

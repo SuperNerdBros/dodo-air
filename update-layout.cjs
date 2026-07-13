@@ -4,18 +4,21 @@ let content = fs.readFileSync(path, 'utf8');
 
 // Insert import at the top
 if (!content.includes('import { TerminalAPI }')) {
-  content = content.replace('import { dalStore } from \'$lib/stores/dal.svelte\';', 'import { dalStore } from \'$lib/stores/dal.svelte\';\n  import { TerminalAPI } from \'$lib/api/TerminalAPI\';');
+	content = content.replace(
+		"import { dalStore } from '$lib/stores/dal.svelte';",
+		"import { dalStore } from '$lib/stores/dal.svelte';\n  import { TerminalAPI } from '$lib/api/TerminalAPI';"
+	);
 }
 
 // Locate the block
 const startMarker = 'async function openProfileModal(friendCode: string) {';
-const endMarker = 'let activeFlights = $derived(dalStore.systemMode === \'DAL\' ? flights : dreams);';
+const endMarker = "let activeFlights = $derived(dalStore.systemMode === 'DAL' ? flights : dreams);";
 
 const startIndex = content.indexOf(startMarker);
 const endIndex = content.indexOf(endMarker);
 
 if (startIndex !== -1 && endIndex !== -1) {
-  const newFunctions = `async function openProfileModal(friendCode: string) {
+	const newFunctions = `async function openProfileModal(friendCode: string) {
     playSound('beep', isMuted);
     selectedFriendCode = friendCode;
     reviewError = '';
@@ -261,9 +264,9 @@ if (startIndex !== -1 && endIndex !== -1) {
   }
 
   `;
-  const newContent = content.substring(0, startIndex) + newFunctions + content.substring(endIndex);
-  fs.writeFileSync(path, newContent, 'utf8');
-  console.log('Successfully replaced functions in +layout.svelte');
+	const newContent = content.substring(0, startIndex) + newFunctions + content.substring(endIndex);
+	fs.writeFileSync(path, newContent, 'utf8');
+	console.log('Successfully replaced functions in +layout.svelte');
 } else {
-  console.log('Failed to find start or end markers');
+	console.log('Failed to find start or end markers');
 }

@@ -4,7 +4,7 @@
   import { dalStore } from '$lib/stores/dal.svelte';
   import { onMount, onDestroy } from 'svelte';
 
-  let { title = 'Orville [DAL Dispatch]', children, onDismiss, dialogText = '' }: { title?: string, children?: Snippet, onDismiss?: () => void, dialogText?: string } = $props();
+  let { title = 'Orville [DAL Dispatch]', children, onDismiss, dialogText = '', class: className = 'mx-auto w-full lg:w-3/4 max-w-none lg:max-w-5xl' }: { title?: string, children?: Snippet, onDismiss?: () => void, dialogText?: string, class?: string } = $props();
 
   const CHARACTER_COLORS: Record<string, { bg: string; text: string }> = {
     Orville: { bg: '#f1d23b', text: '#1b5b7f' },
@@ -58,7 +58,7 @@
   }
 </script>
 
-<div class="pointer-events-auto mx-auto w-full lg:w-3/4 max-w-none lg:max-w-5xl dialogue" style="--dialogue-font: {title ? 'FOT-RodinBokutoh Pro EB' : 'FOT-Seurat Pro B'};">
+<div class="pointer-events-auto dialogue {className}" style="--dialogue-font: {title ? 'FOT-RodinBokutoh Pro EB' : 'FOT-Seurat Pro B'};">
   <div class="dialogue-blobs drop-shadow-lg relative">
     <div class="dialogue-blob-top"></div>
     <div class="dialogue-blob-bottom"></div>

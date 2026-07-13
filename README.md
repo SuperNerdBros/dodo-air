@@ -6,7 +6,7 @@ Welcome to the Dodo Airlines (DAL) Terminal, a web application inspired by Anima
 
 - **Flight Board**: File flight plans to share your Dodo Code with other players. Provide details about your island (e.g., Turnip prices, Celeste visits, Meteor showers).
 - **Standby Requests**: Looking to travel? Submit a standby request to let hosts know you're looking for an open gate.
-- **Terminal Radio Chatter**: Chat with other passengers in real-time. 
+- **Terminal Radio Chatter**: Chat with other passengers in real-time.
 - **AI-Powered NPCs**: The terminal radio is monitored by our favorite DAL staff, Orville and Wilbur! Powered by the Gemini AI API, they will dynamically respond to your messages in character when mentioned. Orville can even generate enthusiastic loudspeaker announcements for your flights and write creative travel reviews for your island!
 - **Real-Time State**: The board automatically updates and cleans up stale flights to keep the terminal fresh.
 

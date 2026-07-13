@@ -1,5 +1,6 @@
 <script lang="ts">
-  import StandbyTicketModal from '$lib/components/molecules/StandbyTicketModal.svelte';
+  import StandbyWizard from '$lib/components/molecules/StandbyWizard.svelte';
+  import HubWizard from '$lib/components/molecules/HubWizard.svelte';
   import BoardingPassModal from '$lib/components/organisms/BoardingPassModal.svelte';
   import MilesStampBook from '$lib/components/organisms/MilesStampBook.svelte';
   import TrustProfileModal from '$lib/components/organisms/TrustProfileModal.svelte';
@@ -63,7 +64,7 @@
   </div>
 {/if}
 
-<StandbyTicketModal
+<StandbyWizard
   isOpen={dalStore.showStandbyModal}
   onClose={() => dalStore.showStandbyModal = false}
   bind:requestGateType={dalStore.requestGateType}
@@ -72,6 +73,24 @@
   onSubmit={TerminalActions.createStandbyRequest}
   isSubmittingRequest={dalStore.isSubmittingRequest}
   requestError={dalStore.requestError}
+  isMuted={dalStore.isMuted}
+/>
+
+<HubWizard
+  isOpen={dalStore.showHubModal}
+  onClose={() => dalStore.showHubModal = false}
+  bind:formDodo={dalStore.formDodo}
+  bind:formHemisphere={dalStore.formHemisphere}
+  bind:formGate={dalStore.formGate}
+  bind:formDesc={dalStore.formDesc}
+  bind:formPlaneType={dalStore.formPlaneType}
+  onSubmit={(e) => {
+    dalStore.showHubModal = false;
+    TerminalActions.hostFlight(e);
+  }}
+  isSubmittingHost={dalStore.isSubmittingHost}
+  formError={dalStore.formError}
+  isMuted={dalStore.isMuted}
 />
 
 {#if selectedFlight}

@@ -8,21 +8,21 @@
  * - Always pre-pends 'SW-' (if not completely empty).
  */
 export function formatFriendCode(val: string): string {
-  if (!val) return '';
-  let cleaned = val.replace(/^SW-?/i, '');
-  cleaned = cleaned.replace(/[^0-9X]/gi, '').toUpperCase();
-  cleaned = cleaned.slice(0, 12);
-  
-  let part1 = cleaned.slice(0, 4);
-  let part2 = cleaned.slice(4, 8);
-  let part3 = cleaned.slice(8, 12);
-  
-  let formatted = 'SW-';
-  if (part1) formatted += part1;
-  if (part2) formatted += '-' + part2;
-  if (part3) formatted += '-' + part3;
-  
-  return formatted;
+	if (!val) return '';
+	let cleaned = val.replace(/^SW-?/i, '');
+	cleaned = cleaned.replace(/[^0-9X]/gi, '').toUpperCase();
+	cleaned = cleaned.slice(0, 12);
+
+	let part1 = cleaned.slice(0, 4);
+	let part2 = cleaned.slice(4, 8);
+	let part3 = cleaned.slice(8, 12);
+
+	let formatted = 'SW-';
+	if (part1) formatted += part1;
+	if (part2) formatted += '-' + part2;
+	if (part3) formatted += '-' + part3;
+
+	return formatted;
 }
 
 /**
@@ -35,19 +35,19 @@ export function formatFriendCode(val: string): string {
  * - Always pre-pends 'DA-' (if not completely empty).
  */
 export function formatDreamAddress(val: string): string {
-  if (!val) return '';
-  let cleaned = val.replace(/^DA-?/i, '');
-  cleaned = cleaned.replace(/[^0-9X]/gi, '').toUpperCase();
-  cleaned = cleaned.slice(0, 12);
-  
-  let part1 = cleaned.slice(0, 4);
-  let part2 = cleaned.slice(4, 8);
-  let part3 = cleaned.slice(8, 12);
-  
-  let formatted = 'DA-';
-  if (part1) formatted += part1;
-  if (part2) formatted += '-' + part2;
-  if (part3) formatted += '-' + part3;
-  
-  return formatted;
+	if (!val) return '';
+	let cleaned = val.replace(/^DA-?/i, '');
+	cleaned = cleaned.replace(/[^0-9X]/gi, '').toUpperCase();
+	cleaned = cleaned.slice(0, 12);
+
+	let part1 = cleaned.slice(0, 4);
+	let part2 = cleaned.slice(4, 8);
+	let part3 = cleaned.slice(8, 12);
+
+	let formatted = 'DA-';
+	if (part1) formatted += part1;
+	if (part2) formatted += '-' + part2;
+	if (part3) formatted += '-' + part3;
+
+	return formatted;
 }

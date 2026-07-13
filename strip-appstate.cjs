@@ -6,7 +6,9 @@ const appStateStart = content.indexOf('const appState = {');
 const appStateEnd = content.indexOf('setAppState(appState);');
 
 if (appStateStart !== -1 && appStateEnd !== -1) {
-  content = content.substring(0, appStateStart) + content.substring(appStateEnd + 'setAppState(appState);'.length);
+	content =
+		content.substring(0, appStateStart) +
+		content.substring(appStateEnd + 'setAppState(appState);'.length);
 }
 
 // Also remove setAppState import

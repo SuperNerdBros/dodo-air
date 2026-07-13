@@ -7,12 +7,14 @@ const stateStart = content.indexOf('let showLoginModal = $state(false);');
 const stateEnd = content.indexOf('let showOrvilleIntro = $state(true);'); // or find passport object end
 
 if (stateStart !== -1 && stateEnd !== -1) {
-  content = content.substring(0, stateStart) + 
-  `let showLoginModal = $state(false);
+	content =
+		content.substring(0, stateStart) +
+		`let showLoginModal = $state(false);
   let showLogoutModal = $state(false);
   let showOrvilleIntro = $state(true);
   
-  ` + content.substring(stateEnd + 'let showOrvilleIntro = $state(true);'.length);
+  ` +
+		content.substring(stateEnd + 'let showOrvilleIntro = $state(true);'.length);
 }
 
 fs.writeFileSync(path, content, 'utf8');

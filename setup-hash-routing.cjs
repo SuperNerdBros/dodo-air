@@ -6,18 +6,18 @@ let layout = fs.readFileSync(layoutPath, 'utf8');
 
 // 1. Update navigation import
 layout = layout.replace(
-  `import { page } from '$app/stores';\n  import { goto } from '$app/navigation';`,
-  `// Hash routing`
+	`import { page } from '$app/stores';\n  import { goto } from '$app/navigation';`,
+	`// Hash routing`
 );
 
 // 2. Replace currentTab derived logic with hash tracking state
 layout = layout.replace(
-  `let currentTab = $derived(
+	`let currentTab = $derived(
     $page.url.pathname.includes('islands') ? 'book' :
     $page.url.pathname.includes('hub') ? 'hub' :
     $page.url.pathname.includes('directory') ? 'directory' : 'passport'
   );`,
-  `let hashPath = $state('');
+	`let hashPath = $state('');
   let currentTab = $derived(
     hashPath.includes('islands') ? 'book' :
     hashPath.includes('hub') ? 'hub' :
@@ -40,14 +40,26 @@ layout = layout.replace(
 );
 
 // 3. Replace goto with hash assignment in TabButtons and setCurrentTab
-layout = layout.replace(/onclick=\{\(\) => goto\('\/passport'\)\}/g, `onclick={() => { window.location.hash = '#/passport'; }}`);
-layout = layout.replace(/onclick=\{\(\) => goto\('\/islands'\)\}/g, `onclick={() => { window.location.hash = '#/islands'; }}`);
-layout = layout.replace(/onclick=\{\(\) => goto\('\/hub'\)\}/g, `onclick={() => { window.location.hash = '#/hub'; }}`);
-layout = layout.replace(/onclick=\{\(\) => goto\('\/directory'\)\}/g, `onclick={() => { window.location.hash = '#/directory'; }}`);
+layout = layout.replace(
+	/onclick=\{\(\) => goto\('\/passport'\)\}/g,
+	`onclick={() => { window.location.hash = '#/passport'; }}`
+);
+layout = layout.replace(
+	/onclick=\{\(\) => goto\('\/islands'\)\}/g,
+	`onclick={() => { window.location.hash = '#/islands'; }}`
+);
+layout = layout.replace(
+	/onclick=\{\(\) => goto\('\/hub'\)\}/g,
+	`onclick={() => { window.location.hash = '#/hub'; }}`
+);
+layout = layout.replace(
+	/onclick=\{\(\) => goto\('\/directory'\)\}/g,
+	`onclick={() => { window.location.hash = '#/directory'; }}`
+);
 
 layout = layout.replace(
-  `setCurrentTab={(t) => { if (t === 'book') goto('/islands'); else if (t === 'hub') goto('/hub'); else if (t === 'directory') goto('/directory'); else goto('/passport'); }}`,
-  `setCurrentTab={(t) => { if (t === 'book') window.location.hash = '#/islands'; else if (t === 'hub') window.location.hash = '#/hub'; else if (t === 'directory') window.location.hash = '#/directory'; else window.location.hash = '#/passport'; }}`
+	`setCurrentTab={(t) => { if (t === 'book') goto('/islands'); else if (t === 'hub') goto('/hub'); else if (t === 'directory') goto('/directory'); else goto('/passport'); }}`,
+	`setCurrentTab={(t) => { if (t === 'book') window.location.hash = '#/islands'; else if (t === 'hub') window.location.hash = '#/hub'; else if (t === 'directory') window.location.hash = '#/directory'; else window.location.hash = '#/passport'; }}`
 );
 
 // 4. Replace {@render children()} with the conditional rendering blocks
@@ -122,4 +134,4 @@ const conditionalRender = `    <!-- Dynamic Multi-Tab Content View -->
 layout = layout.replace(renderChildrenStr, conditionalRender);
 
 fs.writeFileSync(layoutPath, layout);
-console.log("Hash routing implemented in +layout.svelte.");
+console.log('Hash routing implemented in +layout.svelte.');

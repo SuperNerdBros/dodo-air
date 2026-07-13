@@ -23,4 +23,4 @@ fs.writeFileSync(path.join(__dirname, 'src', 'lib', 'appState.ts'), contextCode)
 
 // We need to inject page to +layout.svelte
 // and replace onclick for tabs
-console.log("We will do this manually for precision.");
+console.log('We will do this manually for precision.');

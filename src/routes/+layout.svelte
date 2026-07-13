@@ -202,7 +202,7 @@
 
 </script>
 
-<div class="h-screen {dalStore.systemMode === 'DAL' ? 'bg-[#FEF9E7]' : 'bg-[#1a0b2e]'} airport-runway flex selection:bg-[#FFCC00]/40 {dalStore.systemMode === 'DAL' ? 'text-[#4A4A4A]' : 'text-purple-100'} font-sans antialiased relative overflow-hidden transition-colors duration-500">
+<div class="h-screen {dalStore.systemMode === 'DAL' ? 'bg-[skyblue]' : 'bg-[#1a0b2e]'} airport-runway flex selection:bg-[#FFCC00]/40 {dalStore.systemMode === 'DAL' ? 'text-[#4A4A4A]' : 'text-purple-100'} font-sans antialiased relative overflow-hidden transition-colors duration-500">
   
   <!-- Main Left Column -->
   <div class="flex-1 flex flex-col min-w-0 h-full overflow-y-auto p-3 sm:p-4 lg:p-6 pb-28">
@@ -285,16 +285,6 @@
         <!-- Left: Area Tabs -->
         <div class="flex items-start gap-1 sm:gap-2">
           
-          <TabButton
-            active={currentTab === 'standby'}
-            systemMode={dalStore.systemMode}
-            isMuted={dalStore.isMuted}
-            onclick={() => { window.location.hash = '#/standby'; }}
-          >
-            <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
-            Travel Plan
-            </span>
-          </TabButton>
           
           <TabButton
             active={currentTab === 'book'}
@@ -321,6 +311,16 @@
         </div>
 
         <div class="flex items-start gap-1 sm:gap-2">
+          <TabButton
+            active={currentTab === 'standby'}
+            systemMode={dalStore.systemMode}
+            isMuted={dalStore.isMuted}
+            onclick={() => { window.location.hash = '#/standby'; }}
+          >
+            <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
+            Travel Plan
+            </span>
+          </TabButton>
           <!-- Right: Ask Orville -->
           <TabButton
             active={dalStore.showOrvilleIntro}
@@ -419,6 +419,7 @@
           handleRemoveStandbyRequest={TerminalActions.removeStandbyRequest}
           setShowStandbyModal={(v) => dalStore.showStandbyModal = v}
           isMuted={dalStore.isMuted}
+          isActive={currentTab === 'standby'}
         />
       </div>
 

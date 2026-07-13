@@ -137,126 +137,16 @@
             </p>
           </div>
         </div>
+        <div class="mt-4 flex justify-center">
+          <button
+            onclick={() => { playSound('beep', isMuted); dalStore.showHubModal = true; }}
+            class="w-full max-w-sm {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900]' : 'bg-[#DDA0DD] hover:bg-[#e8b5e8] text-[#4B0082] border-[#ba80ba]'} font-system font-black py-3 rounded-2xl border-b-4 shadow transition-all uppercase tracking-wide text-xs cursor-pointer active:translate-y-1 active:border-b-0"
+          >
+            {dalStore.systemMode === 'DAL' ? '📡 Prepare Flight Plan' : '✨ Prepare Dream State'}
+          </button>
+        </div>
       </AcnhBubble>
 
-      <!-- Host Flight Registration Form -->
-      <form onsubmit={handleHostFlight} class="max-w-xl mx-auto text-left space-y-4 border-t border-slate-100 pt-5 text-xs">
-        {#if formError}
-          <p class="text-xs font-bold text-red-600 flex items-center gap-1 font-system bg-red-50 p-2.5 rounded-xl border border-red-100">
-            <AlertCircle class="w-4 h-4 shrink-0" /> {formError}
-          </p>
-        {/if}
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider font-bold">HOST NAME</label>
-            <input
-              type="text"
-              value={passport.villagerName}
-              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none"
-              disabled
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-system font-black text-[#0084CC] mb-1 uppercase tracking-wider font-bold">HOME ISLAND</label>
-            <input
-              type="text"
-              value={passport.islandName}
-              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-400 outline-none"
-              disabled
-            />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">
-              {dalStore.systemMode === 'DAL' ? 'DODO CODE' : 'DOZE CODE'}
-            </label>
-            <input
-              type="text"
-              bind:value={formDodo}
-              placeholder={dalStore.systemMode === 'DAL' ? 'e.g. D0D01 (Leave blank to schedule)' : 'e.g. DZ123 (Leave blank to schedule)'}
-              class="w-full bg-[#FAF8F2] {dalStore.systemMode === 'DAL' ? 'border-[#0084CC]/30 text-[#0084CC]' : 'border-[#4B0082]/30 text-[#4B0082]'} border-2 rounded-xl px-3 py-2 text-xs font-system font-black tracking-widest text-center uppercase outline-none focus:bg-white font-bold transition-colors"
-              maxlength={5}
-            />
-          </div>
-          <div>
-            <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">HEMISPHERE</label>
-            <select
-              bind:value={formHemisphere}
-              class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-bold outline-none focus:bg-white focus:border-[#0084CC]"
-            >
-              <option value="Northern">🌍 Northern Hemisphere</option>
-              <option value="Southern">🌎 Southern Hemisphere</option>
-            </select>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-3">
-          <div>
-            <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">SEAPLANE MODEL</label>
-            <select
-              bind:value={formPlaneType}
-              class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-bold outline-none focus:bg-white focus:border-[#0084CC]"
-            >
-              <option value="Switch">🛩️ Switch Model (8 seats)</option>
-              <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Gate selection with theme previews -->
-        <div>
-          <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">
-            {dalStore.systemMode === 'DAL' ? 'GATE CATEGORY & FLIGHT PURPOSE' : 'DREAM CATEGORY & VIBE'}
-          </label>
-          <div class="grid grid-cols-5 gap-2">
-            {#each [1, 2, 3, 4, 5] as g}
-              {@const theme = dalStore.systemMode === 'DAL' ? (GATE_THEMES[g] || GATE_THEMES[1]) : (DREAM_THEMES[g] || DREAM_THEMES[1])}
-              <button
-                type="button"
-                onclick={() => { playSound('beep', isMuted); formGate = g; }}
-                class="py-2 rounded-xl border transition-all text-center flex flex-col items-center justify-center cursor-pointer {formGate === g ? 'bg-[#FFCC00] border-2 border-[#0084CC] text-[#006094] font-black' : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-[#4A4A4A]'}"
-              >
-                <span class="text-sm leading-none">{theme.icon}</span>
-                <span class="text-xs leading-none font-bold mt-0.5">{dalStore.systemMode === 'DAL' ? `Gate ${g}` : `Theme ${g}`}</span>
-              </button>
-            {/each}
-          </div>
-
-          <div class="mt-2.5 {activeGateTheme.bg} p-2.5 rounded-xl border border-black/5 flex gap-2">
-            <span class="text-xl">{activeGateTheme.icon}</span>
-            <div class="text-left">
-              <span class="font-bold text-xs {activeGateTheme.text} block">{activeGateTheme.name}</span>
-              <span class="text-sm text-slate-500 block leading-normal font-semibold">{activeGateTheme.desc}</span>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">
-            {dalStore.systemMode === 'DAL' ? 'FLIGHT PLAN DESCRIPTION' : 'DREAM DESCRIPTION'}
-          </label>
-          <textarea
-            bind:value={formDesc}
-            placeholder="e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach."
-            class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-semibold h-16 resize-none outline-none focus:bg-white focus:border-[#0084CC]"
-            maxlength="180"
-          ></textarea>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmittingHost}
-          class="w-full {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] hover:bg-[#FFD11A] text-[#006094] border-[#CC9900]' : 'bg-[#DDA0DD] hover:bg-[#e8b5e8] text-[#4B0082] border-[#ba80ba]'} font-system font-black py-3 rounded-2xl border-b-4 shadow transition-all uppercase tracking-wide text-xs cursor-pointer font-bold"
-        >
-          {#if isSubmittingHost}
-            {dalStore.systemMode === 'DAL' ? 'Dispatching Hangar...' : 'Publishing Dream...'}
-          {:else}
-            {dalStore.systemMode === 'DAL' ? (formDodo.trim() ? '📡 OPEN MY AIRPORT GATE & CONNECT ONLINE' : '📅 SCHEDULE MY FLIGHT DEPARTURE') : (formDodo.trim() ? '🔮 SHARE MY DREAM WITH THE WORLD' : '📅 SCHEDULE MY DREAM STATE')}
-          {/if}
-        </button>
-      </form>
     </div>
   {:else}
     <!-- Active hosting cockpit panel -->

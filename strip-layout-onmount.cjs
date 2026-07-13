@@ -2,14 +2,16 @@ const fs = require('fs');
 const path = './src/routes/+layout.svelte';
 let content = fs.readFileSync(path, 'utf8');
 
-const startMarker = "let showLogoutModal = $state(false);";
-const endMarker = "onDestroy(() => {";
+const startMarker = 'let showLogoutModal = $state(false);';
+const endMarker = 'onDestroy(() => {';
 
 const startIndex = content.indexOf(startMarker);
 const endIndex = content.indexOf(endMarker);
 
 if (startIndex !== -1 && endIndex !== -1) {
-  content = content.substring(0, startIndex) + `let showLogoutModal = $state(false);
+	content =
+		content.substring(0, startIndex) +
+		`let showLogoutModal = $state(false);
 
   let pollTimer: ReturnType<typeof setInterval>;
 
@@ -34,7 +36,8 @@ if (startIndex !== -1 && endIndex !== -1) {
     }, 30000);
   });
 
-  ` + content.substring(endIndex);
+  ` +
+		content.substring(endIndex);
 }
 
 // 2. Remove the clockTimer and clear interval logic from onDestroy
