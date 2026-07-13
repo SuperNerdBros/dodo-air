@@ -33,7 +33,7 @@
       <span class="hidden sm:inline text-slate-300">|</span>
       <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
       <span class="hidden sm:inline text-slate-300">|</span>
-      <span>v1.0.0</span>
+      <span>v{__APP_VERSION__}</span>
     </div>
 
     <!-- svelte-ignore a11y_click_events_have_key_events -->
