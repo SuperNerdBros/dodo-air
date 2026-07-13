@@ -53,6 +53,7 @@ export class DalState {
 		xp: 0
 	});
 
+	isTrafficModalOpen = $state(false);
 	isEditingPassport = $state(false);
 	passportForm: Passport = $state({ ...this.passport });
 	showPassportDrawer = $state(false);

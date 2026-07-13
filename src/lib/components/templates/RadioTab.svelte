@@ -69,31 +69,31 @@
         <span class="radio-header__icon-emoji">📻</span>
       </div>
       <div>
+    <div class="flex flex-col justify-center gap-2 items-center">
         <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
-        <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
+            <div class="radio-header__signal shrink ">
+              <span class="radio-signal-dot"></span>
+              <span class="radio-signal-dot radio-signal-dot--delay1"></span>
+              <span class="radio-signal-dot radio-signal-dot--delay2"></span>
+            </div>
+    </div>
       </div>
     </div>
 
-<div class="flex flex-col justify-center gap-2 items-center">
 
-    <button 
-      onclick={() => onClose?.()}
-      class="radio-header__badge font-system cursor-pointer hover:scale-105 transition-transform z-10"
-      title="Hide Radio Tower"
-    >
-      <Wifi class="w-3 h-3" />
-      ON AIR
-    </button>
-        <div class="radio-header__signal shrink ">
-          <span class="radio-signal-dot"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
-          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
-        </div>
-</div>
+        <button 
+          onclick={() => onClose?.()}
+          class="radio-header__badge font-system cursor-pointer hover:scale-105 transition-transform z-10"
+          title="Hide Radio Tower"
+        >
+          <Wifi class="w-3 h-3" />
+          ON AIR
+        </button>
 
   </div>
 
-  <div class="bg-[#005788] px-4 py-1.5 flex justify-end items-center border-b-2 border-[#003B5C]">
+  <div class="bg-[#005788] px-4 py-1.5 flex justify-between items-center border-b-2 border-[#003B5C] gap-1">
+        <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
     <div class="flex items-center gap-2 text-[10px] font-system text-white/90 bg-black/25 rounded-full px-2.5 py-0.5 shadow-inner">
       <button 
         type="button"

@@ -77,7 +77,7 @@
       </Box>
       <h1 class="text-xl lg:text-2xl font-black tracking-normal text-white drop-shadow-sm mt-0.5 leading-none">
         {#if dalStore.systemMode === 'DAL'}
-          <span class="text-[#FFCC00]">Booking Terminal</span>
+          <span class="text-[#FFCC00]">Online Terminal</span>
         {:else}
           Luna's <span class="text-[#DDA0DD]">Dream Library</span>
         {/if}
