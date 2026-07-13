@@ -39,19 +39,21 @@ export const DIALOGS = {
 	},
 	interactiveWelcome: {
 		welcome:
-			"Right-o! Welcome to the Dodo Airlines front desk! 🦤 I'm Orville, your personal flight dispatcher!",
+			"Right-o! Welcome to the DAL Gateway Online Terminal! I'm Orville 🦤, your personal flight dispatcher!",
 		intro:
-			'This terminal is our community hub! Search for active gates to visit, or broadcast your Dodo Code™ to host guests!',
+			'This terminal acts as your online community airport hub to ACNH! Search for active islands or dreams to visit, or broadcast your Doze/Dodo Code™ to host guests!',
 		modes:
 			'We offer two travel modes! Choose between standard DAL flight departures or relaxing dream visits with Luna!',
 		walkthrough:
 			"It's easy! Hosting? File a flight plan. Flying? Browse departures, check in, grab a Dodo Code™, and take off!",
 		authChoice:
-			"Before we board, let's pull up your Frequent Flyer Passport! Enter your email so I can send you a secure flight access code.",
+			"Before we board, let's pull up your Frequent Flyer profile! Tell me your email so I can send you a secure access code.",
 		verifyCode:
 			"Excellent! I've sent a 6-digit access code to your email. Enter it below to pull up your passport!",
 		printPassport:
-			"Wonderful! Credentials verified. Let's customize your official passport and register your seaplane!"
+			"Wonderful! Credentials verified. Let's customize your official passport and register your seaplane!",
+		xpInfo:
+			'The more you fly, the more you earn! Collect FF Miles by participating, and unlock stamps to show off on your passport!'
 	},
 	logoutModal: {
 		prompt:

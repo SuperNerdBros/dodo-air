@@ -42,7 +42,7 @@
   onMount(() => {
     // Initialize hash on load if empty
     if (!window.location.hash || window.location.hash === '#/') {
-      window.location.hash = '#/passport';
+      window.location.hash = '#/islands';
     }
     hashPath = window.location.hash;
 
@@ -339,7 +339,7 @@
             onclick={() => { window.location.hash = '#/standby'; }}
           >
             <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
-            Itinerary
+            Waiting Room 
             </span>
           </TabButton>
         </div>

@@ -13,6 +13,7 @@
       <AcnhBubble
         title="Orville [Tour Guide]"
         dialogText={DIALOGS.orvilleIntro.active}
+        isIntro={true}
         onDismiss={() => {
           dalStore.playSound('beep');
           dalStore.showOrvilleIntro = false;

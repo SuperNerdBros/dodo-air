@@ -13,7 +13,7 @@
   import { DIALOGS } from '$lib/constants/dialogs';
   import { scale, fade, fly } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
-  import { Plane, Moon, Ticket, Mail, ShieldAlert, Award } from '@lucide/svelte';
+  import { Plane, Moon, Ticket, Mail, ShieldAlert, Award, Radio, Star } from '@lucide/svelte';
 
   let {
     onSavePassport,
@@ -24,11 +24,10 @@
   }>();
 
   // Dialogue steps
-  type Step = 'welcome' | 'intro' | 'modes' | 'walkthrough' | 'auth_choice' | 'verify_code' | 'print_passport';
+  type Step = 'welcome' | 'intro' | 'modes' | 'walkthrough' | 'xp_info' | 'auth_choice' | 'verify_code' | 'print_passport';
   let currentStep = $state<Step>('welcome');
 
-  // Interactive modes helper
-  let selectedModePreview = $state<'DAL' | 'LUNA'>('DAL');
+  // Interactive modes helper uses dalStore.systemMode directly
 
   // Typewriter state
   let typedText = $state('');
@@ -68,6 +67,7 @@
     intro: DIALOGS.interactiveWelcome.intro,
     modes: DIALOGS.interactiveWelcome.modes,
     walkthrough: DIALOGS.interactiveWelcome.walkthrough,
+    xp_info: DIALOGS.interactiveWelcome.xpInfo,
     auth_choice: DIALOGS.interactiveWelcome.authChoice,
     verify_code: DIALOGS.interactiveWelcome.verifyCode,
     print_passport: DIALOGS.interactiveWelcome.printPassport
@@ -119,6 +119,8 @@
     } else if (currentStep === 'modes') {
       currentStep = 'walkthrough';
     } else if (currentStep === 'walkthrough') {
+      currentStep = 'xp_info';
+    } else if (currentStep === 'xp_info') {
       currentStep = 'auth_choice';
     }
   }
@@ -264,56 +266,48 @@
   }
 </script>
 
-<div class="fixed inset-0 bg-[#004e75]/60 backdrop-blur-md overflow-y-auto z-50 p-4 sm:p-8 flex flex-col justify-start">
-  <div class="mx-auto w-full max-w-4xl flex flex-col items-center gap-6 py-4 min-h-min">
+<div class="fixed inset-0 bg-[#004e75]/60 backdrop-blur-sm overflow-y-auto z-50 p-4 sm:p-8 flex flex-col items-center justify-start sm:justify-center">
+  <!-- Dot Pattern Background -->
+  <div class="absolute inset-0 w-full h-full  opacity-50 pointer-events-none"></div>
+  
+  <div class="w-full max-5-4xl flex flex-col items-center justify-center gap-6 py-4 pb-48 sm:pb-56 relative z-10">
     
-    <!-- Orville Dialogue Bubble wrapper (Now at the top) -->
-    <div class="w-full relative">
-      <AcnhBubble
-        title="Orville"
-        onDismiss={(currentStep !== 'auth_choice' && currentStep !== 'verify_code' && currentStep !== 'print_passport') ? advanceStep : undefined}
-      >
-        <div class="flex gap-4 items-start relative z-10">
-          <!-- Character Icon -->
-          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
-          
-          <!-- Animated / Typed Dialogue Text -->
-          <div class="flex-1 py-1">
-            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium min-h-[3.6rem]">
-              {typedText}
-              {#if !textDone}
-                <span class="inline-block w-1.5 h-5 bg-[#807256] animate-pulse ml-0.5"></span>
-              {/if}
-            </p>
-          </div>
-        </div>
-      </AcnhBubble>
-    </div>
-
     <!-- Visual Modes Demo Card Overlay during Modes step (Below the bubble) -->
     {#if currentStep === 'modes'}
       <div in:fade={{ duration: 300 }} class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
         <button
-          onclick={() => { selectedModePreview = 'DAL'; dalStore.playSound('beep'); }}
-          class="flex flex-col items-center p-6 rounded-[28px] border-4 transition-all shadow-lg text-left cursor-pointer {selectedModePreview === 'DAL' ? 'bg-[#FFCC00] border-[#E5B800] scale-105' : 'bg-white/90 hover:bg-white border-[#E0DBC5] scale-98'}"
+          onclick={() => { 
+            dalStore.systemMode = 'DAL'; 
+            localStorage.setItem('dal_system_mode', 'DAL');
+            dalStore.playSound('beep'); 
+          }}
+          class="flex flex-col items-center p-6 rounded-[28px] border-4 transition-all shadow-lg text-left cursor-pointer {dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] border-[#E5B800] scale-105' : 'bg-white/90 hover:bg-white border-[#E0DBC5] scale-98'}"
         >
-          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center text-4xl mb-4 shadow-sm">
-            🛩️
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Plane class="w-8 h-8 text-[#0084CC]" />
           </div>
-          <h3 class="text-xl font-black text-[#006094] uppercase tracking-wider mb-2">DAL Multiplayer Mode</h3>
+          <h3 class="text-xl font-black text-[#006094] uppercase tracking-wider mb-2">
+            Dodo Airlines 
+          </h3>
           <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">
             Open your airport gates with custom Dodo Codes. Host multiple standby passengers or fly to active global departures!
           </p>
         </button>
 
         <button
-          onclick={() => { selectedModePreview = 'LUNA'; dalStore.playSound('beep'); }}
-          class="flex flex-col items-center p-6 rounded-[28px] border-4 transition-all shadow-lg text-left cursor-pointer {selectedModePreview === 'LUNA' ? 'bg-[#FFCC00] border-[#E5B800] scale-105' : 'bg-white/90 hover:bg-white border-[#E0DBC5] scale-98'}"
+          onclick={() => { 
+            dalStore.systemMode = 'LUNA'; 
+            localStorage.setItem('dal_system_mode', 'LUNA');
+            dalStore.playSound('beep'); 
+          }}
+          class="flex flex-col items-center p-6 rounded-[28px] border-4 transition-all shadow-lg text-left cursor-pointer {dalStore.systemMode === 'LUNA' ? 'bg-[#FFCC00] border-[#E5B800] scale-105' : 'bg-white/90 hover:bg-white border-[#E0DBC5] scale-98'}"
         >
-          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#9b51e0] rounded-full flex items-center justify-center text-4xl mb-4 shadow-sm">
-            💤
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#9b51e0] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Moon class="w-8 h-8 text-[#9b51e0]" />
           </div>
-          <h3 class="text-xl font-black text-[#692aa1] uppercase tracking-wider mb-2">Luna Dream Mode</h3>
+          <h3 class="text-xl font-black text-[#692aa1] uppercase tracking-wider mb-2">
+          Luna's Dreamwaves
+          </h3>
           <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">
             Share and visit peaceful dream version islands. Browse cataloged Dream Addresses without waiting for open gates!
           </p>
@@ -323,21 +317,52 @@
 
     <!-- Visual explanation content during walkthrough/auth steps (Below the bubble) -->
     {#if currentStep === 'walkthrough'}
-      <div in:fade={{ duration: 300 }} class="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-2xl font-system">
-        <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-[24px] border-3 border-[#E0DBC5] p-5 text-center shadow-sm">
-          <Award class="w-10 h-10 mx-auto text-amber-500 mb-2" />
-          <h4 class="font-black text-[#006094] uppercase text-sm mb-1">1. File Flight Plan</h4>
-          <p class="text-[11px] text-[#6b6553] leading-normal font-semibold">Host guests, earn FF Miles stamps, and show off your island paradise.</p>
+      <div in:fade={{ duration: 300 }} class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl font-system">
+        <div class="flex flex-col items-center p-6 rounded-[28px] border-4 bg-white/90 border-[#E0DBC5] shadow-lg text-center">
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Award class="w-8 h-8 text-[#0084CC]" />
+          </div>
+          <h4 class="text-lg font-black text-[#006094] uppercase tracking-wider mb-2">1. Host & Earn</h4>
+          <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">Open your gates to visitors, earn FF Miles, and show off your island paradise.</p>
         </div>
-        <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-[24px] border-3 border-[#E0DBC5] p-5 text-center shadow-sm">
-          <Ticket class="w-10 h-10 mx-auto text-sky-500 mb-2" />
-          <h4 class="font-black text-[#006094] uppercase text-sm mb-1">2. Board Departures</h4>
-          <p class="text-[11px] text-[#6b6553] leading-normal font-semibold">Search gates, request standby seats, and safely verify Dodo codes before flight.</p>
+        <div class="flex flex-col items-center p-6 rounded-[28px] border-4 bg-white/90 border-[#E0DBC5] shadow-lg text-center">
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Ticket class="w-8 h-8 text-[#0084CC]" />
+          </div>
+          <h4 class="text-lg font-black text-[#006094] uppercase tracking-wider mb-2">2. Find Flights</h4>
+          <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">Search for open gates or dreams, request standby seats, and verify codes safely.</p>
         </div>
-        <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-[24px] border-3 border-[#E0DBC5] p-5 text-center shadow-sm">
-          <Plane class="w-10 h-10 mx-auto text-teal-500 mb-2" />
-          <h4 class="font-black text-[#006094] uppercase text-sm mb-1">3. Clear Skies</h4>
-          <p class="text-[11px] text-[#6b6553] leading-normal font-semibold">A beautiful, automated flight terminal with real-time airport radio chat.</p>
+        <div class="flex flex-col items-center p-6 rounded-[28px] border-4 bg-white/90 border-[#E0DBC5] shadow-lg text-center">
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Radio class="w-8 h-8 text-[#0084CC]" />
+          </div>
+          <h4 class="text-lg font-black text-[#006094] uppercase tracking-wider mb-2">3. Airport Radio</h4>
+          <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">A beautiful, automated flight terminal featuring real-time multiplayer radio chat.</p>
+        </div>
+      </div>
+    {/if}
+
+    <!-- XP Info Demo Cards -->
+    {#if currentStep === 'xp_info'}
+      <div in:fade={{ duration: 300 }} class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl font-system">
+        <div class="flex flex-col items-center p-6 rounded-[28px] border-4 bg-white/90 border-[#E0DBC5] shadow-lg text-center transform hover:scale-[1.02] transition-transform">
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#FFCC00] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Award class="w-8 h-8 text-[#FFCC00]" />
+          </div>
+          <h4 class="text-lg font-black text-[#006094] uppercase tracking-wider mb-2">Earn FF Miles</h4>
+          <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">
+            Collect Nook Miles for booking flights, hosting passengers, and completing your pilot logbook!
+          </p>
+        </div>
+
+        <div class="flex flex-col items-center p-6 rounded-[28px] border-4 bg-white/90 border-[#E0DBC5] shadow-lg text-center transform hover:scale-[1.02] transition-transform">
+          <div class="w-16 h-16 bg-[#FFF9E7] border-3 border-[#0084CC] rounded-full flex items-center justify-center mb-4 shadow-sm">
+            <Star class="w-8 h-8 text-[#0084CC]" />
+          </div>
+          <h4 class="text-lg font-black text-[#006094] uppercase tracking-wider mb-2">Unlock Stamps</h4>
+          <p class="text-xs text-[#5D5745] leading-relaxed font-semibold">
+            Discover and unlock collectible passport stamps to customize your profile and show off your achievements!
+          </p>
         </div>
       </div>
     {/if}
@@ -346,7 +371,7 @@
     {#if currentStep === 'auth_choice'}
       <div in:scale={{ duration: 300, start: 0.95, easing: backOut }} class="w-full max-w-md bg-white rounded-[32px] border-4 border-[#0084CC] p-6 shadow-2xl relative">
         <h3 class="text-lg font-black text-[#006094] uppercase tracking-wide text-center mb-4 flex items-center justify-center gap-2">
-          <Mail class="w-5 h-5" /> Access Your Passport
+          <Mail class="w-5 h-5" /> Access The Terminal 
         </h3>
         
         <form onsubmit={handleEmailSubmit} class="space-y-4 text-left">
@@ -379,7 +404,7 @@
                 <div class="animate-spin rounded-full h-4 w-4 border-2 border-t-transparent border-[#006094]"></div>
                 <span>Sending Code...</span>
               {:else}
-                <span>📩 Send Passport Code</span>
+                <span>Send Access Code</span>
               {/if}
             </button>
 
@@ -595,5 +620,32 @@
         </form>
       </div>
     {/if}
+
+  </div>
+  
+  <!-- Orville Dialogue Bubble wrapper (Fixed to bottom layout) -->
+  <div class="fixed bottom-0 left-0 right-0 p-4 sm:p-8 pointer-events-none z-50">
+    <div class="mx-auto w-full max-w-7xl pointer-events-auto">
+      <AcnhBubble
+        title="Orville"
+        isIntro={true}
+        onDismiss={(currentStep !== 'auth_choice' && currentStep !== 'verify_code' && currentStep !== 'print_passport') ? advanceStep : undefined}
+      >
+        <div class="flex gap-4 items-start relative z-10">
+          <!-- Character Icon -->
+          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
+          
+          <!-- Animated / Typed Dialogue Text -->
+          <div class="flex-1 py-1">
+            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium min-h-[3.6rem]">
+              {typedText}
+              {#if !textDone}
+                <span class="inline-block w-1.5 h-5 bg-[#807256] animate-pulse ml-0.5"></span>
+              {/if}
+            </p>
+          </div>
+        </div>
+      </AcnhBubble>
+    </div>
   </div>
 </div>
