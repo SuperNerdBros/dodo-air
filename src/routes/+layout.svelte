@@ -45,9 +45,17 @@
       window.location.hash = '#/islands';
     }
     hashPath = window.location.hash;
+    if (hashPath.startsWith('#/boarding-pass/')) {
+      const flightId = hashPath.replace('#/boarding-pass/', '');
+      if (flightId) dalStore.selectedFlightId = flightId;
+    }
 
     const onHashChange = () => {
       hashPath = window.location.hash;
+      if (hashPath.startsWith('#/boarding-pass/')) {
+        const flightId = hashPath.replace('#/boarding-pass/', '');
+        if (flightId) dalStore.selectedFlightId = flightId;
+      }
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);

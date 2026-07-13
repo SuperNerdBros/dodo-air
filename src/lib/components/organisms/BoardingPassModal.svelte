@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ticket, X, AlertCircle } from '@lucide/svelte';
+  import { Ticket, X, AlertCircle, Plane } from '@lucide/svelte';
   import type { Flight, Passport, Passenger } from '$lib/studio-types';
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
@@ -8,6 +8,7 @@
   import { scale, fade } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
   import { dalStore } from '$lib/stores/dal.svelte';
+  import QRCode from 'qrcode';
 
   let {
     selectedFlight,
@@ -41,6 +42,8 @@
   let seatLetter = $derived(['A', 'B', 'C', 'D'][seatNum % 4]);
   let seatAssigned = $derived(`${String(seatNum).padStart(2, '0')}${seatLetter}`);
   let boardingNumVal = $derived(selectedFlight ? `#${dalStore.systemMode === 'DAL' ? 'DAL' : 'LUNA'}-${selectedFlight.id.replace('DAL-', '')}-${String(seatNum).padStart(2, '0')}` : '');
+  let fromCode = $derived((passport.hasCreated ? passport.islandName : 'HOME').replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase());
+  let toCode = $derived(selectedFlight?.islandName.replace(/[^a-zA-Z]/g, '').slice(0, 3).toUpperCase() || 'DST');
   
   let planeColorObj = $derived(PLANE_COLORS.find(pc => pc.id === (selectedFlight?.planeColor || 'orange')) || PLANE_COLORS[0]);
   let capacity = $derived(selectedFlight?.capacity || (selectedFlight?.planeType === 'Switch 2' ? 12 : 8));
@@ -49,6 +52,19 @@
       ? `${(window as any).wpApiSettings.pluginUrl}public/dal.png`
       : '/dal.png'
   );
+
+  let qrCodeUrl = $state('');
+
+  $effect(() => {
+    if (selectedFlight && typeof window !== 'undefined') {
+      const url = `${window.location.origin}${window.location.pathname}#/boarding-pass/${selectedFlight.id}`;
+      QRCode.toDataURL(url, { 
+        width: 100, 
+        margin: 1,
+        color: { dark: '#1E293B', light: '#00000000' }
+      }).then((u: string) => qrCodeUrl = u);
+    }
+  });
 </script>
 
 {#if selectedFlight}
@@ -89,7 +105,10 @@
           {/if}
         </div>
         <div class="bp-header-meta">
-          <span class="bp-header-flight">{selectedFlight.id}</span>
+          <div class="bp-header-top-row">
+            <span class="bp-header-flight">{selectedFlight.id}</span>
+            <span class="bp-header-status bp-header-status--{selectedFlight.status.toLowerCase()}">{selectedFlight.status.toUpperCase()}</span>
+          </div>
           <span class="bp-header-label">{dalStore.systemMode === 'DAL' ? 'BOARDING PASS' : 'DREAM TICKET'}</span>
         </div>
         <button
@@ -108,10 +127,10 @@
         <div class="bp-airport-hero">
           <div class="bp-airport">
             <span class="bp-airport-code {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'}">
-              {(passport.hasCreated ? passport.islandName : 'HOME').slice(0,3).toUpperCase()}
+              {fromCode}
             </span>
             <span class="bp-airport-name">
-              🏝️ {passport.hasCreated ? passport.islandName : 'Home Port'}
+              {passport.hasCreated ? passport.islandName : 'Home Port'}
             </span>
             <span class="bp-airport-label">{dalStore.systemMode === 'DAL' ? 'DEPARTURE' : 'WAKING ISLAND'}</span>
           </div>
@@ -124,53 +143,36 @@
 
           <div class="bp-airport bp-airport--right">
             <span class="bp-airport-code {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'}">
-              {selectedFlight.islandName.slice(0,3).toUpperCase()}
+              {toCode}
             </span>
             <span class="bp-airport-name">
-              🏝️ {selectedFlight.islandName}
+              {selectedFlight.islandName}
             </span>
             <span class="bp-airport-label">{dalStore.systemMode === 'DAL' ? 'DESTINATION' : 'DREAM ISLAND'}</span>
           </div>
         </div>
 
-        <!-- ── PASSENGER INFO ROW ── -->
-        <div class="bp-info-grid">
-          <div class="bp-info-field">
+        <!-- ── PASSENGER DATA GRID ── -->
+        <div class="bp-data-grid bp-data-grid--simplified">
+          <div class="bp-data-cell">
             <span class="bp-field-label">PASSENGER NAME</span>
-            <span class="bp-field-value">{passport.hasCreated ? passport.villagerName : 'GUEST PASSENGER'}</span>
+            <span class="bp-field-value font-mono">{(passport.hasCreated ? passport.villagerName : 'GUEST PASSENGER').toUpperCase()}</span>
           </div>
-          <div class="bp-info-field">
-            <span class="bp-field-label">HOST</span>
-            <span class="bp-field-value">{selectedFlight.hostName}</span>
-          </div>
-          <div class="bp-info-field">
-            <span class="bp-field-label">{dalStore.systemMode === 'DAL' ? 'AIRCRAFT' : 'VESSEL'}</span>
-            <span class="bp-field-value" style="color: {planeColorObj.hex}">
-              {dalStore.systemMode === 'DAL' ? `${selectedFlight.planeType || 'Switch'} · ${planeColorObj.name}` : 'Slumber Gateway'}
-            </span>
-          </div>
-        </div>
 
-        <!-- ── GATE / SEAT / STATUS STRIP ── -->
-        <div class="bp-strip {dalStore.systemMode === 'DAL' ? 'bp-strip--dal' : 'bp-strip--luna'}">
-          <div class="bp-strip-cell">
-            <span class="bp-strip-label">{dalStore.systemMode === 'DAL' ? 'GATE' : 'ZONE'}</span>
-            <span class="bp-strip-value">{selectedFlight.gate}</span>
+          <div class="bp-data-cell bp-data-cell--plane">
+            <span class="bp-field-label">{dalStore.systemMode === 'DAL' ? 'AIRCRAFT' : 'VESSEL'}</span>
+            <div style="color: {planeColorObj.hex};" class="mt-2">
+              {#if dalStore.systemMode === 'DAL'}
+                <Plane class="w-10 h-10" strokeWidth={2.5} />
+              {:else}
+                <span class="text-4xl">🌙</span>
+              {/if}
+            </div>
           </div>
-          <div class="bp-strip-divider"></div>
-          <div class="bp-strip-cell">
-            <span class="bp-strip-label">SEAT</span>
-            <span class="bp-strip-value">{seatAssigned}</span>
-          </div>
-          <div class="bp-strip-divider"></div>
-          <div class="bp-strip-cell">
-            <span class="bp-strip-label">CLASS</span>
-            <span class="bp-strip-value">ECO</span>
-          </div>
-          <div class="bp-strip-divider"></div>
-          <div class="bp-strip-cell">
-            <span class="bp-strip-label">STATUS</span>
-            <span class="bp-strip-value bp-strip-status">{selectedFlight.status}</span>
+
+          <div class="bp-data-cell">
+            <span class="bp-field-label">HOST</span>
+            <span class="bp-field-value font-mono">{selectedFlight.hostName.toUpperCase()}</span>
           </div>
         </div>
 
@@ -239,18 +241,18 @@
       <div class="bp-stub">
         <div class="bp-stub-info">
           <span class="bp-stub-label">BOARDING №</span>
-          <span class="bp-stub-value">{boardingNumVal}</span>
+          <span class="bp-stub-value font-mono">{boardingNumVal}</span>
           <span class="bp-stub-label mt-2">{dalStore.systemMode === 'DAL' ? 'GATE' : 'ZONE'}</span>
-          <span class="bp-stub-value">{selectedFlight.gate}</span>
+          <span class="bp-stub-value font-mono">{selectedFlight.gate}</span>
           <span class="bp-stub-label mt-2">SEAT</span>
-          <span class="bp-stub-value">{seatAssigned}</span>
+          <span class="bp-stub-value font-mono">{seatAssigned}</span>
         </div>
 
-        <!-- Vertical barcode -->
+        <!-- QR Code -->
         <div class="bp-barcode">
-          {#each [2, 1, 3, 1, 2, 4, 1, 3, 1, 2, 1, 4, 2, 1, 3, 2, 1, 4, 1, 2] as h}
-            <div class="bp-barcode-bar" style="height: {h * 8 + 16}px"></div>
-          {/each}
+          {#if qrCodeUrl}
+            <img src={qrCodeUrl} alt="Boarding Pass QR Code" class="w-[72px] h-[72px] opacity-90 mix-blend-multiply" />
+          {/if}
         </div>
 
         <div class="bp-stub-right">
@@ -300,7 +302,12 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: 4px;
+  }
+  .bp-header-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .bp-header-flight {
     font-size: 1.1rem;
@@ -308,11 +315,26 @@
     letter-spacing: 0.1em;
     color: #FFCC00;
   }
+  .bp-header-status {
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+  .bp-header-status--scheduled { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.5); color: #86efac; }
+  .bp-header-status--open       { background: rgba(34,197,94,0.25); border-color: rgba(34,197,94,0.5); color: #86efac; }
+  .bp-header-status--closed     { background: rgba(239,68,68,0.25);  border-color: rgba(239,68,68,0.5);  color: #fca5a5; }
+  .bp-header-status--departed   { background: rgba(156,163,175,0.25);border-color: rgba(156,163,175,0.5);color: #d1d5db; }
   .bp-header-label {
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.15em;
-    opacity: 0.75;
+    opacity: 0.6;
     text-transform: uppercase;
   }
 
@@ -390,66 +412,49 @@
   .bp-route-line { flex: 1; height: 2px; width: 30px; }
   .bp-plane-icon { font-size: 1.2rem; }
 
-  /* ── Info Grid ── */
-  .bp-info-grid {
+  /* ── Data Grid ── */
+  .bp-data-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    padding: 10px 12px;
-    background: #F8FAFF;
+    grid-template-columns: 1fr 90px;
+    gap: 1px;
+    background: #E2E8F0;
     border-radius: 12px;
+    overflow: hidden;
     border: 1px solid #E2E8F0;
   }
-  .bp-info-field { display: flex; flex-direction: column; gap: 2px; }
+  .bp-data-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 12px;
+    background: #F8FAFF;
+  }
+  .bp-data-cell--plane {
+    grid-row: span 2;
+    align-items: center;
+    justify-content: center;
+  }
+
   .bp-field-label {
-    font-size: 0.55rem;
+    font-size: 0.5rem;
     font-weight: 800;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.13em;
     color: #9CA3AF;
     text-transform: uppercase;
   }
   .bp-field-value {
-    font-size: 0.8rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #1E293B;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
   }
-
-  /* ── Gate/Seat/Status Strip ── */
-  .bp-strip {
-    display: flex;
-    align-items: stretch;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid;
-  }
-  .bp-strip--dal  { border-color: #0084CC; background: #EBF7FF; }
-  .bp-strip--luna { border-color: #4B0082; background: #F4EEFF; }
-
-  .bp-strip-cell {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 8px 4px;
-    gap: 3px;
-  }
-  .bp-strip-label {
-    font-size: 0.5rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    color: #9CA3AF;
-  }
-  .bp-strip-value {
-    font-size: 1rem;
+  .bp-field-value--lg {
+    font-size: 1.4rem;
     font-weight: 900;
     color: #1E293B;
     letter-spacing: 0.02em;
-  }
-  .bp-strip-status { color: #D97706; }
-  .bp-strip-divider {
-    width: 1px;
-    background: rgba(0,0,0,0.1);
-    margin: 6px 0;
+    line-height: 1;
   }
 
   /* ── Action Zone ── */
