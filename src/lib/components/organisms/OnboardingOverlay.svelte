@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { formatFriendCode } from '$lib/utils/format';
   import type { Passport } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import {
@@ -85,11 +86,9 @@
 
   function updateFriendCode(e: Event) {
     const target = e.target as HTMLInputElement;
-    let val = target.value;
-    if (!val.toUpperCase().startsWith('SW-')) {
-      val = 'SW-' + val.replace(/^SW-?/i, '');
-    }
-    passportForm.friendCode = val;
+    const formatted = formatFriendCode(target.value);
+    passportForm.friendCode = formatted;
+    target.value = formatted;
   }
 </script>
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { AlertCircle, Sparkles, RefreshCw, Compass } from '@lucide/svelte';
   import type { Flight, Passport, StandbyRequest, FlightStatus, UserProfile } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
@@ -75,6 +76,11 @@
     }
     handleUpdateStatus(myFlight.id, 'Boarding', cleanDodo);
   }
+
+  onMount(() => {
+    const renderTime = performance.now();
+    console.log(`[Diagnostic] CockpitTab mounted and rendered at ${renderTime.toFixed(2)}ms`);
+  });
 </script>
 
 <div class="max-w-4xl mx-auto">
@@ -98,9 +104,22 @@
         <p class="text-xs text-slate-400 font-system mt-1 uppercase tracking-wider font-bold text-center">
           {dalStore.systemMode === 'DAL' ? 'PARKED & FUELED - READY TO WELCOME VISITORS' : 'BED PREPARED - READY TO SHARE YOUR DREAM'}
         </p>
+        
+        <!-- XP Progression Display -->
+        <div class="flex items-center justify-center gap-4 mt-4">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-2.5 text-slate-600 font-system shadow-sm flex items-center gap-3">
+            <div class="bg-amber-100 text-amber-500 w-8 h-8 rounded-full flex items-center justify-center shadow-inner text-sm">
+              <Sparkles class="w-4 h-4 fill-current" />
+            </div>
+            <div class="text-left leading-tight">
+              <span class="block text-[9px] text-slate-400 uppercase font-black tracking-wider">LIFETIME XP</span>
+              <span class="font-bold text-sm text-[#0084CC]">{dalStore.passport.xp?.toLocaleString() || 0} <span class="text-[10px] text-slate-400">XP</span></span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur [Co-Pilot]' : 'Luna'}>
+      <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur' : 'Luna'}>
         <div class="flex gap-4 items-start relative z-10 text-left">
           <!-- Character Icon -->
           <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
@@ -109,11 +128,11 @@
           
           <!-- Text Content -->
           <div class="flex-1">
-            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
+            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
               {#if dalStore.systemMode === 'DAL'}
-                "Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!"
+                Roger that! Seaplane engine oil looking steady, props balanced. File your flight plan to schedule your departure. You can provide your Dodo Code™ now to open the gates immediately, or add it later when you're ready to board!
               {:else}
-                "Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island."
+                Welcome to the library of dreams... Plan your slumber now. You may provide your Doze Code immediately, or wait until you are fully ready to let others drift into your island.
               {/if}
             </p>
           </div>
@@ -152,7 +171,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} mb-1.5 uppercase tracking-wider font-bold">
-              {dalStore.systemMode === 'DAL' ? 'DODO CODE (OPTIONAL TO SCHEDULE)' : 'DOZE CODE (OPTIONAL TO SCHEDULE)'}
+              {dalStore.systemMode === 'DAL' ? 'DODO CODE' : 'DOZE CODE'}
             </label>
             <input
               type="text"
@@ -274,14 +293,14 @@
       </div>
 
       {#if !myFlight.dodoCode}
-        <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur [Co-Pilot]' : 'Luna'}>
+        <AcnhBubble title={dalStore.systemMode === 'DAL' ? 'Wilbur ' : 'Luna'}>
           <div class="flex gap-4 items-start relative z-10 text-left">
             <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
               {dalStore.systemMode === 'DAL' ? '🦤' : '🔮'}
             </div>
             
             <div class="flex-1 space-y-3">
-              <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system">
+              <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
                 {#if dalStore.systemMode === 'DAL'}
                   "Your flight is scheduled! Whenever you're ready to open the gates, just give me your 5-digit Dodo Code™ and we'll clear you for boarding."
                 {:else}

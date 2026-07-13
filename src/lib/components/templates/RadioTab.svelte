@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Compass, Ticket, Plane, BookOpen, Eye, Users, Cloud } from '@lucide/svelte';
+  import { Compass, Ticket, Plane, BookOpen, Eye, Users, Cloud, Send, Wifi } from '@lucide/svelte';
   import type { ChatterMessage, Passport, UserProfile } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { dalStore } from '$lib/stores/dal.svelte';
   import { onMount, tick } from 'svelte';
+  import { slide } from 'svelte/transition';
 
   let {
     chatter,
@@ -45,137 +46,592 @@
               (islandName ? prof.islandName.toLowerCase() === islandName.toLowerCase() : true)
     );
   }
+
+  const getInitials = (name: string) => name.substring(0, 2).toUpperCase();
 </script>
 
-<div class="h-full flex flex-col">
+<!-- DAL Tower Radio Panel — ACNH Aesthetic -->
+<div class="radio-panel h-full flex flex-col">
 
-  <!-- Terminal Tower Radio Chat Feed -->
-  <div class="w-full flex flex-col h-full">
-    
-    <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4 text-left">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">📻</span>
-        <div>
-          <h2 class="text-base font-black text-[#0084CC] font-system font-bold">DAL Tower Radio</h2>
-          <span class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-widest mt-0.5 block">RADIO OVER THE AIRWAVES</span>
+  <!-- ═══ Header Bar ═══ -->
+  <div class="radio-header">
+    <div class="radio-header__left">
+      <div class="radio-header__icon">
+        <span class="radio-header__icon-emoji">📻</span>
+        <div class="radio-header__signal">
+          <span class="radio-signal-dot"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay1"></span>
+          <span class="radio-signal-dot radio-signal-dot--delay2"></span>
         </div>
       </div>
-      <span class="bg-emerald-50 text-emerald-700 border border-emerald-100 px-2 py-0.5 rounded-full text-[8.5px] font-mono font-black uppercase font-bold">
-        ACTIVE
-      </span>
+      <div>
+        <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
+        <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
+      </div>
     </div>
+    <div class="radio-header__badge font-system">
+      <Wifi class="w-3 h-3" />
+      ON AIR
+    </div>
+  </div>
 
-    <!-- Chat feed box -->
-    <div bind:this={chatContainerRef} class="flex-1 overflow-y-auto mb-4 pr-1 text-left custom-scrollbar space-y-3.5">
-      {#each chatter as msg (msg.id)}
-        {@const isOrville = msg.type === 'orville'}
-        {@const isWilbur = msg.type === 'wilbur'}
-        {@const isSystem = msg.type === 'system'}
+  <!-- ═══ Chat Feed ═══ -->
+  <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
+    {#each chatter as msg (msg.id)}
+      {@const isOrville = msg.type === 'orville'}
+      {@const isWilbur = msg.type === 'wilbur'}
+      {@const isSystem = msg.type === 'system'}
+      {@const isNpc = isOrville || isWilbur}
 
-        {#if isSystem}
-          <div class="text-[10px] text-slate-500 bg-[#FAF8F2] border border-[#E6DFC7]/50 p-2 rounded-xl text-center font-mono font-bold leading-normal">
-            {msg.text}
+      {#if isSystem}
+        <div class="radio-msg radio-msg--system font-system" transition:slide={{ duration: 200 }}>
+          <div class="radio-msg__system-icon">📢</div>
+          {msg.text}
+        </div>
+      {:else if isNpc}
+        <div class="radio-msg radio-msg--npc" transition:slide={{ duration: 200 }}>
+          <div class="radio-avatar radio-avatar--npc">
+            {isOrville ? '🦤' : '🕶️'}
           </div>
-        {:else if isOrville || isWilbur}
-          <div class="flex gap-2.5 items-start">
-            <div class="w-8 h-8 rounded-full bg-[#EBF8FF] border border-[#0084CC]/20 flex-shrink-0 flex items-center justify-center text-lg shadow-xs">
-              {isOrville ? '🦤' : '🕶️'}
-            </div>
-            <div class="flex-1 bg-[#F0F9FF] border-2 border-[#0084CC]/20 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-              <span class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5 font-bold">
+          <div class="radio-bubble radio-bubble--npc">
+            <span class="radio-bubble__sender font-system">
+              {msg.sender}
+              <span class="radio-bubble__npc-tag font-system">{isOrville ? 'TOWER' : 'PILOT'}</span>
+            </span>
+            <p class="radio-bubble__text">{msg.text}</p>
+          </div>
+        </div>
+      {:else}
+        <div class="radio-msg radio-msg--user" transition:slide={{ duration: 200 }}>
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <div 
+            class="radio-avatar radio-avatar--user font-system"
+            onclick={() => {
+              const p = getProfile(msg.sender, msg.island);
+              if (p) {
+                openProfileModal(p.friendCode);
+              } else {
+                openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
+              }
+            }}
+            title="View profile"
+          >
+            {getInitials(msg.sender)}
+          </div>
+          <div class="radio-bubble radio-bubble--user">
+            <span class="radio-bubble__sender font-system">
+              <!-- svelte-ignore a11y_click_events_have_key_events -->
+              <!-- svelte-ignore a11y_no_static_element_interactions -->
+              <span 
+                onclick={() => {
+                  const p = getProfile(msg.sender, msg.island);
+                  if (p) {
+                    openProfileModal(p.friendCode);
+                  } else {
+                    openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
+                  }
+                }}
+                class="hover:underline cursor-pointer"
+                title="View chat user profile"
+              >
                 {msg.sender}
               </span>
-              <p class="font-sans font-semibold leading-relaxed text-left">{msg.text}</p>
-            </div>
-          </div>
-        {:else}
-          <div class="flex gap-2.5 items-start">
-            <div class="w-8 h-8 rounded-full bg-[#FFF9E7] border border-[#FFCC00] text-[#006094] flex-shrink-0 flex items-center justify-center text-xs font-black shadow-xs font-bold">
-              {msg.sender.substring(0, 2).toUpperCase()}
-            </div>
-            <div class="flex-1 bg-white border-2 border-slate-100 rounded-2xl p-2.5 text-xs text-[#4A4A4A]">
-              <span class="font-system font-black text-[#0084CC] text-[10px] block mb-0.5">
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <span 
-                  onclick={() => {
-                    const p = getProfile(msg.sender, msg.island);
-                    if (p) {
-                      openProfileModal(p.friendCode);
-                    } else {
-                      openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
-                    }
-                  }}
-                  class="hover:underline cursor-pointer font-black text-[#0084CC] font-bold"
-                  title="View chat user profile"
-                >
-                  {msg.sender}
+              {#if msg.island}
+                <span class="radio-bubble__island font-mono">🏝️ {msg.island}</span>
+              {/if}
+              {#if getProfile(msg.sender, msg.island)}
+                {@const p = getProfile(msg.sender, msg.island)}
+                <span class="radio-bubble__trust-badge font-system">
+                  🍏 {p?.goodApples || 0}
+                  {#if p && p.rottenTurnips > 0}
+                    <span class="radio-bubble__trust-bad">|🧅 {p.rottenTurnips}</span>
+                  {/if}
                 </span>
-                {#if msg.island}
-                  <span class="text-slate-400 font-mono text-[8.5px] font-bold"> from '{msg.island}'</span>
-                {/if}
-                {#if getProfile(msg.sender, msg.island)}
-                  {@const p = getProfile(msg.sender, msg.island)}
-                  <span class="inline-flex items-center gap-0.5 text-[8px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full px-1.5 py-0.1 font-black ml-1.5 font-bold">
-                    🍏 {p?.goodApples || 0}
-                    {#if p && p.rottenTurnips > 0}
-                      <span class="text-rose-700 font-bold">|🧅 {p.rottenTurnips}</span>
-                    {/if}
-                  </span>
-                {/if}
-              </span>
-              <p class="font-sans leading-relaxed text-left font-semibold">{msg.text}</p>
-            </div>
+              {/if}
+            </span>
+            <p class="radio-bubble__text">{msg.text}</p>
           </div>
-        {/if}
-      {/each}
+        </div>
+      {/if}
+    {/each}
+
+    {#if chatter.length === 0}
+      <div class="radio-empty">
+        <div class="radio-empty__icon">📡</div>
+        <p class="radio-empty__text font-system">Scanning frequencies...</p>
+        <p class="radio-empty__sub">No chatter on this channel yet. Be the first to transmit!</p>
+      </div>
+    {/if}
+  </div>
+
+  <!-- ═══ Input Dock ═══ -->
+  <form onsubmit={handlePostChat} class="radio-input-dock">
+    <div class="radio-input-dock__fields">
+      <div class="radio-field">
+        <label for="radio-callsign-tpl" class="radio-field__label font-system">NAME</label>
+        <input
+          id="radio-callsign-tpl"
+          type="text"
+          bind:value={chatSender}
+          placeholder="Your Name"
+          class="radio-field__input font-sans"
+          maxlength="14"
+        />
+      </div>
+      <div class="radio-field">
+        <label for="radio-island-tpl" class="radio-field__label font-system">ISLAND</label>
+        <input
+          id="radio-island-tpl"
+          type="text"
+          bind:value={chatIsland}
+          placeholder="Island Name"
+          class="radio-field__input font-sans"
+          maxlength="14"
+        />
+      </div>
     </div>
 
-    <!-- Chat Input form -->
-    <form onsubmit={handlePostChat} class="border-t border-slate-100 pt-4 text-xs space-y-3 text-left">
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label for="villager-callsign" class="block text-[8px] uppercase font-mono font-black text-[#0084CC] mb-0.5 font-bold">VILLAGER CALLSIGN</label>
-          <input
-            id="villager-callsign"
-            type="text"
-            bind:value={chatSender}
-            placeholder="Your Name"
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none"
-            maxlength="14"
-          />
-        </div>
-        <div>
-          <label for="island-id" class="block text-[8px] uppercase font-mono font-black text-[#0084CC] mb-0.5 font-bold">ISLAND ID</label>
-          <input
-            id="island-id"
-            type="text"
-            bind:value={chatIsland}
-            placeholder="Island Name"
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 font-bold outline-none"
-            maxlength="14"
-          />
-        </div>
-      </div>
-
-      <div class="flex gap-2">
-        <input
-          type="text"
-          bind:value={chatText}
-          placeholder={chatSender ? "Submit airport chatter dispatch..." : "Register name above to chat"}
-          disabled={!chatSender.trim()}
-          class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:bg-white"
-          maxlength="100"
-        />
-        <button
-          type="submit"
-          disabled={!chatSender.trim() || !chatText.trim() || isPostingChat}
-          class="bg-[#0084CC] hover:bg-[#006094] disabled:opacity-40 text-white px-4.5 rounded-xl font-system font-black uppercase text-xs flex items-center justify-center flex-shrink-0 cursor-pointer font-bold border-none"
-        >
-          Send
-        </button>
-      </div>
-    </form>
-
-  </div>
+    <div class="radio-input-dock__send-row">
+      <input
+        type="text"
+        bind:value={chatText}
+        placeholder={chatSender ? "Transmit on the airwaves..." : "Enter callsign to transmit"}
+        disabled={!chatSender.trim()}
+        class="radio-field__input radio-field__input--message font-sans"
+        maxlength="100"
+      />
+      <button
+        type="submit"
+        disabled={!chatSender.trim() || !chatText.trim() || isPostingChat}
+        class="radio-send-btn btn-acnh btn-acnh-primary font-system"
+      >
+        <Send class="w-4 h-4" />
+        Send
+      </button>
+    </div>
+  </form>
 </div>
+
+<style>
+  /* ─── Panel Container ─── */
+  .radio-panel {
+    background: #FDF8E3;
+    border: 3px solid #E6DFC7;
+    border-bottom-width: 5px;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow:
+      0 6px 0 0 #D4CDB5,
+      0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  /* ─── Header ─── */
+  .radio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #0084CC 0%, #0095E8 100%);
+    border-bottom: 4px solid #005788;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .radio-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(255, 204, 0, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .radio-header__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1;
+  }
+
+  .radio-header__icon {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    background: #FFCC00;
+    border: 3px solid #E5B800;
+    border-bottom-width: 4px;
+    border-bottom-color: #CC9900;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 0 0 #CC9900;
+    flex-shrink: 0;
+  }
+
+  .radio-header__icon-emoji {
+    font-size: 22px;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+  }
+
+  .radio-header__signal {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .radio-signal-dot {
+    width: 5px;
+    height: 5px;
+    background: #43b581;
+    border-radius: 50%;
+    animation: signal-pulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 6px rgba(67, 181, 129, 0.6);
+  }
+
+  .radio-signal-dot--delay1 {
+    animation-delay: 0.3s;
+  }
+
+  .radio-signal-dot--delay2 {
+    animation-delay: 0.6s;
+  }
+
+  @keyframes signal-pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .radio-header__title {
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .radio-header__subtitle {
+    font-size: 8px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .radio-header__badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #43b581;
+    color: white;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 2px solid #3ca374;
+    border-bottom-width: 3px;
+    border-bottom-color: #2d8c5e;
+    box-shadow: 0 2px 0 0 #2d8c5e;
+    z-index: 1;
+    text-transform: uppercase;
+    animation: badge-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes badge-glow {
+    0% { box-shadow: 0 2px 0 0 #2d8c5e, 0 0 8px rgba(67, 181, 129, 0.2); }
+    100% { box-shadow: 0 2px 0 0 #2d8c5e, 0 0 16px rgba(67, 181, 129, 0.5); }
+  }
+
+  /* ─── Chat Feed ─── */
+  .radio-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 16px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 200px;
+    text-align: left;
+    background:
+      linear-gradient(180deg, rgba(253, 248, 227, 0) 0%, rgba(240, 235, 210, 0.3) 100%),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(200, 190, 160, 0.08) 39px,
+        rgba(200, 190, 160, 0.08) 40px
+      );
+  }
+
+  /* ─── Message Styles ─── */
+  .radio-msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .radio-msg--system {
+    justify-content: center;
+    gap: 6px;
+    align-items: center;
+    background: rgba(230, 223, 199, 0.35);
+    border: 1.5px dashed rgba(200, 190, 160, 0.5);
+    border-radius: 16px;
+    padding: 8px 14px;
+    font-size: 10px;
+    font-weight: 800;
+    color: #8C7A5A;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+
+  .radio-msg__system-icon {
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ─── Avatars ─── */
+  .radio-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+    border-width: 2.5px;
+    border-style: solid;
+    box-shadow: 0 3px 0 0 rgba(0, 0, 0, 0.08);
+  }
+
+  .radio-avatar--npc {
+    background: linear-gradient(135deg, #EBF8FF 0%, #D6F0FF 100%);
+    border-color: #0084CC;
+    box-shadow: 0 3px 0 0 rgba(0, 132, 204, 0.15);
+  }
+
+  .radio-avatar--user {
+    background: linear-gradient(135deg, #FFCC00 0%, #FFD633 100%);
+    border-color: #E5B800;
+    color: #006094;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    box-shadow: 0 3px 0 0 rgba(204, 153, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .radio-avatar--user:hover {
+    transform: scale(1.1);
+  }
+
+  /* ─── Bubbles ─── */
+  .radio-bubble {
+    flex: 1;
+    border-radius: 18px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #4A4A4A;
+    border-width: 2px;
+    border-style: solid;
+    border-bottom-width: 3px;
+    position: relative;
+  }
+
+  .radio-bubble--npc {
+    background: linear-gradient(135deg, #F0F9FF 0%, #E8F4FD 100%);
+    border-color: rgba(0, 132, 204, 0.2);
+    border-bottom-color: rgba(0, 132, 204, 0.25);
+  }
+
+  .radio-bubble--user {
+    background: white;
+    border-color: #E8E4D8;
+    border-bottom-color: #D4CDB5;
+  }
+
+  .radio-bubble__sender {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #0084CC;
+    margin-bottom: 3px;
+    flex-wrap: wrap;
+  }
+
+  .radio-bubble__npc-tag {
+    font-size: 8px;
+    font-weight: 900;
+    background: #0084CC;
+    color: white;
+    padding: 1px 7px;
+    border-radius: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .radio-bubble__island {
+    font-size: 9px;
+    font-weight: 700;
+    color: #8C7A5A;
+    background: rgba(230, 223, 199, 0.5);
+    padding: 1px 7px;
+    border-radius: 8px;
+  }
+
+  .radio-bubble__trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 8px;
+    font-weight: 900;
+    background: #ecfdf5;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 1px 7px;
+  }
+
+  .radio-bubble__trust-bad {
+    color: #be123c;
+    font-weight: 900;
+  }
+
+  .radio-bubble__text {
+    margin: 0;
+    font-weight: 600;
+    word-break: break-word;
+    text-align: left;
+  }
+
+  /* ─── Empty State ─── */
+  .radio-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    gap: 6px;
+  }
+
+  .radio-empty__icon {
+    font-size: 40px;
+    animation: scan-rotate 3s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  @keyframes scan-rotate {
+    0%, 100% { transform: rotate(-15deg); }
+    50% { transform: rotate(15deg); }
+  }
+
+  .radio-empty__text {
+    font-size: 14px;
+    font-weight: 900;
+    color: #0084CC;
+    margin: 0;
+  }
+
+  .radio-empty__sub {
+    font-size: 11px;
+    color: #8C7A5A;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  /* ─── Input Dock ─── */
+  .radio-input-dock {
+    padding: 14px 16px 16px;
+    border-top: 3px solid #E6DFC7;
+    background: linear-gradient(180deg, #FAF5E0 0%, #F5F0D8 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .radio-input-dock__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .radio-input-dock__send-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* ─── Field Styles ─── */
+  .radio-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .radio-field__label {
+    font-size: 8px;
+    font-weight: 900;
+    color: #0084CC;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .radio-field__input {
+    width: 100%;
+    background: white;
+    border: 2px solid #E8E4D8;
+    border-bottom-width: 3px;
+    border-bottom-color: #D4CDB5;
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4A4A4A;
+    outline: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.03);
+  }
+
+  .radio-field__input:focus {
+    border-color: #0084CC;
+    border-bottom-color: #005788;
+    background: #FAFEFF;
+    box-shadow: 0 2px 0 0 rgba(0, 132, 204, 0.1), 0 0 0 3px rgba(0, 132, 204, 0.08);
+  }
+
+  .radio-field__input::placeholder {
+    color: #C0B89E;
+    font-weight: 600;
+  }
+
+  .radio-field__input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .radio-field__input--message {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ─── Send Button ─── */
+  .radio-send-btn {
+    padding: 8px 18px;
+    font-size: 12px;
+    gap: 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+</style>

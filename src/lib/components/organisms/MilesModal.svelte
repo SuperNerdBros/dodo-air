@@ -15,7 +15,7 @@
         <Box class="flex items-center gap-2">
           <Box class="w-9 h-9 bg-[#FFCC00] rounded-full flex items-center justify-center text-xl shadow-xs">🎟️</Box>
           <Box>
-            <Text tag="h3" class="font-system font-black text-base text-[#0084CC] uppercase leading-none">NookPhone Dodo Miles+</Text>
+            <Text tag="h3" class="font-system font-black text-base text-[#0084CC] uppercase leading-none">NookPhone FF Miles+</Text>
             <Text tag="span" class="text-xs font-system font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</Text>
           </Box>
         </Box>
@@ -26,13 +26,13 @@
 
       <Box class="bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-3xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
         <Box>
-          <Text tag="span" class="text-xs font-system font-black text-[#85806B] uppercase tracking-wider block">CURRENT MILES BALANCE</Text>
+          <Text tag="span" class="text-xs font-system font-black text-[#85806B] uppercase tracking-wider block">CURRENT FF MILES BALANCE</Text>
           <Text tag="span" class="text-3xl font-system font-black text-[#FF9F43] tracking-wider leading-none mt-1 block">
-            {(dalStore.passport.miles ?? 2000).toLocaleString()} <Text tag="span" class="text-xs font-sans text-slate-400 font-bold uppercase">Miles</Text>
+            {(dalStore.passport.miles ?? 2000).toLocaleString()} <Text tag="span" class="text-xs font-sans text-slate-400 font-bold uppercase">FF Miles</Text>
           </Text>
         </Box>
         <Box class="text-right text-sm text-slate-400 font-system italic max-w-xs leading-normal">
-          "Gather Dodo Miles by completing airport milestones! Redeem them for safe flight passage or premium pilot credentials."
+          "Gather FF Miles by completing airport milestones! Redeem them for safe flight passage or premium pilot credentials."
         </Box>
       </Box>
 
@@ -77,7 +77,7 @@
                   </Text>
                 {:else if isAchieved}
                   <Button onclick={() => dalStore.claimStampMiles(challenge.id, challenge.miles)} class="bg-red-500 hover:bg-red-600 text-white font-system font-black text-xs px-2.5 py-1 rounded-full shadow-xs uppercase tracking-wider animate-pulse transition-all active:scale-95">
-                    🎁 CLAIM {challenge.miles} MILES
+                    🎁 CLAIM {challenge.miles} FF MILES
                   </Button>
                 {:else}
                   <Text tag="span" class="text-xs font-system font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full uppercase">

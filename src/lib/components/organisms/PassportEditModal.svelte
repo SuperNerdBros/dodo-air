@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { formatFriendCode, formatDreamAddress } from '$lib/utils/format';
   import type { Passport } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import {
@@ -50,20 +51,16 @@
 
   function updateFriendCode(e: Event) {
     const target = e.target as HTMLInputElement;
-    let val = target.value;
-    if (!val.toUpperCase().startsWith('SW-')) {
-      val = 'SW-' + val.replace(/^SW-?/i, '');
-    }
-    form.friendCode = val;
+    const formatted = formatFriendCode(target.value);
+    form.friendCode = formatted;
+    target.value = formatted;
   }
 
   function updateDreamAddress(e: Event) {
     const target = e.target as HTMLInputElement;
-    let val = target.value;
-    if (val && !val.toUpperCase().startsWith('DA-')) {
-      val = 'DA-' + val.replace(/^DA-?/i, '');
-    }
-    form.dreamAddress = val;
+    const formatted = formatDreamAddress(target.value);
+    form.dreamAddress = formatted;
+    target.value = formatted;
   }
 </script>
 

@@ -48,7 +48,7 @@
 
       <Box class="flex items-center justify-between bg-amber-50 border border-amber-200/50 rounded-2xl p-2.5 text-xs font-bold text-[#80765A]">
         <Text tag="span" class="flex items-center gap-1.5 text-[#FF9F43] font-system text-xs font-black uppercase">
-          🎟️ Dodo Miles:
+          🎟️ FF Miles:
         </Text>
         <Text tag="span" class="font-system text-amber-700 text-sm font-black">
           {(dalStore.passport.miles ?? 2000).toLocaleString()}

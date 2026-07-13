@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Plane, Calendar, Clock, RefreshCw, VolumeX, Volume2, Moon, CloudMoon } from '@lucide/svelte';
+  import { Plane, Calendar, Clock, RefreshCw, VolumeX, Volume2, Moon, CloudMoon, Users, Ticket } from '@lucide/svelte';
   import Box from '../atoms/Box.atom.svelte';
   import Text from '../atoms/Text.atom.svelte';
   import Button from '../atoms/Button.atom.svelte';
@@ -12,7 +12,12 @@
     ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dalStore.liveTime.getDay()]
   );
   let formattedDate = $derived(
-    `${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][dalStore.liveTime.getMonth()]} ${dalStore.liveTime.getDate()}, ${dalStore.liveTime.getFullYear()}`
+    (() => {
+      const month = String(dalStore.liveTime.getMonth() + 1).padStart(2, '0');
+      const date = String(dalStore.liveTime.getDate()).padStart(2, '0');
+      const year = String(dalStore.liveTime.getFullYear()).slice(-2);
+      return `${month}/${date}/${year}`;
+    })()
   );
   let formattedTime = $derived(
     dalStore.liveTime.toLocaleTimeString('en-US', {
@@ -38,7 +43,6 @@
       ? `${(window as any).wpApiSettings.pluginUrl}public/dal.png`
       : '/dal.png'
   );
-
 </script>
 
 <Box tag="header" class="w-full mb-6 {dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] border-[#FFCC00] shadow-[0_8px_32px_rgba(0,132,204,0.15)]' : 'bg-[#4B0082] border-[#DDA0DD] shadow-[0_8px_32px_rgba(75,0,130,0.15)]'} text-white rounded-[24px] p-3.5 lg:p-4 border-b-4 flex flex-col lg:flex-row items-center justify-between gap-4 relative z-50 transition-all duration-500">
@@ -71,13 +75,30 @@
           </Text>
         {/if}
       </Box>
-      <h1 class="text-xl lg:text-2xl font-black tracking-normal text-white drop-shadow-sm mt-0.5">
+      <h1 class="text-xl lg:text-2xl font-black tracking-normal text-white drop-shadow-sm mt-0.5 leading-none">
         {#if dalStore.systemMode === 'DAL'}
           <span class="text-[#FFCC00]">Booking Terminal</span>
         {:else}
           Luna's <span class="text-[#DDA0DD]">Dream Library</span>
         {/if}
       </h1>
+      <Box class="flex items-center gap-3 mt-1.5 text-[10px] font-medium text-white font-system uppercase tracking-wider opacity-90 drop-shadow-sm">
+        <Box class="flex items-center gap-1.5">
+          <Users class="w-3 h-3 opacity-80" />
+          <span>{dalStore.totalIslanders} Users</span>
+        </Box>
+        <Box class="flex items-center gap-1.5">
+          <span class="relative flex h-2 w-2 ml-0.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          <span>{dalStore.onlineIslanders} Online</span>
+        </Box>
+        <Box class="flex items-center gap-1.5">
+          <Ticket class="w-3.5 h-3.5 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
+          <span>{dalStore.systemMode === 'DAL' ? 'FF MILES' : 'DREAM DUST'} {dalStore.passport.miles?.toLocaleString() || 0}</span>
+        </Box>
+      </Box>
     </Box>
   </Box>
 
@@ -90,29 +111,31 @@
 
   <!-- Right Side: Status Widgets & Action Group -->
   <Box class="flex flex-col sm:flex-row flex-wrap items-center gap-3 z-10 w-full lg:w-1/3 sm:justify-end lg:justify-end">
-    <!-- Digital Flight Information Display / Clock Board -->
-    <Box class="flex items-center gap-4 {dalStore.systemMode === 'DAL' ? 'bg-[#006094]/80' : 'bg-[#290048]/80'} rounded-2xl p-2.5 px-4 border border-white/10 shadow-inner font-system text-sm transition-colors duration-500 w-full sm:w-auto justify-center sm:justify-start">
-      <Box class="flex items-center gap-2">
-        <Calendar class="w-4 h-4 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
-        <Box class="flex flex-col leading-tight">
-          <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} uppercase block text-[9px] font-black tracking-wider leading-none mb-0.5">DATE</Text>
-          <Text tag="span" class="text-white font-bold text-xs whitespace-nowrap">{formattedDay}, {formattedDate}</Text>
+    <!-- Combined Status Panel: Date + Clock -->
+    <Box class="flex items-center gap-3 {dalStore.systemMode === 'DAL' ? 'bg-[#006094]/80' : 'bg-[#290048]/80'} rounded-2xl p-2.5 px-4 border border-white/10 shadow-inner font-system text-sm transition-colors duration-500 w-full sm:w-auto justify-center sm:justify-start">
+      <!-- Date -->
+      <Box class="flex flex-col leading-tight">
+        <Box class="flex items-center gap-1.5">
+          <Calendar class="w-3.5 h-3.5 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
+          <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} uppercase text-[9px] font-black tracking-wider leading-none">DATE</Text>
         </Box>
+        <Text tag="span" class="text-white font-bold text-xs whitespace-nowrap mt-0.5 pl-5">{formattedDay} {formattedDate}</Text>
       </Box>
-      
+
       <Box class="h-6 w-px {dalStore.systemMode === 'DAL' ? 'bg-sky-500/20' : 'bg-purple-500/20'}" />
 
-      <Box class="flex items-center gap-2">
-        <Clock class="w-4 h-4 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
-        <Box class="flex flex-col leading-tight">
-          <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} uppercase block text-[9px] font-black tracking-wider leading-none mb-0.5">CLOCK</Text>
-          <Text tag="span" class="text-white font-bold tracking-wider text-xs whitespace-nowrap">
-            {formattedTime}
-            {#if timeZone}
-              <span class="opacity-60 text-[10px] ml-1 font-medium">{timeZone}</span>
-            {/if}
-          </Text>
+      <!-- Clock -->
+      <Box class="flex flex-col leading-tight">
+        <Box class="flex items-center gap-1.5">
+          <Clock class="w-3.5 h-3.5 {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'}" />
+          <Text tag="span" class="{dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} uppercase text-[9px] font-black tracking-wider leading-none">CLOCK</Text>
         </Box>
+        <Text tag="span" class="text-white font-bold tracking-wider text-xs whitespace-nowrap mt-0.5 pl-5">
+          {formattedTime}
+          {#if timeZone}
+            <span class="opacity-60 text-[10px] ml-1 font-medium">{timeZone}</span>
+          {/if}
+        </Text>
       </Box>
     </Box>
 

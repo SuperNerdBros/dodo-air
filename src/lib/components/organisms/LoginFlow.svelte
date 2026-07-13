@@ -2,6 +2,7 @@
   import { dalStore } from '$lib/stores/dal.svelte';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
+  let { onClose }: { onClose?: () => void } = $props();
   let step: 'email' | 'code' = $state('email');
   let email = $state('');
   let code = $state('');
@@ -77,7 +78,7 @@
 
 <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md">
   {#if step === 'email'}
-    <AcnhBubble title="Orville [DAL Dispatch]">
+    <AcnhBubble title="Orville [DAL Dispatch]" onDismiss={onClose}>
       <div class="text-xl font-bold text-slate-700 leading-relaxed mb-6">
         Welcome to Dodo Airlines! We'll send you a passcode to access your passport. What's your email address?
       </div>
@@ -110,7 +111,7 @@
       </form>
     </AcnhBubble>
   {:else}
-    <AcnhBubble title="Orville [DAL Dispatch]">
+    <AcnhBubble title="Orville [DAL Dispatch]" onDismiss={onClose}>
       <div class="text-xl font-bold text-slate-700 leading-relaxed mb-6">
         Great! We just sent a temporary flight code to <strong class="text-[#0084CC]">{email}</strong>. What is it?
       </div>

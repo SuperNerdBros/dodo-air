@@ -54,7 +54,7 @@
             🎟️
           </div>
           <div>
-            <h3 class="font-system font-black text-base text-[#0084CC] uppercase leading-none">Dodo Miles+</h3>
+            <h3 class="font-system font-black text-base text-[#0084CC] uppercase leading-none">FF Miles+</h3>
             <span class="text-xs font-system font-bold text-slate-400 block uppercase tracking-wider mt-0.5">MILITARY-GRADE COZY STAMP CHARTER</span>
           </div>
         </div>
@@ -71,11 +71,11 @@
         <div class="text-left">
           <span class="text-xs font-system font-black text-[#85806B] uppercase tracking-wider block font-bold">CURRENT MILES BALANCE</span>
           <span class="text-3xl font-system font-black text-[#FF9F43] tracking-wider leading-none mt-1 block font-black">
-            {(passport.miles ?? 2000).toLocaleString()} <span class="text-xs font-sans text-slate-400 font-bold uppercase">Miles</span>
+            {(passport.miles ?? 2000).toLocaleString()} <span class="text-xs font-sans text-slate-400 font-bold uppercase">FF Miles</span>
           </span>
         </div>
         <div class="text-right text-sm text-slate-400 font-system italic max-w-xs leading-normal">
-          "Gather Dodo Miles by completing airport milestones! Redeem them for safe flight passage or premium pilot credentials."
+          "Gather FF Miles by completing airport milestones! Redeem them for safe flight passage or premium pilot credentials."
         </div>
       </div>
 

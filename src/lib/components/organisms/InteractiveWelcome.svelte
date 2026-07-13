@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { formatFriendCode } from '$lib/utils/format';
   import type { Passport } from '$lib/studio-types';
   import { dalStore } from '$lib/stores/dal.svelte';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
@@ -62,11 +63,11 @@
   });
 
   const dialogues: Record<Step, string> = {
-    welcome: "Right-o! Welcome to the front desk at Dodo Airlines! 🦤 I'm Orville, your dispatcher, gate manager, and personal flight coordinator today!",
+    welcome: "Right-o! Welcome to the front desk at Dodo Airlines. 🦤 I'm Orville, your dispatcher, gate manager, and personal flight coordinator today!",
     intro: "This online terminal is the ultimate community hub! Here, you can search active gates to visit other islands, or broadcast your own Dodo Code™ to host guests!",
     modes: "We support two travel modes depending on your flying preference. We've got standard flight departures and relaxing dream visits! Take a peek at both:",
     walkthrough: "The flight process is simple: If you're hosting, file a flight plan to list your gate. If you're flying, just browse active departures, check in, get the Dodo Code™, and fly!",
-    auth_choice: "Before you head to the gate, let's look up your Frequent Flyer Passport! Enter your email so we can verify your identity and access code, or you can browse as a guest.",
+    auth_choice: "Before you head to the gate, let's look up your Frequent Flyer Passport! This helps builds trust in our community. Enter your email so we can send your a secure access code.",
     verify_code: "Excellent! I've just sent a 6-digit flight access code to your email. Enter it below to retrieve your passport profile!",
     print_passport: "Wonderful! We've retrieved your credentials. Let's customize your official Frequent Flyer Passport and register your island seaplane!"
   };
@@ -256,11 +257,9 @@
 
   function updateFriendCode(e: Event) {
     const target = e.target as HTMLInputElement;
-    let val = target.value;
-    if (!val.toUpperCase().startsWith('SW-')) {
-      val = 'SW-' + val.replace(/^SW-?/i, '');
-    }
-    passportForm.friendCode = val;
+    const formatted = formatFriendCode(target.value);
+    passportForm.friendCode = formatted;
+    target.value = formatted;
   }
 </script>
 
@@ -270,7 +269,7 @@
     <!-- Orville Dialogue Bubble wrapper (Now at the top) -->
     <div class="w-full relative">
       <AcnhBubble
-        title="Orville [DAL Agent]"
+        title="Orville"
         onDismiss={(currentStep !== 'auth_choice' && currentStep !== 'verify_code' && currentStep !== 'print_passport') ? advanceStep : undefined}
       >
         <div class="flex gap-4 items-start relative z-10">
@@ -279,7 +278,7 @@
           
           <!-- Animated / Typed Dialogue Text -->
           <div class="flex-1 py-1">
-            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium font-system min-h-[3.6rem]">
+            <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium min-h-[3.6rem]">
               {typedText}
               {#if !textDone}
                 <span class="inline-block w-1.5 h-5 bg-[#807256] animate-pulse ml-0.5"></span>
@@ -327,7 +326,7 @@
         <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-[24px] border-3 border-[#E0DBC5] p-5 text-center shadow-sm">
           <Award class="w-10 h-10 mx-auto text-amber-500 mb-2" />
           <h4 class="font-black text-[#006094] uppercase text-sm mb-1">1. File Flight Plan</h4>
-          <p class="text-[11px] text-[#6b6553] leading-normal font-semibold">Host guests, earn Nook Miles stamps, and show off your island paradise.</p>
+          <p class="text-[11px] text-[#6b6553] leading-normal font-semibold">Host guests, earn FF Miles stamps, and show off your island paradise.</p>
         </div>
         <div class="flex-1 bg-white/90 backdrop-blur-sm rounded-[24px] border-3 border-[#E0DBC5] p-5 text-center shadow-sm">
           <Ticket class="w-10 h-10 mx-auto text-sky-500 mb-2" />
@@ -379,9 +378,11 @@
                 <div class="animate-spin rounded-full h-4 w-4 border-2 border-t-transparent border-[#006094]"></div>
                 <span>Sending Code...</span>
               {:else}
-                <span>📩 Send Access Code</span>
+                <span>📩 Send Passport Code</span>
               {/if}
             </button>
+
+            <!-- 
 
             <div class="relative flex py-1 items-center">
               <div class="flex-grow border-t border-[#E6DFC7]/50"></div>
@@ -396,7 +397,9 @@
               disabled={isLoading}
             >
               🏝️ Just Browse as Guest
-            </button>
+            </button> 
+            
+            -->
           </div>
         </form>
       </div>
@@ -477,7 +480,7 @@
               />
             </div>
             <div>
-              <label class="block text-[10px] font-black text-[#0084CC] mb-1 uppercase font-system">Home Island</label>
+              <label class="block text-[10px] font-black text-[#0084CC] mb-1 uppercase font-system">Island Name</label>
               <input
                 type="text"
                 bind:value={passportForm.islandName}

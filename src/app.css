@@ -160,6 +160,7 @@
 		background-color: #dd8530;
 		border-radius: 30% / 100% 100% 120% 120%;
 		transform: perspective(2rem) rotateX(1deg) rotateZ(-6deg);
+		font-family: var(--dialogue-font, 'FOT-RodinBokutoh Pro EB'), sans-serif;
 		font-weight: 900;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -171,6 +172,7 @@
 		height: 100%;
 		padding: 2.5rem 2.35rem 2rem 3.5rem;
 		color: #807256;
+		font-family: var(--dialogue-font, 'FOT-RodinBokutoh Pro EB'), sans-serif;
 		z-index: 5;
 	}
 

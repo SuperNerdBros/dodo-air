@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { formatFriendCode } from '$lib/utils/format';
   import { fade, scale } from 'svelte/transition';
   import Box from '../atoms/Box.atom.svelte';
   import Text from '../atoms/Text.atom.svelte';
@@ -8,6 +9,13 @@
   import Form from '../atoms/Form.atom.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
   import { TITLE_PART_1, TITLE_PART_2, AVATAR_ICONS } from '$lib/types';
+
+  function updateFriendCode(e: Event) {
+    const target = e.target as HTMLInputElement;
+    const formatted = formatFriendCode(target.value);
+    dalStore.passportForm.friendCode = formatted;
+    target.value = formatted;
+  }
 
   function handleSavePassport(e: Event) {
     e.preventDefault();
@@ -102,13 +110,7 @@
             <Input
               type="text"
               value={dalStore.passportForm.friendCode}
-              oninput={(e: Event) => {
-                let val = (e.target as HTMLInputElement).value;
-                if (!val.toUpperCase().startsWith('SW-')) {
-                  val = 'SW-' + val.replace(/^SW-?/i, '');
-                }
-                dalStore.passportForm.friendCode = val;
-              }}
+              oninput={updateFriendCode}
               placeholder="SW-1234-5678-9012"
               class="w-full bg-[#FAF8F2] border border-[#E6DFC7] rounded-xl px-3 py-2 font-system font-bold outline-none focus:border-[#0084CC] focus:bg-white"
               maxlength={17}

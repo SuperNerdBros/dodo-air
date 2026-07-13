@@ -36,7 +36,20 @@ export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
 	const devHost = env.VITE_DEV_HOST || 'localhost';
 
+	const phpPluginPath = path.resolve(__dirname, '../../wp-content/plugins/super-nerd-bros-dodo-air/super-nerd-bros-dodo-air.php');
+	let pluginVersion = '0.0.0';
+	if (fs.existsSync(phpPluginPath)) {
+		const phpContent = fs.readFileSync(phpPluginPath, 'utf8');
+		const versionMatch = phpContent.match(/define\(\s*'SUPER_NERD_BROS_DODO_AIR_VERSION',\s*'([^']+)'\s*\);/);
+		if (versionMatch && versionMatch[1]) {
+			pluginVersion = versionMatch[1];
+		}
+	}
+
 	return {
+		define: {
+			__APP_VERSION__: JSON.stringify(pluginVersion)
+		},
 		plugins: [
 			sveltekit(),
 			wpHotFileManager()

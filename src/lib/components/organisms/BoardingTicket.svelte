@@ -150,7 +150,7 @@
                   </Text>
                 {/if}
                 <Text tag="p" class="text-sm text-[#4A4A4A]/70 leading-relaxed font-sans mb-1 text-center sm:text-left">
-                  🦤 <Text tag="strong">Orville:</Text> "Step up to the counter! Book your Boarding Pass on Flight <Text tag="strong">{selectedFlight.id}</Text> to receive clearance and the Dodo Code."
+                  🦤 <Text tag="strong">Orville:</Text> "Step up to the counter! Book your Boarding Pass on Flight <Text tag="strong">{selectedFlight.id}</Text> to receive the Dodo Code."
                 </Text>
                 <Button
                   onclick={() => handleBoardFlight(selectedFlight.id)}

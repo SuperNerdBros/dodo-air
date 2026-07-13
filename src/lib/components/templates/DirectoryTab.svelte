@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Search, SlidersHorizontal } from '@lucide/svelte';
   import type { UserProfile, Passport } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
@@ -39,18 +40,25 @@
 
   let sortedProfiles = $derived([...filteredProfiles].sort((a, b) => {
     if (sortBy === 'name') {
-      return a.villagerName.localeCompare(b.villagerName);
+      return (a.villagerName || '').localeCompare(b.villagerName || '');
     }
+    const aTime = a.updatedAt || '';
+    const bTime = b.updatedAt || '';
     if (sortBy === 'apples') {
       const applesA = a.goodApples || 0;
       const applesB = b.goodApples || 0;
       if (applesB !== applesA) {
         return applesB - applesA;
       }
-      return b.updatedAt.localeCompare(a.updatedAt);
+      return bTime.localeCompare(aTime);
     }
-    return b.updatedAt.localeCompare(a.updatedAt);
+    return bTime.localeCompare(aTime);
   }));
+
+  onMount(() => {
+    const renderTime = performance.now();
+    console.log(`[Diagnostic] DirectoryTab mounted and rendered at ${renderTime.toFixed(2)}ms`);
+  });
 </script>
 
 <div class="space-y-5 text-left">
@@ -132,9 +140,6 @@
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
-          in:scale={{ duration: 200, start: 0.95 }}
-          out:scale={{ duration: 200, start: 0.95 }}
-          animate:flip={{ duration: 300 }}
           onclick={() => openProfileModal(p.friendCode)}
           class="relative flex flex-col justify-between bg-[#FFFCEF] rounded-[32px] border-4 border-[#E6DFC7] p-5 shadow-sm hover:shadow-md cursor-pointer hover:scale-[1.02] transition-all overflow-hidden {isMe ? 'ring-4 ring-[#FFCC00] ring-offset-2' : ''}"
         >

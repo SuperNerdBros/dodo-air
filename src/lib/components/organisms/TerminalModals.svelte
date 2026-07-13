@@ -1,0 +1,129 @@
+<script lang="ts">
+  import StandbyTicketModal from '$lib/components/molecules/StandbyTicketModal.svelte';
+  import BoardingPassModal from '$lib/components/organisms/BoardingPassModal.svelte';
+  import MilesStampBook from '$lib/components/organisms/MilesStampBook.svelte';
+  import TrustProfileModal from '$lib/components/organisms/TrustProfileModal.svelte';
+  import TrafficControlModal from '$lib/components/organisms/TrafficControlModal.svelte';
+  import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
+  import { TerminalActions } from '$lib/stores/TerminalActions';
+  import { TerminalAPI } from '$lib/api/TerminalAPI';
+  import { dalStore } from '$lib/stores/dal.svelte';
+  import { fade } from 'svelte/transition';
+  
+  let { handleSavePassport, openProfileModal } = $props();
+
+  let selectedFlight = $derived(
+    dalStore.flights.find(f => f.id === dalStore.selectedFlightId) || 
+    dalStore.dreams.find(d => d.id === dalStore.selectedFlightId)
+  );
+
+  let selectedProfileReviews = $state([]);
+  let isSubmittingReview = $state(false);
+  let reviewError = $state('');
+
+  async function handleSubmitReview(ratingType: 'apple' | 'turnip', comment: string) {
+    if (!dalStore.selectedFriendCode) return;
+    if (!dalStore.passport.hasCreated) {
+      reviewError = "You must print your custom Passport at the dispatch counter before submitting trust feedback!";
+      return;
+    }
+    if (dalStore.passport.friendCode === dalStore.selectedFriendCode) {
+      reviewError = "You cannot rate your own island profile!";
+      return;
+    }
+    isSubmittingReview = true;
+    reviewError = '';
+    try {
+      await TerminalAPI.submitReview(dalStore.selectedFriendCode, {
+          ratingType,
+          voterName: dalStore.passport.villagerName,
+          voterIsland: dalStore.passport.islandName,
+          voterFriendCode: dalStore.passport.friendCode,
+          comment
+      });
+      dalStore.playSound('success');
+      selectedProfileReviews = await TerminalAPI.getReviews(dalStore.selectedFriendCode);
+      await dalStore.fetchState();
+    } catch (err: any) {
+      reviewError = err.error || "Failed to submit rating.";
+    } finally {
+      isSubmittingReview = false;
+    }
+  }
+</script>
+
+{#if dalStore.isEditingPassport}
+  <div transition:fade={{ duration: 200 }} class="fixed inset-0 z-[100] flex items-center justify-center">
+    <PassportEditModal
+      passport={dalStore.passportForm}
+      onSave={handleSavePassport}
+      onClose={() => dalStore.isEditingPassport = false}
+      isMuted={dalStore.isMuted}
+    />
+  </div>
+{/if}
+
+<StandbyTicketModal
+  isOpen={dalStore.showStandbyModal}
+  onClose={() => dalStore.showStandbyModal = false}
+  bind:requestGateType={dalStore.requestGateType}
+  bind:requestTime={dalStore.requestTime}
+  bind:requestMemo={dalStore.requestMemo}
+  onSubmit={TerminalActions.createStandbyRequest}
+  isSubmittingRequest={dalStore.isSubmittingRequest}
+  requestError={dalStore.requestError}
+/>
+
+{#if selectedFlight}
+  <div transition:fade={{ duration: 200 }} class="fixed inset-0 z-[100] flex items-center justify-center">
+    <BoardingPassModal
+      onClose={() => { dalStore.playSound('beep'); dalStore.selectedFlightId = null; }}
+      {selectedFlight}
+      passport={dalStore.passport}
+      onBoardFlight={TerminalActions.boardFlight}
+      onLeaveFlight={TerminalActions.leaveFlight}
+      boardingError={dalStore.boardingError}
+      onRequestStandby={(gate) => { dalStore.requestGateType = gate; dalStore.showStandbyModal = true; dalStore.selectedFlightId = null; }}
+      isMuted={dalStore.isMuted}
+    />
+  </div>
+{/if}
+
+<MilesStampBook
+  isOpen={dalStore.showMilesModal}
+  onClose={() => dalStore.showMilesModal = false}
+  passport={dalStore.passport}
+  onClaimStamp={(id, miles) => {
+    dalStore.passport.claimedStampIds.push(id);
+    dalStore.passport.miles += miles;
+    dalStore.earnStampProgress('hasCustomized'); // fallback generic update
+  }}
+  isMuted={dalStore.isMuted}
+/>
+
+<TrustProfileModal
+  selectedFriendCode={dalStore.selectedFriendCode}
+  onClose={() => dalStore.selectedFriendCode = null}
+  profiles={dalStore.profiles}
+  {selectedProfileReviews}
+  onSubmitReview={handleSubmitReview}
+  {reviewError}
+  {isSubmittingReview}
+  isMuted={dalStore.isMuted}
+/>
+
+<TrafficControlModal
+  isOpen={dalStore.isTrafficModalOpen}
+  onClose={() => dalStore.isTrafficModalOpen = false}
+  totalStandby={dalStore.requests.length}
+  totalPassengers={dalStore.flights.reduce((acc, f) => acc + Object.keys(f.passengers || {}).length, 0)}
+  totalPilots={dalStore.flights.length}
+  totalPassports={dalStore.totalIslanders}
+  views={dalStore.views}
+  visitors={dalStore.visitors}
+  setCurrentTab={(t) => { if (t === 'book') window.location.hash = '#/islands'; else if (t === 'hub') window.location.hash = '#/hub'; else if (t === 'directory') window.location.hash = '#/directory'; else window.location.hash = '#/passport'; }}
+  setShowPassportDrawer={(v) => dalStore.showPassportDrawer = v}
+  setIsEditingPassport={(v) => dalStore.isEditingPassport = v}
+  passport={dalStore.passport}
+  isMuted={dalStore.isMuted}
+/>
