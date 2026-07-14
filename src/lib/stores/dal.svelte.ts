@@ -111,11 +111,12 @@ export class DalState {
 			window.fetch = async function (...args: any[]) {
 				const url =
 					typeof args[0] === 'string' ? args[0] : args[0] && args[0].url ? args[0].url : '';
-				if (url && url.includes('/wp-json/dodo-air/')) {
+				if (url && url.includes('/wp-json/')) {
 					const wpApiSettings = (window as any).wpApiSettings;
 					if (wpApiSettings && wpApiSettings.nonce) {
 						args[1] = args[1] || {};
 						args[1].headers = args[1].headers || {};
+						args[1].credentials = args[1].credentials || 'include';
 						if (args[1].headers instanceof Headers) {
 							args[1].headers.set('X-WP-Nonce', wpApiSettings.nonce);
 						} else if (Array.isArray(args[1].headers)) {

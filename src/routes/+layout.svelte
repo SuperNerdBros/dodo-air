@@ -46,6 +46,15 @@
   let isTabChanging = $state(false);
 
   onMount(() => {
+    // Remove the initial static loader
+    const loader = document.getElementById('dal-loader-wrapper');
+    if (loader) {
+      // Fade out for a smooth transition
+      loader.style.transition = 'opacity 0.5s ease-out';
+      loader.style.opacity = '0';
+      setTimeout(() => loader.remove(), 500);
+    }
+
     // Initialize hash on load if empty
     if (!window.location.hash || window.location.hash === '#/') {
       window.location.hash = '#/splash';
@@ -426,7 +435,7 @@
     <!-- Splash Portal Screen -->
     {#if currentTab === 'splash'}
       <SplashPage
-        onEnterDAL={() => { window.location.hash = '#/islands'; }}
+        onEnterDAL={() => { dalStore.systemMode = 'DAL'; localStorage.setItem('dal_system_mode', 'DAL'); window.location.hash = '#/islands'; }}
         onEnterLuna={() => { dalStore.systemMode = 'LUNA'; localStorage.setItem('dal_system_mode', 'LUNA'); window.location.hash = '#/islands'; }}
       />
     {/if}

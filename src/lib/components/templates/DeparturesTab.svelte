@@ -187,6 +187,7 @@
                 <th class="px-5 py-3 text-center">{dalStore.systemMode === 'DAL' ? 'Passengers' : 'Dreamers'}</th>
                 <th class="px-5 py-3 text-center">Host</th>
                 <th class="px-5 py-3">{dalStore.systemMode === 'DAL' ? 'Destination' : 'Dreamscape'}</th>
+                <th class="px-5 py-3 text-center">Time</th>
                 <th class="px-5 py-3 pr-6 text-right"></th>
                 <th class="px-5 py-3 text-center">Status</th>
               </tr>
@@ -294,9 +295,16 @@
                   <!-- DESTINATION -->
                   <td class="px-5 py-3">
                     <div class="font-black text-[#4A4A4A] text-sm">{flight.islandName}</div>
-                    <div class="text-[10px] text-slate-500 max-w-[150px] mt-0.5">"{flight.description}"</div>
-                    <div class="text-[9px] text-slate-400 mt-1 font-bold tracking-wider uppercase">
-                      DEPARTS: {new Date(flight.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    <div class="text-[10px] text-slate-500 max-w-[150px] mt-0.5 truncate" title={flight.description}>"{flight.description}"</div>
+                  </td>
+
+                  <!-- TIME -->
+                  <td class="px-5 py-3 text-center">
+                    <div class="font-black text-[#0084CC] text-sm">
+                      {new Date(flight.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    </div>
+                    <div class="text-[9px] text-slate-400 mt-0.5 font-bold tracking-wider uppercase">
+                      {dalStore.systemMode === 'DAL' ? 'Scheduled' : 'Logged'}
                     </div>
                   </td>
 
