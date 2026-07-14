@@ -2,79 +2,118 @@ export const DIALOGS = {
 	// --- ORVILLE / LUNA: Front Desk & Booking ---
 	standbyWizard: {
 		step1: "Right-o! Where are we flying today? Pick a destination theme and I'll scan the radar!",
-		lunaStep1: "Welcome, dreamer... What kind of dreamscape are you seeking? Choose a theme.",
-		step2: (themeName: string) => `Loud and clear! ${themeName} it is. When are you looking to take off?`,
+		lunaStep1: 'Welcome, dreamer... What kind of dreamscape are you seeking? Choose a theme.',
+		step2: (themeName: string) =>
+			`Loud and clear! ${themeName} it is. When are you looking to take off?`,
 		lunaStep2: (themeName: string) => `I see... A ${themeName} dream. When shall you drift off?`,
 		step3: 'Any special requests? A good memo helps them know exactly why you want to visit!',
 		lunaStep3: 'What desires do you hold? A gentle memo helps guide the dream to you.',
-		step4: 'All set! Double-check your ticket details below. Ready to hit the global standby radar?',
+		step4:
+			'All set! Double-check your ticket details below. Ready to hit the global standby radar?',
 		lunaStep4: 'It is written. Review your intentions below before we enter the dreamscape.'
 	},
 	standbyTab: {
-		active: "No open gates matching your itinerary? File a Standby Request! Tell me when and where, and I'll put you on the radar so Wilbur can spot a flight for you!",
-		lunaActive: "Cannot find the dream you seek? Leave your desires here, and we will wait for a dreamer to open their mind to you."
+		active:
+			"No open gates matching your itinerary? File a Standby Request! Tell me when and where, and I'll put you on the radar so Wilbur can spot a flight for you!",
+		lunaActive:
+			'Cannot find the dream you seek? Leave your desires here, and we will wait for a dreamer to open their mind to you.'
 	},
 	hubWizard: {
-		step1: "Roger that! Let's get your gate ready for visitors. First up, what are your flight details?",
-		lunaStep1: "Ah, you wish to share a dream... Tell me, what form does your island take?",
+		step1:
+			"Roger that! Let's get your gate ready for visitors. First up, what are your flight details?",
+		lunaStep1: 'Ah, you wish to share a dream... Tell me, what form does your island take?',
 		step2: 'Copy that! What kind of visitors are you looking for? Pick a gate theme!',
 		lunaStep2: 'I see. And what manner of spirits do you wish to invite into your slumber?',
 		step3: "Let's add a flight plan description! Give your passengers the full itinerary.",
-		lunaStep3: "Describe your dream... What will travelers find when they arrive?",
-		step4: 'Loud and clear! Enter the 5-digit DODO CODE so I can start flying now, or leave it blank to schedule for later.',
-		lunaStep4: 'Very well. Provide your DOZE CODE to open the dream now, or leave it blank to wait for a more peaceful hour.',
-		step5: "Got it! Let's set your operating hours so passengers know exactly when to expect your gate open.",
-		lunaStep5: "When shall this dream be accessible? Let us chart the hours of your slumber."
+		lunaStep3: 'Describe your dream... What will travelers find when they arrive?',
+		step4:
+			'Loud and clear! Enter the 5-digit DODO CODE so I can start flying now, or leave it blank to schedule for later.',
+		lunaStep4:
+			'Very well. Provide your DOZE CODE to open the dream now, or leave it blank to wait for a more peaceful hour.',
+		step5:
+			"Got it! Let's set your operating hours so passengers know exactly when to expect your gate open.",
+		lunaStep5: 'When shall this dream be accessible? Let us chart the hours of your slumber.'
 	},
 	departuresTab: {
-		active: "Hey hey! Welcome to the Departure Gates! Search open gates or hop on standby. Let's get you checked in!",
-		lunaActive: "Welcome to the Dreamers directory. Browse active DOZE codes, or await your turn to slumber."
+		active:
+			"Hey hey! Welcome to the Departure Gates! Search open gates or hop on standby. Let's get you checked in!",
+		lunaActive:
+			'Welcome to the Dreamers directory. Browse active DOZE codes, or await your turn to slumber.'
 	},
 	orvilleIntro: {
-		active: 'Right-o! Welcome to the DAL online terminal! Check the radar for flights, broadcast your DODO CODE, and coordinate with others worldwide!',
-		lunaActive: 'Welcome to the Dreamscape gateway. Drift through the directory, share your DOZE CODE, and connect with dreamers across the world.'
+		active:
+			'Right-o! Welcome to the DAL online terminal! Check the radar for flights, broadcast your DODO CODE, and coordinate with others worldwide!',
+		lunaActive:
+			'Welcome to the Dreamscape gateway. Drift through the directory, share your DOZE CODE, and connect with dreamers across the world.'
 	},
 	directoryTab: {
-		active: 'Welcome to the DAL Flyers Directory! Browse active passports, check trust ratings, or vouch for villagers with a Good Apple!',
-		lunaActive: 'Welcome to the Dream Directory... Browse known Dream Addresses, check lucidity ratings, or leave a Z to show your appreciation.'
+		active:
+			'Welcome to the DAL Flyers Directory! Browse active passports, check trust ratings, or vouch for villagers with a Good Apple!',
+		lunaActive:
+			'Welcome to the Dream Directory... Browse known Dream Addresses, check lucidity ratings, or leave a Z to show your appreciation.'
 	},
 	passportTab: {
-		active: 'Hey hey! Here is your official Frequent Flyer Passport! Keep your details updated and collect stamps for FF Miles!',
-		lunaActive: 'This is your record of dreams. Keep your details current, and collect fragments of memories for FF Miles.'
+		active:
+			'Hey hey! Here is your official Frequent Flyer Passport! Keep your details updated and collect stamps for FF Miles!',
+		lunaActive:
+			'This is your record of dreams. Keep your details current, and collect fragments of memories for FF Miles.'
 	},
 	interactiveWelcome: {
-		welcome: "Right-o! Welcome to the DAL Gateway Online Terminal! I'm Orville 🦤, your personal flight dispatcher!",
-		lunaWelcome: "Welcome to the Dreamscape gateway... I am Luna 🌙, your guide through the realm of dreams.",
-		intro: 'This terminal acts as your online community airport hub to ACNH! Search for active islands or dreams to visit, or broadcast your Doze/DODO CODE to host guests!',
-		lunaIntro: 'This gateway connects you to the collective slumber... Browse peaceful dreams to visit, or share your own DOZE CODE for others to find.',
-		modes: 'We offer two travel modes! Choose between standard DAL flight departures or relaxing dream visits with Luna!',
-		lunaModes: 'The waking world and the dreaming world... You may choose between standard DAL flights or drifting into a peaceful dream.',
-		walkthrough: "It's easy! Hosting? File a flight plan. Flying? Browse departures, check in, grab a DODO CODE, and take off!",
-		lunaWalkthrough: "The path is simple... Provide your DOZE CODE to share your dream, or browse the directory to find a slumber to join.",
-		authChoice: "To continue, we'll need your Frequent Flyer passport! Tell me your email so I can send you a secure access code.",
-		lunaAuthChoice: "Before we proceed, I must verify your spirit... Provide your email so I may send you a secure connection.",
-		verifyCode: "Excellent! I've sent a 6-digit access code to your email. Enter it below to pull up your passport!",
-		lunaVerifyCode: "The connection is sent... Enter the 6 digits you received to link your spirit to the dreamscape.",
-		printPassport: "Wonderful! Credentials verified. Let's customize your official passport and register your seaplane!",
-		lunaPrintPassport: "Your spirit is recognized... Now, let us shape the form you will take within the dream.",
-		xpInfo: 'The more you fly, the more you earn! Collect FF Miles by participating, and unlock stamps to show off on your passport!',
-		lunaXpInfo: 'Every dream visited strengthens your spirit... Collect fragments and memories as you explore.'
+		welcome:
+			"Right-o! Welcome to the Unofficial ACNH Community Terminal. I'm Orville 🦤, your personal flight dispatcher.",
+		lunaWelcome:
+			'Welcome to the Dreamscape gateway... I am Luna 🌙, your guide through the realm of dreams.',
+		intro:
+			'This terminal acts as an online airport hub! Search for active islands or dreams to visit, or broadcast your Doze/DODO CODE to host guests!',
+		lunaIntro:
+			'This gateway connects you to the collective slumber... Browse peaceful dreams to visit, or share your own DOZE CODE for others to find.',
+		modes:
+			'We offer two travel modes. Choose between standard DAL flight departures or relaxing dream visits with Luna!',
+		lunaModes:
+			'The waking world and the dreaming world... You may choose between standard DAL flights or drifting into a peaceful dream.',
+		walkthrough:
+			"It's easy! Hosting? File a flight plan. Flying? Browse departures, check in, grab a DODO CODE, and take off!",
+		lunaWalkthrough:
+			'The path is simple... Provide your DOZE CODE to share your dream, or browse the directory to find a slumber to join.',
+		authChoice:
+			"To continue, we'll need your Frequent Flyer passport! Tell me your email so I can send you a secure access code.",
+		lunaAuthChoice:
+			'Before we proceed, I must verify your spirit... Provide your email so I may send you a secure connection.',
+		verifyCode:
+			"Excellent! I've sent a 6-digit access code to your email. Enter it below to pull up your passport!",
+		lunaVerifyCode:
+			'The connection is sent... Enter the 6 digits you received to link your spirit to the dreamscape.',
+		printPassport:
+			"Wonderful! Credentials verified. Let's customize your official passport and register your seaplane!",
+		lunaPrintPassport:
+			'Your spirit is recognized... Now, let us shape the form you will take within the dream.',
+		xpInfo:
+			'The more you fly, the more you earn! Collect FF Miles by participating, and unlock stamps to show off on your passport!',
+		lunaXpInfo:
+			'Every dream visited strengthens your spirit... Collect fragments and memories as you explore.'
 	},
 	logoutModal: {
-		prompt: "Ready to log out of the DAL Terminal? Don't worry, we'll keep your passport safe at the desk!",
-		lunaPrompt: "Are you prepared to wake from the dream? Your memories will be kept safe."
+		prompt:
+			"Ready to log out of the DAL Terminal? Don't worry, we'll keep your passport safe at the desk!",
+		lunaPrompt: 'Are you prepared to wake from the dream? Your memories will be kept safe.'
 	},
 	loginFlow: {
-		default: "To access the DAL terminal, we need to verify your Frequent Flyer passport! Please enter your email address so Orville can send you a secure access code.",
-		lunaDefault: "To enter the dreamscape, we must verify your spirit... Please provide your email address so Luna may send you a secure connection.",
-		verify: (email: string) => `Great! We just sent a temporary flight code to ${email}. What is it?`,
-		lunaVerify: (email: string) => `The connection is sent... A temporary dream code was sent to ${email}. What is it?`
+		default:
+			'To access the DAL terminal, we need to verify your Frequent Flyer passport! Please enter your email address so Orville can send you a secure access code.',
+		lunaDefault:
+			'To enter the dreamscape, we must verify your spirit... Please provide your email address so Luna may send you a secure connection.',
+		verify: (email: string) =>
+			`Great! We just sent a temporary flight code to ${email}. What is it?`,
+		lunaVerify: (email: string) =>
+			`The connection is sent... A temporary dream code was sent to ${email}. What is it?`
 	},
 
 	// --- WILBUR / LUNA: Hangar & Takeoff ---
 	hubTab: {
-		active: "This is November Oscar Whisker. Props are balanced and burners are ready! Just patch through that 5-digit DODO CODE and I'll green-light this bird for takeoff!",
-		lunaActive: "The veil is thin, and the stars align. Provide your 5-digit DOZE CODE, and I will open the gateway to your slumber."
+		active:
+			"This is November Oscar Whisker. Props are balanced and burners are ready! Just patch through that 5-digit DODO CODE and I'll green-light this bird for takeoff!",
+		lunaActive:
+			'The veil is thin, and the stars align. Provide your 5-digit DOZE CODE, and I will open the gateway to your slumber.'
 	},
 
 	// --- MIXED: The Cockpit/Dream Library ---
@@ -96,15 +135,12 @@ export const DIALOGS = {
 	boardingPassModal: {
 		dalCheckedIn: (id: string) =>
 			`You're all checked in for flight ${id}! Just wait for boarding to commence.`,
-		lunaCheckedIn: (id: string) =>
-			`Your dream ${id} is ready. We will slumber soon.`,
+		lunaCheckedIn: (id: string) => `Your dream ${id} is ready. We will slumber soon.`,
 		dalFull: (cap: number) =>
 			`Oh no! This seaplane is at max capacity (${cap} passengers). You can file a standby ticket!`,
 		lunaFull: (cap: number) =>
 			`This dream is full (${cap} dreamers). Please wait for someone to wake up.`,
-		dalBook: (id: string) =>
-			`Ready to board flight ${id}? Let's get your boarding pass printed!`,
-		lunaBook: (id: string) =>
-			`Are you ready to enter dream ${id}? Let's print your dream ticket.`
+		dalBook: (id: string) => `Ready to board flight ${id}? Let's get your boarding pass printed!`,
+		lunaBook: (id: string) => `Are you ready to enter dream ${id}? Let's print your dream ticket.`
 	}
 };

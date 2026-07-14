@@ -38,10 +38,31 @@
     easing: cubicOut
   });
 
+  let prevMiles = passport.miles ?? 2000;
+  let tallyInterval: any = null;
+  
   $effect(() => {
     if (passport.miles !== undefined) {
+      if (passport.miles !== prevMiles) {
+        prevMiles = passport.miles;
+        
+        if (tallyInterval) clearInterval(tallyInterval);
+        
+        tallyInterval = setInterval(() => {
+          playSound('tally', isMuted);
+        }, 60);
+
+        setTimeout(() => {
+          if (tallyInterval) clearInterval(tallyInterval);
+          playSound('chime', isMuted);
+        }, 1200);
+      }
       displayedMiles.set(passport.miles);
     }
+    
+    return () => {
+      if (tallyInterval) clearInterval(tallyInterval);
+    };
   });
 
   const iconMap: Record<string, any> = {
@@ -77,7 +98,7 @@
   }
   
   function claimLevel(challengeId: string, levelIndex: number, miles: number) {
-    playSound('success', isMuted);
+    playSound('stamp', isMuted);
     onClaimStamp(`${challengeId}_${levelIndex}`, miles);
   }
 
@@ -152,13 +173,9 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden"
-    transition:fade={{ duration: 200 }}
+    class="fixed inset-0 z-50 overflow-hidden acnh-bg w-full h-full flex flex-col text-[#4A4A4A]"
+    transition:scale={{ duration: 300, start: 0.95, easing: backOut }}
   >
-    <div
-      class="acnh-bg rounded-[32px] border-4 border-white max-w-6xl w-full h-[90vh] shadow-2xl relative text-[#4A4A4A] flex flex-col overflow-hidden"
-      transition:scale={{ duration: 300, start: 0.95, easing: backOut }}
-    >
       <!-- Header / Top Bar -->
       <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-30 pointer-events-none">
         <div class="bg-white/80 backdrop-blur-md px-6 py-2 rounded-full border-2 border-white shadow-sm flex items-center gap-2 pointer-events-auto">
@@ -190,7 +207,7 @@
             <div
               class="acnh-card bg-white rounded-xl border-4 border-white overflow-hidden flex flex-col w-72 md:w-80 h-full snap-center cursor-pointer hover:scale-105 transition-transform duration-300"
               style="transform: rotate({(i % 3 === 0) ? -1 : (i % 3 === 1) ? 2 : -1.5}deg)"
-              onclick={() => { playSound('thwip', isMuted); selectedChallengeId = challenge.id; }}
+              onclick={() => { playSound('pop', isMuted); selectedChallengeId = challenge.id; }}
             >
               <div 
                 class="flex-1 w-full flex flex-col items-center justify-center p-4 relative"
@@ -231,7 +248,7 @@
         <div 
           class="absolute inset-0 z-20 flex items-center justify-center p-8 bg-black/20 backdrop-blur-sm"
           transition:fade={{ duration: 200 }}
-          onclick={(e) => { if (e.target === e.currentTarget) selectedChallengeId = null; }}
+          onclick={(e) => { if (e.target === e.currentTarget) { playSound('thwip', isMuted); selectedChallengeId = null; } }}
         >
           <!-- Left Arrow -->
           {#if selectedCardIndex > 0}
@@ -254,7 +271,7 @@
           >
             <!-- Close Button -->
             <button
-              onclick={() => selectedChallengeId = null}
+              onclick={() => { playSound('thwip', isMuted); selectedChallengeId = null; }}
               class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center cursor-pointer border-none z-50 text-[#5C5541]"
             >
               <X class="w-6 h-6" />
@@ -301,13 +318,10 @@
                         <!-- Empty slot but pulsing/highlighted -->
                         <div class="absolute inset-0 bg-yellow-200/50 rounded-full animate-pulse border-4 border-yellow-400"></div>
                         <!-- Ribbon -->
-                        <div class="absolute -top-20 left-1/2 -translate-x-1/2 flex flex-col items-center z-50 cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                        <div class="absolute -top-16 left-1/2 -translate-x-1/2 flex flex-col items-center z-50 cursor-pointer hover:scale-110 active:scale-95 transition-transform"
                              onclick={() => claimLevel(selectedChallenge!.id, lIdx, level.miles)}>
                           <div class="bg-[#5C73FF] text-white font-system font-black text-xl px-6 py-2 shadow-lg border-b-4 border-[#3346B0] whitespace-nowrap relative rounded-sm">
-                            Get Miles!
-                          </div>
-                          <div class="text-[#5C5541] font-system font-bold text-sm mt-2 bg-white/90 px-4 py-0.5 rounded-full shadow-sm">
-                            🎯 Claim
+                            Claim Miles!
                           </div>
                         </div>
                       {/if}
@@ -335,6 +349,5 @@
           </div>
         </div>
       {/if}
-    </div>
   </div>
 {/if}

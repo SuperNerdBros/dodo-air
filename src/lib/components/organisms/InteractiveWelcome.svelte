@@ -259,7 +259,7 @@
   }
 </script>
 
-<div class="fixed inset-0 {transparentBg ? 'bg-transparent' : 'bg-[#004e75]/60 backdrop-blur-sm'} overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-start sm:justify-center" style="z-index: 100;">
+<div class="fixed inset-0 {transparentBg ? 'bg-transparent backdrop-blur-md' : 'bg-[#004e75]/60 backdrop-blur-md'} overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-start sm:justify-center" style="z-index: 100;">
   <!-- Dot Pattern Background -->
   <div class="absolute inset-0 w-full h-full  opacity-50 pointer-events-none"></div>
   

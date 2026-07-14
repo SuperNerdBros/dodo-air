@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export type SoundType = 'beep' | 'chatter' | 'success' | 'airplane' | 'bell';
+export type SoundType = 'beep' | 'chatter' | 'success' | 'airplane' | 'bell' | 'thwip' | 'stamp' | 'chime' | 'pop' | 'tally';
 
 export const playSound = (type: SoundType, isMuted: boolean) => {
 	if (isMuted) return;
@@ -91,6 +91,62 @@ export const playSound = (type: SoundType, isMuted: boolean) => {
 			osc.frequency.setValueAtTime(500 + Math.random() * 200, ctx.currentTime);
 			gain.gain.setValueAtTime(0.001, ctx.currentTime);
 			gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.01);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+			osc.start();
+			osc.stop(ctx.currentTime + 0.06);
+		} else if (type === 'thwip') {
+			osc.type = 'sine';
+			osc.frequency.setValueAtTime(400, ctx.currentTime);
+			osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+			gain.gain.setValueAtTime(0.001, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.02);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.1);
+			osc.start();
+			osc.stop(ctx.currentTime + 0.12);
+		} else if (type === 'pop') {
+			osc.type = 'sine';
+			osc.frequency.setValueAtTime(300, ctx.currentTime);
+			osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.05);
+			gain.gain.setValueAtTime(0.001, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.01);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+			osc.start();
+			osc.stop(ctx.currentTime + 0.06);
+		} else if (type === 'stamp') {
+			osc.type = 'triangle';
+			osc.frequency.setValueAtTime(150, ctx.currentTime);
+			osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.15);
+			gain.gain.setValueAtTime(0.001, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 0.02);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.15);
+			osc.start();
+			osc.stop(ctx.currentTime + 0.2);
+		} else if (type === 'chime') {
+			osc.type = 'sine';
+			osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+			gain.gain.setValueAtTime(0.001, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + 0.02);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+			osc.start();
+			osc.stop(ctx.currentTime + 0.35);
+			
+			const osc2 = ctx.createOscillator();
+			const gain2 = ctx.createGain();
+			osc2.connect(gain2);
+			gain2.connect(ctx.destination);
+			osc2.type = 'sine';
+			osc2.frequency.setValueAtTime(1108.73, ctx.currentTime + 0.1); // C#6
+			gain2.gain.setValueAtTime(0.001, ctx.currentTime + 0.1);
+			gain2.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.12);
+			gain2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+			osc2.start(ctx.currentTime + 0.1);
+			osc2.stop(ctx.currentTime + 0.45);
+		} else if (type === 'tally') {
+			osc.type = 'sine';
+			osc.frequency.setValueAtTime(1200, ctx.currentTime);
+			osc.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + 0.03);
+			gain.gain.setValueAtTime(0.001, ctx.currentTime);
+			gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.01);
 			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
 			osc.start();
 			osc.stop(ctx.currentTime + 0.06);
