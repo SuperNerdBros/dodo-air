@@ -18,10 +18,12 @@
 
   let {
     onSavePassport,
-    isMuted = false
+    isMuted = false,
+    transparentBg = false
   } = $props<{
     onSavePassport: (p: Passport) => void;
     isMuted?: boolean;
+    transparentBg?: boolean;
   }>();
 
   // Dialogue steps
@@ -257,7 +259,7 @@
   }
 </script>
 
-<div class="fixed inset-0 bg-[#004e75]/60 backdrop-blur-sm overflow-y-auto z-50 p-4 sm:p-8 flex flex-col items-center justify-start sm:justify-center">
+<div class="fixed inset-0 {transparentBg ? 'bg-transparent' : 'bg-[#004e75]/60 backdrop-blur-sm'} overflow-y-auto p-4 sm:p-8 flex flex-col items-center justify-start sm:justify-center" style="z-index: 100;">
   <!-- Dot Pattern Background -->
   <div class="absolute inset-0 w-full h-full  opacity-50 pointer-events-none"></div>
   
@@ -491,7 +493,7 @@
   </div>
   
   <!-- Orville Dialogue Bubble wrapper (Fixed to bottom layout) -->
-  <div class="fixed bottom-0 left-0 right-0 p-4 sm:p-8 pointer-events-none z-50">
+  <div class="fixed bottom-0 left-0 right-0 p-4 sm:p-8 pointer-events-none" style="z-index: 110;">
     <div class="mx-auto w-full max-w-7xl pointer-events-auto">
       <AcnhBubble
         title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}

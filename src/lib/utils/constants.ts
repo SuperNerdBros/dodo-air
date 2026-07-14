@@ -844,63 +844,94 @@ export const DREAM_THEMES: Record<
 	}
 };
 
+export interface StampChallengeLevel {
+	target: number;
+	miles: number;
+	condition: string;
+}
+
 export interface StampChallenge {
 	id: string;
 	title: string;
 	desc: string;
-	miles: number;
-	condition: string;
 	icon: string;
+	color: string;
+	pattern: string;
+	levels: StampChallengeLevel[];
 }
 
 export const STAMP_CHALLENGES: StampChallenge[] = [
 	{
 		id: 'create',
-		title: 'Frequent Flyer Stamp',
-		desc: 'Complete and print your official Dodo Airlines Passport',
-		miles: 500,
-		condition: 'Print Passport',
-		icon: '✈️'
+		title: 'First-Time Flyer',
+		desc: 'Complete and print your official Dodo Airlines Passport to officially begin your journey with us!',
+		icon: '✈️',
+		color: '#FFCC00',
+		pattern: 'stripes',
+		levels: [
+			{ target: 1, miles: 500, condition: 'Print Passport' }
+		]
 	},
 	{
 		id: 'board',
 		title: 'Island Hopper Journey',
-		desc: 'Board any active seaplane flight and travel overseas',
-		miles: 1000,
-		condition: 'Board 1 flight',
-		icon: '🏝️'
+		desc: 'Boarding an active seaplane flight and traveling overseas is an exciting part of the adventure!',
+		icon: '🏝️',
+		color: '#E05252',
+		pattern: 'waves',
+		levels: [
+			{ target: 1, miles: 500, condition: 'Board 1 flight' },
+			{ target: 5, miles: 1000, condition: 'Board 5 flights' },
+			{ target: 10, miles: 2000, condition: 'Board 10 flights' }
+		]
 	},
 	{
 		id: 'host',
 		title: 'Island Sponsor Hospitality',
-		desc: 'Open your airport gate and list an active flight plan',
-		miles: 1500,
-		condition: 'Host 1 flight',
-		icon: '🏡'
+		desc: 'Opening your airport gates to visitors ensures everyone can enjoy a vibrant island community.',
+		icon: '🏡',
+		color: '#2ECC71',
+		pattern: 'grass',
+		levels: [
+			{ target: 1, miles: 500, condition: 'Host 1 flight' },
+			{ target: 10, miles: 1500, condition: 'Host 10 flights' }
+		]
 	},
 	{
 		id: 'chat',
 		title: 'Tower Airwaves Chatterbox',
-		desc: 'Broadcast a message over the airport terminal radio',
-		miles: 300,
-		condition: 'Send 1 radio dispatch',
-		icon: '📻'
+		desc: 'Broadcasting messages over the terminal radio keeps the Dodo Airwaves alive and kicking!',
+		icon: '📻',
+		color: '#9B59B6',
+		pattern: 'clouds',
+		levels: [
+			{ target: 1, miles: 300, condition: 'Send 1 radio dispatch' },
+			{ target: 5, miles: 500, condition: 'Send 5 radio dispatches' },
+			{ target: 20, miles: 1000, condition: 'Send 20 radio dispatches' }
+		]
 	},
 	{
 		id: 'custom',
 		title: 'Passport Customizer Extra',
-		desc: 'Update your passport signature or portrait photo',
-		miles: 200,
-		condition: 'Customize signature/avatar',
-		icon: '🎨'
+		desc: 'Keep your credentials fresh by updating your passport signature or portrait photo.',
+		icon: '🎨',
+		color: '#FF9F43',
+		pattern: 'stripes',
+		levels: [
+			{ target: 1, miles: 200, condition: 'Customize signature/avatar' }
+		]
 	},
 	{
 		id: 'standby',
 		title: 'Lounge Standby Seeker',
-		desc: 'Register a standby passenger request in the lounge',
-		miles: 500,
-		condition: 'File 1 standby request',
-		icon: '🛋️'
+		desc: 'Registering a standby request helps us manage flight traffic. Thank you for your patience!',
+		icon: '🛋️',
+		color: '#0084CC',
+		pattern: 'waves',
+		levels: [
+			{ target: 1, miles: 500, condition: 'File 1 standby request' },
+			{ target: 3, miles: 1000, condition: 'File 3 standby requests' }
+		]
 	}
 ];
 

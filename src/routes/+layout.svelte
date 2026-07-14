@@ -415,6 +415,7 @@
       <InteractiveWelcome
         onSavePassport={handleSavePassport}
         isMuted={dalStore.isMuted}
+        transparentBg={currentTab === 'splash'}
       />
     {/if}
 
