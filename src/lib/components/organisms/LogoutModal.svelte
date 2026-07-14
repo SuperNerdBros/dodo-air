@@ -13,19 +13,8 @@
     <AcnhBubble 
       title={dalStore.systemMode === 'DAL' ? "Orville [DAL Dispatch]" : "Luna [Dream Guide]"} 
       onDismiss={() => { playSound('beep', dalStore.isMuted); onClose(); }}
-    >
-      <div class="flex gap-4 items-start relative z-10 pb-4">
-        <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
-          {dalStore.systemMode === 'DAL' ? '🦤' : '🌙'}
-        </div>
-        
-        <div class="flex-1">
-          <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
-            {dalStore.systemMode === 'DAL' ? DIALOGS.logoutModal.prompt : DIALOGS.logoutModal.lunaPrompt}
-          </p>
-        </div>
-      </div>
-    </AcnhBubble>
+      dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.logoutModal.prompt : DIALOGS.logoutModal.lunaPrompt}
+    />
   </div>
 
   <div class="bg-[#fdf8e3] rounded-[40px] px-6 py-6 shadow-xl flex flex-col gap-1 min-w-[300px] md:mb-24">
