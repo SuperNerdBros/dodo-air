@@ -170,10 +170,12 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
-		padding: 2.5rem 2.35rem 2rem 3.5rem;
+		padding: 2rem 2.35rem 2rem 3.5rem;
 		color: #807256;
 		font-family: var(--dialogue-font, 'FOT-RodinBokutoh Pro EB'), sans-serif;
 		z-index: 5;
+
+
 	}
 
 	@keyframes blob {
@@ -225,6 +227,7 @@
 }
 
 @layer utilities {
+
 	/* Luna Theme Variables & Classes */
 	.luna-theme {
 		--luna-bg: 260 50% 10%;
@@ -232,7 +235,7 @@
 		--luna-primary: 190 100% 50%;
 		--luna-text: 0 0% 98%;
 		--luna-muted: 260 20% 60%;
-		
+
 		background: radial-gradient(circle at top right, #2a1b4d, #0b071a 80%);
 		background-attachment: fixed;
 		color: white;
@@ -250,7 +253,7 @@
 		color: #00ffff;
 		text-shadow: 0 0 5px rgba(0, 255, 255, 0.5), 0 0 10px rgba(0, 255, 255, 0.3);
 	}
-	
+
 	.luna-neon-border {
 		border-color: #00ffff;
 		box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.1);

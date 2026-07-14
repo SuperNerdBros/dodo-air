@@ -61,8 +61,8 @@
         <span class="radio-header__icon-emoji">📻</span>
       </div>
       <div>
-        <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
-        <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
+        <h2 class="radio-header__title font-system">{dalStore.systemMode === 'DAL' ? 'DAL Tower Radio' : 'Luna Dream Radio'}</h2>
+        <span class="radio-header__subtitle font-system">{dalStore.systemMode === 'DAL' ? 'AIRWAVE DISPATCH CHANNEL' : 'DREAMWAVE WHISPER CHANNEL'}</span>
       </div>
     </div>
     <div class="radio-header__badge font-system">
@@ -160,7 +160,7 @@
       <input
         type="text"
         bind:value={dalStore.chatText}
-        placeholder={dalStore.chatSender ? "Transmit on the airwaves..." : "Enter callsign to transmit"}
+        placeholder={dalStore.chatSender ? (dalStore.systemMode === 'DAL' ? "Transmit on the airwaves..." : "Whisper into the dream...") : (dalStore.systemMode === 'DAL' ? "Enter callsign to transmit" : "Enter dreamer name to whisper")}
         disabled={!dalStore.chatSender.trim()}
         class="radio-field__input radio-field__input--message font-sans"
         maxlength="100"

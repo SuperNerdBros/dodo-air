@@ -5,6 +5,7 @@
   
   let showFuelModal = $state(false);
   let isRefueling = $state(false);
+  let fuelRatio = $derived(dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens);
 
   async function handleRefuel(amount: number) {
     playSound('success', dalStore.isMuted);
@@ -18,6 +19,12 @@
       if (res.ok) {
         const data = await res.json();
         dalStore.aiFuel = { aiTokens: data.aiTokens, maxTokens: data.maxTokens };
+      } else {
+        // Fallback for when backend endpoint is not available
+        dalStore.aiFuel = { 
+          aiTokens: Math.min(dalStore.aiFuel.maxTokens, dalStore.aiFuel.aiTokens + amount), 
+          maxTokens: dalStore.aiFuel.maxTokens 
+        };
       }
     } catch (err) {
       console.error("Failed to refuel:", err);
@@ -27,46 +34,69 @@
   }
 </script>
 
-<footer class="w-full mt-6 border-t border-[#E6DFC7] pt-4 flex flex-col sm:flex-row items-center justify-between text-sm font-system text-slate-500 gap-3 text-left">
-    <div class="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left leading-normal">
-      <span>DAL Online Terminal &copy; 2026 For the XP</span>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <a href="#/terms" class="font-bold underline text-[#0084CC] hover:text-[#006094]">Terms</a>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <a href="#/privacy" class="font-bold underline text-[#0084CC] hover:text-[#006094]">Privacy</a>
-      <span class="hidden sm:inline text-slate-300">|</span>
-      <span>v{__APP_VERSION__}</span>
+<footer
+  class="w-full mt-6 {dalStore.systemMode === 'DAL'
+    ? 'bg-[#0084CC]/90 border-[#FFCC00]/40 shadow-[0_-4px_24px_rgba(0,132,204,0.12)]'
+    : 'bg-[#4B0082]/90 border-[#DDA0DD]/40 shadow-[0_-4px_24px_rgba(75,0,130,0.12)]'} backdrop-blur-xl text-white rounded-[20px] p-3 sm:p-4 border border-t-2 flex flex-col sm:flex-row items-center justify-between gap-3 font-system text-xs relative overflow-hidden transition-all duration-500"
+>
+    <!-- Inner glow -->
+    <div
+      class="absolute inset-0 rounded-[20px] opacity-10 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] {dalStore.systemMode === 'DAL'
+        ? 'from-[#FFCC00] via-sky-500'
+        : 'from-[#DDA0DD] via-purple-600'} to-transparent pointer-events-none transition-colors duration-500"
+    ></div>
+
+    <!-- Left: Info Links -->
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1 z-10 justify-center sm:justify-start">
+      <span class="{dalStore.systemMode === 'DAL' ? 'bg-[#FFCC00] text-[#006094]' : 'bg-[#DDA0DD] text-[#4B0082]'} text-[9px] font-black tracking-widest px-2 py-0.5 rounded-full shadow-sm transition-colors duration-500">
+        {dalStore.systemMode === 'DAL' ? 'DAL' : 'LUNA'} TERMINAL
+      </span>
+      <span>{dalStore.systemMode === 'DAL' ? 'DAL Online Terminal' : 'Luna Dreamscape Terminal'} &copy; 2026 For the XP</span>
+      <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
+      <a href="https://xophz.com" target="_blank" rel="noopener noreferrer"
+        class="font-bold {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00] hover:text-white' : 'text-[#DDA0DD] hover:text-white'} transition-colors"
+      >xophz.com</a>
+      <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
+      <a href="#/terms"
+        class="font-semibold text-white/60 hover:text-white transition-colors"
+      >Terms</a>
+      <a href="#/privacy"
+        class="font-semibold text-white/60 hover:text-white transition-colors"
+      >Privacy</a>
+      <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
+      <span class="text-white/40 font-mono text-[10px]">v{__APP_VERSION__}</span>
     </div>
 
+    <!-- Right: AI Fuel Gauge -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div 
+    <div
       onclick={() => { playSound('beep', dalStore.isMuted); showFuelModal = true; }}
-      class="flex items-center gap-2 bg-[#FFFCEF] border border-[#FFEAA7] rounded-full px-3 py-1 text-slate-600 hover:bg-[#FFF9D6] hover:border-amber-400 transition-all cursor-pointer select-none group shadow-xs"
+      class="flex items-center gap-2.5 z-10 {dalStore.systemMode === 'DAL'
+        ? 'bg-[#006094]/60 border-[#FFCC00]/30 hover:border-[#FFCC00]/60'
+        : 'bg-[#290048]/60 border-[#DDA0DD]/30 hover:border-[#DDA0DD]/60'} border rounded-full px-3.5 py-1.5 cursor-pointer select-none group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
     >
-      <span class="animate-pulse">⛽</span>
-      <span class="font-bold text-amber-800 text-xs uppercase tracking-wider">AI Fuel:</span>
-      <div class="w-12 h-1.5 bg-slate-200/80 rounded-full overflow-hidden border border-slate-300/30 relative">
+      <span class="text-sm animate-pulse drop-shadow-[0_0_4px_rgba(255,200,0,0.5)]">⛽</span>
+      <span class="font-black {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'} text-[10px] uppercase tracking-widest">Fuel</span>
+      <div class="w-14 h-2 {dalStore.systemMode === 'DAL' ? 'bg-sky-900/50' : 'bg-purple-900/50'} rounded-full overflow-hidden border border-white/10 relative">
         <div
-          class="h-full transition-all duration-500 {(dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens) < 0.2 ? 'bg-red-500' : (dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens) < 0.5 ? 'bg-amber-500' : 'bg-emerald-500'}"
-          style="width: {Math.min(100, (dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens) * 100)}%"
+          class="h-full rounded-full transition-all duration-700 ease-out {fuelRatio < 0.2 ? 'bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.6)]' : fuelRatio < 0.5 ? 'bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.5)]' : 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]'}"
+          style="width: {Math.min(100, fuelRatio * 100)}%"
         ></div>
       </div>
-      <span class="font-black text-[#0084CC] text-xs font-system">
-        {dalStore.aiFuel.aiTokens.toLocaleString()} GAL
+      <span class="font-black text-white text-[11px] font-mono tabular-nums">
+        {dalStore.aiFuel.aiTokens.toLocaleString()}
       </span>
-      <span class="text-xs font-black text-amber-700 underline group-hover:text-[#0084CC] transition-colors ml-0.5">
-        [Refuel]
+      <span class="text-[10px] font-black {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00]' : 'text-[#DDA0DD]'} group-hover:text-white transition-colors tracking-wider">
+        GAL
       </span>
     </div>
 </footer>
 
 {#if showFuelModal}
   <FuelDepotModal
-    currentFuel={dalStore.aiFuel.aiTokens}
-    maxFuel={dalStore.aiFuel.maxTokens}
+    isOpen={true}
+    aiFuel={dalStore.aiFuel}
     onRefuel={handleRefuel}
     onClose={() => showFuelModal = false}
     {isRefueling}

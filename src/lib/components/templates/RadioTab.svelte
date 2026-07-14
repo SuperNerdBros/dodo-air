@@ -16,7 +16,8 @@
     profiles,
     openProfileModal,
     passport,
-    isMuted = false
+    isMuted = false,
+    onClose
   } = $props<{
     chatter: ChatterMessage[];
     chatSender: string;
@@ -60,7 +61,7 @@
 </script>
 
 <!-- DAL Tower Radio Panel — ACNH Aesthetic -->
-<div class="radio-panel h-full flex flex-col">
+<div class="radio-panel h-full flex flex-col {dalStore.systemMode === 'LUNA' ? 'luna-radio' : ''}">
 
   <!-- ═══ Header Bar ═══ -->
   <div class="radio-header">
@@ -70,7 +71,7 @@
       </div>
       <div>
     <div class="flex flex-col justify-center gap-2 items-center">
-        <h2 class="radio-header__title font-system">DAL Tower Radio</h2>
+        <h2 class="radio-header__title font-system">{dalStore.systemMode === 'DAL' ? 'DAL Tower Radio' : 'Luna Dream Radio'}</h2>
             <div class="radio-header__signal shrink ">
               <span class="radio-signal-dot"></span>
               <span class="radio-signal-dot radio-signal-dot--delay1"></span>
@@ -92,8 +93,8 @@
 
   </div>
 
-  <div class="bg-[#005788] px-4 py-1.5 flex justify-between items-center border-b-2 border-[#003B5C] gap-1">
-        <span class="radio-header__subtitle font-system">AIRWAVE DISPATCH CHANNEL</span>
+  <div class="px-4 py-1.5 flex justify-between items-center border-b-2 gap-1 {dalStore.systemMode === 'LUNA' ? 'bg-[#3b2866] border-[#2a1b4d]' : 'bg-[#005788] border-[#003B5C]'}">
+        <span class="radio-header__subtitle font-system">{dalStore.systemMode === 'DAL' ? 'AIRWAVE DISPATCH CHANNEL' : 'DREAMWAVE WHISPER CHANNEL'}</span>
     <div class="flex items-center gap-2 text-[10px] font-system text-white/90 bg-black/25 rounded-full px-2.5 py-0.5 shadow-inner">
       <button 
         type="button"
@@ -126,7 +127,7 @@
         <div class="radio-msg radio-msg--npc" transition:slide={{ duration: 200 }}>
           <div class="flex flex-col items-center gap-1">
             <div class="radio-avatar radio-avatar--npc">
-              {isOrville ? '🦤' : '🕶️'}
+              {isOrville ? (dalStore.systemMode === 'DAL' ? '🦤' : '💤') : '🕶️'}
             </div>
             {#if msg.timestamp}
               <span class="text-[8px] font-bold text-[#0084CC]/60 font-system text-center" style="letter-spacing:-0.5px">
@@ -137,7 +138,7 @@
           <div class="radio-bubble radio-bubble--npc">
             <span class="radio-bubble__sender font-system">
               {msg.sender}
-              <span class="radio-bubble__npc-tag font-system">{isOrville ? 'TOWER' : 'PILOT'}</span>
+              <span class="radio-bubble__npc-tag font-system">{isOrville ? (dalStore.systemMode === 'DAL' ? 'TOWER' : 'GUIDE') : (dalStore.systemMode === 'DAL' ? 'PILOT' : 'DREAMER')}</span>
             </span>
             <p class="radio-bubble__text">{msg.text}</p>
           </div>
@@ -207,8 +208,8 @@
     {#if chatter.length === 0}
       <div class="radio-empty">
         <div class="radio-empty__icon">📡</div>
-        <p class="radio-empty__text font-system">Scanning frequencies...</p>
-        <p class="radio-empty__sub">No chatter on this channel yet. Be the first to transmit!</p>
+        <p class="radio-empty__text font-system">{dalStore.systemMode === 'DAL' ? 'Scanning frequencies...' : 'Tuning into dreams...'}</p>
+        <p class="radio-empty__sub">{dalStore.systemMode === 'DAL' ? 'No chatter on this channel yet. Be the first to transmit!' : 'No whispers in the dreamscape yet. Be the first to share a dream!'}</p>
       </div>
     {/if}
   </div>
@@ -244,7 +245,7 @@
       <input
         type="text"
         bind:value={chatText}
-        placeholder={chatSender ? "Transmit on the airwaves..." : "Enter callsign to transmit"}
+        placeholder={chatSender ? (dalStore.systemMode === 'DAL' ? "Transmit on the airwaves..." : "Whisper into the dream...") : (dalStore.systemMode === 'DAL' ? "Enter callsign to transmit" : "Enter dreamer name to whisper")}
         disabled={!chatSender.trim()}
         class="radio-field__input radio-field__input--message font-sans"
         maxlength="100"
@@ -684,5 +685,126 @@
     gap: 6px;
     flex-shrink: 0;
     white-space: nowrap;
+  }
+
+  /* ─── Luna Mode Overrides ─── */
+  :global(.luna-radio.radio-panel) {
+    background: #1a103c;
+    border-color: #3b2866;
+    box-shadow: 0 6px 0 0 #2a1b4d, 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.luna-radio) .radio-header {
+    background: linear-gradient(135deg, #4B0082 0%, #2a1b4d 100%);
+  }
+  
+  :global(.luna-radio) .radio-header::before {
+    background: radial-gradient(ellipse at 30% 20%, rgba(221, 160, 221, 0.15) 0%, transparent 60%);
+  }
+
+  :global(.luna-radio) .radio-header__icon {
+    background: #DDA0DD;
+    border-color: #BA80BA;
+    border-bottom-color: #9A609A;
+    box-shadow: 0 3px 0 0 #9A609A;
+  }
+  
+  :global(.luna-radio) .radio-header__badge {
+    background: #BA80BA;
+    color: white;
+    border-color: #9A609A;
+    border-bottom-color: #7A407A;
+    box-shadow: 0 2px 0 0 #7A407A;
+  }
+  
+  :global(.luna-radio) .radio-feed {
+    background:
+      linear-gradient(180deg, rgba(26, 16, 60, 0) 0%, rgba(42, 27, 77, 0.5) 100%),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 39px,
+        rgba(186, 128, 186, 0.08) 39px,
+        rgba(186, 128, 186, 0.08) 40px
+      );
+  }
+
+  :global(.luna-radio) .radio-msg--system {
+    background: rgba(75, 0, 130, 0.35);
+    border-color: rgba(186, 128, 186, 0.5);
+    color: #DDA0DD;
+  }
+
+  :global(.luna-radio) .radio-avatar--npc {
+    background: linear-gradient(135deg, #3b2866 0%, #2a1b4d 100%);
+    border-color: #BA80BA;
+    box-shadow: 0 3px 0 0 rgba(186, 128, 186, 0.2);
+    color: white;
+  }
+
+  :global(.luna-radio) .radio-avatar--user {
+    background: linear-gradient(135deg, #DDA0DD 0%, #BA80BA 100%);
+    border-color: #9A609A;
+    color: #4B0082;
+    box-shadow: 0 3px 0 0 rgba(154, 96, 154, 0.2);
+  }
+
+  :global(.luna-radio) .radio-bubble--npc {
+    background: linear-gradient(135deg, #2a1b4d 0%, #1a103c 100%);
+    border-color: rgba(186, 128, 186, 0.3);
+    border-bottom-color: rgba(186, 128, 186, 0.4);
+    color: #e2d8f0;
+  }
+  
+  :global(.luna-radio) .radio-bubble__sender {
+    color: #DDA0DD;
+  }
+
+  :global(.luna-radio) .radio-bubble__npc-tag {
+    background: #4B0082;
+  }
+
+  :global(.luna-radio) .radio-bubble--user {
+    background: #2a1b4d;
+    border-color: #4b387a;
+    border-bottom-color: #3b2866;
+    color: #e2d8f0;
+  }
+  
+  :global(.luna-radio) .radio-empty__text {
+    color: #DDA0DD;
+  }
+  
+  :global(.luna-radio) .radio-empty__sub {
+    color: #BA80BA;
+  }
+  
+  :global(.luna-radio) .radio-input-dock {
+    border-top-color: #3b2866;
+    background: linear-gradient(180deg, #1a103c 0%, #0b071a 100%);
+  }
+  
+  :global(.luna-radio) .radio-field__label {
+    color: #DDA0DD;
+  }
+  
+  :global(.luna-radio) .radio-field__input {
+    background: #2a1b4d;
+    border-color: #4b387a;
+    border-bottom-color: #3b2866;
+    color: #e2d8f0;
+  }
+  
+  :global(.luna-radio) .radio-field__input:focus {
+    border-color: #BA80BA;
+    border-bottom-color: #9A609A;
+    background: #3b2866;
+    box-shadow: 0 2px 0 0 rgba(186, 128, 186, 0.1), 0 0 0 3px rgba(186, 128, 186, 0.08);
+  }
+  
+  :global(.luna-radio) .radio-send-btn {
+    background: #4B0082;
+    color: white;
+    border-color: #BA80BA;
   }
 </style>

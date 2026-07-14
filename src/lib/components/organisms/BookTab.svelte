@@ -4,7 +4,7 @@
   import Text from '../atoms/Text.atom.svelte';
   import Button from '../atoms/Button.atom.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
-  import { GATE_THEMES } from '$lib/types';
+  import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
 </script>
 
 <Box class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
@@ -13,24 +13,28 @@
       <Box class="flex items-center gap-2.5">
         <Text tag="span" class="w-2.5 h-2.5 rounded-full bg-[#0084CC] animate-ping" />
         <Box>
-          <Text tag="h2" class="text-base font-system font-black tracking-wider text-[#0084CC] uppercase leading-none">
-            DAL DEPARTURES FLIGHT BOARD
+          <Text tag="h2" class="text-base font-system font-black tracking-wider {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#DDA0DD]'} uppercase leading-none">
+            {dalStore.systemMode === 'DAL' ? 'DAL DEPARTURES FLIGHT BOARD' : 'LUNA DOZE CODE BOARD'}
           </Text>
           <Text tag="span" class="text-xs font-system text-slate-400 font-bold uppercase tracking-widest mt-0.5 block">
-            CHOOSE FLIGHT TO REVEAL BOARDING PASS
+            {dalStore.systemMode === 'DAL' ? 'CHOOSE FLIGHT TO REVEAL BOARDING PASS' : 'CHOOSE DREAM TO REVEAL DOZE CODE'}
           </Text>
         </Box>
       </Box>
-      <Text tag="span" class="bg-[#A2D2FF]/20 text-[#0084CC] text-sm font-system font-bold px-2.5 py-1 rounded-full border border-[#0084CC]/10">
-        {dalStore.flights.length} SEAPLANES ACTIVE
+      <Text tag="span" class="bg-[#A2D2FF]/20 {dalStore.systemMode === 'DAL' ? 'text-[#0084CC] border-[#0084CC]/10' : 'text-[#4B0082] border-[#DDA0DD]/10'} text-sm font-system font-bold px-2.5 py-1 rounded-full border">
+        {dalStore.flights.length} {dalStore.systemMode === 'DAL' ? 'SEAPLANES ACTIVE' : 'DREAMS ACTIVE'}
       </Text>
     </Box>
 
     {#if dalStore.flights.length === 0}
       <Box class="bg-white border border-[#0084CC]/10 rounded-[32px] py-14 text-center font-system text-slate-400">
-        <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
+        {#if dalStore.systemMode === 'DAL'}
+          <Plane class="w-10 h-10 mx-auto mb-2 text-slate-300 animate-bounce" />
+        {:else}
+          <div class="text-4xl mx-auto mb-2 text-slate-300 animate-pulse">🛌</div>
+        {/if}
         <Text tag="p" class="text-xs font-bold uppercase">NO ACTIVE DESTINATIONS REGISTERED</Text>
-        <Text tag="p" class="text-sm mt-0.5">Switch to 'My Flight Hub' to park your seaplane at the gate!</Text>
+        <Text tag="p" class="text-sm mt-0.5">{dalStore.systemMode === 'DAL' ? "Switch to 'My Flight Hub' to park your seaplane at the gate!" : "Switch to 'Sleep' to share your dream!"}</Text>
       </Box>
     {:else}
       <Box class="space-y-3.5 max-h-[600px] overflow-y-auto pr-1">
@@ -51,10 +55,10 @@
           >
             <Box class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <Box class="flex items-center gap-3">
-                <Box class="w-10 h-10 bg-[#0084CC] rounded-xl flex flex-col items-center justify-center font-system text-white flex-shrink-0">
-                  <Text tag="span" class="text-xs uppercase font-bold leading-none text-sky-200">GATE</Text>
+                <Box class="w-10 h-10 {dalStore.systemMode === 'DAL' ? 'bg-[#0084CC]' : 'bg-[#4B0082]'} rounded-xl flex flex-col items-center justify-center font-system text-white flex-shrink-0">
+                  <Text tag="span" class="text-xs uppercase font-bold leading-none {dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-[#DDA0DD]'}">{dalStore.systemMode === 'DAL' ? 'GATE' : 'THEME'}</Text>
                   <Text tag="span" class="text-[#FFCC00] font-black text-sm leading-none">{flight.gate}</Text>
-                  <Text tag="span" class="text-xs leading-none">{GATE_THEMES[flight.gate]?.icon}</Text>
+                  <Text tag="span" class="text-xs leading-none">{(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES)[flight.gate]?.icon}</Text>
                 </Box>
                 <Box>
                   <Box class="flex items-center flex-wrap gap-1">
@@ -157,8 +161,8 @@
                     "{req.title}"
                   </Text>
                   <Box class="mt-1.5 flex items-center flex-wrap gap-1.5">
-                    <Text tag="span" class="bg-[#A2D2FF]/20 text-[#006094] text-xs font-system font-black px-1.5 py-0.2 rounded-full uppercase">
-                      {GATE_THEMES[req.gateType]?.icon} {GATE_THEMES[req.gateType]?.name}
+                    <Text tag="span" class="bg-[#A2D2FF]/20 {dalStore.systemMode === 'DAL' ? 'text-[#006094]' : 'text-[#4B0082]'} text-xs font-system font-black px-1.5 py-0.2 rounded-full uppercase">
+                      {(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES)[req.gateType]?.icon} {(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES)[req.gateType]?.name}
                     </Text>
                     <Text tag="span" class="bg-amber-50 text-amber-700 border border-amber-100 text-xs font-system font-bold px-1.5 py-0.2 rounded-full uppercase">
                       ⏱️ {req.timePreference}
@@ -176,10 +180,17 @@
     </Box>
 
     <Box class="bg-white rounded-[32px] border-2 border-[#0084CC]/10 p-4 flex gap-3">
-      <Text tag="span" class="text-3xl">🦤</Text>
-      <Box class="text-xs text-[#4A4A4A]/80 leading-relaxed">
-        <Text tag="strong">Orville:</Text> "Can't find an open airport gate that matches your travel itinerary? File a Standby Request above to alert online pilots looking to match passenger lists!"
-      </Box>
+      {#if dalStore.systemMode === 'DAL'}
+        <Text tag="span" class="text-3xl">🦤</Text>
+        <Box class="text-xs text-[#4A4A4A]/80 leading-relaxed">
+          <Text tag="strong">Orville:</Text> "Can't find an open airport gate that matches your travel itinerary? File a Standby Request above to alert online pilots looking to match passenger lists!"
+        </Box>
+      {:else}
+        <Text tag="span" class="text-3xl">💤</Text>
+        <Box class="text-xs text-[#4A4A4A]/80 leading-relaxed">
+          <Text tag="strong">Luna:</Text> "Cannot find a dream that matches your spirit? File a Standby Request above to await the perfect slumber."
+        </Box>
+      {/if}
     </Box>
   </Box>
 </Box>

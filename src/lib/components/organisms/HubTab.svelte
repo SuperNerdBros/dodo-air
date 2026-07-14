@@ -10,7 +10,7 @@
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import { dalStore } from '$lib/stores/dal.svelte';
-  import { GATE_THEMES } from '$lib/types';
+  import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
   import type { FlightStatus, StandbyRequest } from '$lib/types';
 
   let myFlight = $derived(dalStore.flights.find(f => f.status !== 'Closed' && f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === dalStore.passport.islandName.toLowerCase()));
@@ -209,7 +209,7 @@
               Flight {myFlight.id} to '{myFlight.islandName}'
             </Text>
             <Text tag="p" class="text-xs text-sky-200 mt-0.5">
-              Island host: <Text tag="strong">{myFlight.hostName}</Text> | Gate Theme: <Text tag="strong">{GATE_THEMES[myFlight.gate]?.name}</Text>
+              Island host: <Text tag="strong">{myFlight.hostName}</Text> | {dalStore.systemMode === 'DAL' ? 'Gate' : 'Dream'} Theme: <Text tag="strong">{(dalStore.systemMode === 'DAL' ? GATE_THEMES[myFlight.gate] : DREAM_THEMES[myFlight.gate])?.name}</Text>
             </Text>
           </Box>
           <Box class="bg-black/20 border border-white/10 p-3 rounded-2xl text-center font-system">
@@ -254,7 +254,7 @@
             </Box>
             {#if myFlight.passengers.length === 0}
               <Box class="py-8 text-center font-system text-slate-400 text-xs">
-                No passengers have checked in at Gate {myFlight.gate} yet. Runways are clear!
+                {dalStore.systemMode === 'DAL' ? `No passengers have checked in at Gate ${myFlight.gate} yet. Runways are clear!` : `No dreamers have arrived at Dream ${myFlight.gate} yet. The bed is empty!`}
               </Box>
             {:else}
               <Box class="space-y-2">
@@ -335,7 +335,7 @@
               <Box class="text-center py-8 text-slate-400 font-system text-xs space-y-2">
                 <Compass class="w-8 h-8 text-slate-300 mx-auto animate-spin" />
                 <Text tag="p" class="uppercase font-bold">Scanning Airwaves...</Text>
-                <Text tag="p" class="text-sm leading-relaxed">No standby flyers are looking for Gate Category {myFlight.gate} at the moment. Keep radar active!</Text>
+                <Text tag="p" class="text-sm leading-relaxed">{dalStore.systemMode === 'DAL' ? `No standby flyers are looking for Gate Category ${myFlight.gate} at the moment. Keep radar active!` : `No standby dreamers are looking for Dream Category ${myFlight.gate} at the moment.`}</Text>
               </Box>
             {:else}
               <Box class="space-y-3">
@@ -368,7 +368,7 @@
             onclick={() => handleUpdateStatus(myFlight.id, 'Closed')}
             class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-system font-black py-3 rounded-2xl shadow border border-red-200 text-xs text-center block"
           >
-            ⛔ CLOSE GATE & ARCHIVE FLIGHT RUNWAY
+            {dalStore.systemMode === 'DAL' ? '⛔ CLOSE GATE & ARCHIVE FLIGHT RUNWAY' : '⛔ END DREAM & WAKE UP'}
           </Button>
         </Box>
       </Box>

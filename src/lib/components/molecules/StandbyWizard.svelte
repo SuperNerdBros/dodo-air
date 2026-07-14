@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fly, fade } from 'svelte/transition';
-  import { GATE_THEMES } from '$lib/utils/constants';
+  import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import Button from '$lib/components/atoms/Button.atom.svelte';
   import { DIALOGS } from '$lib/constants/dialogs';
@@ -105,7 +105,7 @@
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10 pr-4 md:pr-10">
-            {#each Object.entries(GATE_THEMES) as [num, theme]}
+            {#each Object.entries(dalStore.systemMode === 'DAL' ? GATE_THEMES : DREAM_THEMES) as [num, theme]}
               <button
                 type="button"
                 onclick={() => { requestGateType = Number(num); nextStep(); }}
@@ -121,7 +121,7 @@
       {:else if step === 2}
         <AcnhBubble
           title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
-          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step2(GATE_THEMES[requestGateType]?.name) : DIALOGS.standbyWizard.lunaStep2(GATE_THEMES[requestGateType]?.name)}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step2(GATE_THEMES[requestGateType]?.name) : DIALOGS.standbyWizard.lunaStep2(DREAM_THEMES[requestGateType]?.name)}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-5 relative z-10 pr-4 md:pr-8">
@@ -225,7 +225,7 @@
               <div class="flex items-center gap-3">
                 <span class="text-xs font-black text-[#0084CC] uppercase w-24 tracking-wide">Destination:</span>
                 <span class="font-bold text-[#006094] bg-[#FFCC00] px-3 py-1 rounded-full text-xs uppercase tracking-wide border-2 border-[#CC9900]">
-                  {GATE_THEMES[requestGateType]?.icon} {GATE_THEMES[requestGateType]?.name}
+                  {dalStore.systemMode === 'DAL' ? GATE_THEMES[requestGateType]?.icon : DREAM_THEMES[requestGateType]?.icon} {dalStore.systemMode === 'DAL' ? GATE_THEMES[requestGateType]?.name : DREAM_THEMES[requestGateType]?.name}
                 </span>
               </div>
               <div class="flex items-center gap-3">

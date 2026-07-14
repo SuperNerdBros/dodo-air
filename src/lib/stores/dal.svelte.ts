@@ -52,6 +52,7 @@ export class DalState {
 		hasRequested: false,
 		xp: 0
 	});
+	myPassports: Passport[] = $state([]);
 
 	isTrafficModalOpen = $state(false);
 	isEditingPassport = $state(false);
@@ -144,6 +145,12 @@ export class DalState {
 						};
 						this.passportForm = { ...this.passport };
 					}
+				}
+				const savedPassports = localStorage.getItem('dal_passports');
+				if (savedPassports) {
+					this.myPassports = JSON.parse(savedPassports);
+				} else if (this.passport.hasCreated) {
+					this.myPassports = [this.passport];
 				}
 			} catch (e) {
 				console.error(e);

@@ -222,6 +222,15 @@
       hasCreated: true,
       hasCustomized: true
     };
+    
+    const existingIndex = dalStore.myPassports.findIndex(p => p.friendCode === dalStore.passport.friendCode);
+    if (existingIndex >= 0) {
+      dalStore.myPassports[existingIndex] = dalStore.passport;
+    } else {
+      dalStore.myPassports = [...dalStore.myPassports, dalStore.passport];
+    }
+    localStorage.setItem('dal_passports', JSON.stringify(dalStore.myPassports));
+
     localStorage.setItem('dal_passport', JSON.stringify(dalStore.passport));
     dalStore.isEditingPassport = false;
     dalStore.showPassportDrawer = false;
@@ -340,7 +349,7 @@
             isMuted={dalStore.isMuted}
             onclick={() => { window.location.hash = '#/islands'; }}
           >
-            <PlaneTakeoff class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Departures</span>
+            <PlaneTakeoff class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'book' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">{dalStore.systemMode === 'DAL' ? 'Departures' : 'Dreamers'}</span>
           </TabButton>
 
           <TabButton
@@ -349,7 +358,7 @@
             isMuted={dalStore.isMuted}
             onclick={() => { window.location.hash = '#/hub'; }}
           >
-            <PlaneLanding class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">Arrivals</span>
+            <PlaneLanding class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'hub' ? '' : 'opacity-70'}" /> <span class="hidden sm:inline">{dalStore.systemMode === 'DAL' ? 'Arrivals' : 'Sleep'}</span>
             {#if myFlight}
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full animate-ping"></span>
               <span class="absolute bottom-1 right-2 w-2 h-2 bg-[#FF4747] rounded-full shadow-xs"></span>
@@ -365,7 +374,7 @@
             onclick={() => { window.location.hash = '#/standby'; }}
           >
             <Ticket class="text-base sm:text-lg {currentTab === 'standby' ? '' : 'opacity-70'}"/> <span class="hidden sm:inline">
-            Waiting Room 
+            {dalStore.systemMode === 'DAL' ? 'Waiting Room' : 'Awaiting Slumber'}
             </span>
           </TabButton>
         </div>

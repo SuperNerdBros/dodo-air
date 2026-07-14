@@ -182,11 +182,11 @@
           <table class="w-full text-left border-collapse font-system whitespace-nowrap">
             <thead class="sticky top-0 z-10 bg-white">
               <tr class="bg-slate-50/50 border-b-2 border-slate-100 text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                <th class="px-5 py-3 text-center">Gate</th>
-                <th class="px-5 py-3">Flight</th>
-                <th class="px-5 py-3 text-center">Passengers</th>
+                <th class="px-5 py-3 text-center">{dalStore.systemMode === 'DAL' ? 'Gate' : 'Theme'}</th>
+                <th class="px-5 py-3">{dalStore.systemMode === 'DAL' ? 'Flight' : 'Dream'}</th>
+                <th class="px-5 py-3 text-center">{dalStore.systemMode === 'DAL' ? 'Passengers' : 'Dreamers'}</th>
                 <th class="px-5 py-3 text-center">Host</th>
-                <th class="px-5 py-3">Destination</th>
+                <th class="px-5 py-3">{dalStore.systemMode === 'DAL' ? 'Destination' : 'Dreamscape'}</th>
                 <th class="px-5 py-3 pr-6 text-right"></th>
                 <th class="px-5 py-3 text-center">Status</th>
               </tr>
@@ -215,10 +215,10 @@
                   }}
                 >
                   <!-- GATE -->
-                  <td class="px-5 py-3text-center">
+                  <td class="px-5 py-3 text-center">
                     <div class="flex items-center justify-center gap-2">
-                      <div class="inline-flex flex-col items-center justify-center w-10 h-10 bg-[#0084CC] rounded-xl text-white font-system leading-none shadow-sm">
-                        <span class="text-[9px] uppercase font-bold text-sky-200 mb-0.5">Gate</span>
+                      <div class="inline-flex flex-col items-center justify-center w-10 h-10 {dalStore.systemMode === 'DAL' ? 'bg-[#0084CC]' : 'bg-[#4B0082]'} rounded-xl text-white font-system leading-none shadow-sm">
+                        <span class="text-[9px] uppercase font-bold {dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-[#DDA0DD]'} mb-0.5">{dalStore.systemMode === 'DAL' ? 'Gate' : 'Theme'}</span>
                         <span class="text-[#FFCC00] font-black text-base">{flight.gate}</span>
                       </div>
                       <span class="text-xl drop-shadow-sm" title={activeTheme.name}>{activeTheme.icon}</span>
