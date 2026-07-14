@@ -97,6 +97,12 @@ export const DIALOGS = {
 			"Ready to log out of the DAL Terminal? Don't worry, we'll keep your passport safe at the desk!",
 		lunaPrompt: 'Are you prepared to wake from the dream? Your memories will be kept safe.'
 	},
+	interactiveAbout: {
+		intro: "Hey there! I'm X, the developer behind this terminal. Thanks for stopping by!",
+		project: "This is an open-source, unofficial companion app for the ACNH community. It's built to make finding and hosting flights easier and more fun.",
+		github: "Since this is an open-source project, I'd love your help! You can submit issues, feature requests, or code contributions on my GitHub.",
+		closing: "Ready to get back to the terminal? Safe travels, and happy flying!"
+	},
 	loginFlow: {
 		default:
 			'To access the DAL terminal, we need to verify your Frequent Flyer passport! Please enter your email address so Orville can send you a secure access code.',

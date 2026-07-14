@@ -1,9 +1,11 @@
 <script lang="ts">
   import { dalStore } from '$lib/stores/dal.svelte';
   import FuelDepotModal from '$lib/components/organisms/FuelDepotModal.svelte';
+  import InteractiveAbout from '$lib/components/organisms/InteractiveAbout.svelte';
   import { playSound } from '$lib/utils/audio';
   
   let showFuelModal = $state(false);
+  let showAboutModal = $state(false);
   let isRefueling = $state(false);
   let fuelRatio = $derived(dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens);
 
@@ -57,6 +59,10 @@
         class="font-bold {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00] hover:text-white' : 'text-[#DDA0DD] hover:text-white'} transition-colors"
       >xophz.com</a>
       <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
+      <button 
+        onclick={() => showAboutModal = true}
+        class="font-semibold text-white/60 hover:text-white transition-colors cursor-pointer"
+      >About</button>
       <a href="#/terms"
         class="font-semibold text-white/60 hover:text-white transition-colors"
       >Terms</a>
@@ -101,4 +107,8 @@
     onClose={() => showFuelModal = false}
     {isRefueling}
   />
+{/if}
+
+{#if showAboutModal}
+  <InteractiveAbout onClose={() => showAboutModal = false} />
 {/if}
