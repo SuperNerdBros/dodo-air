@@ -5,6 +5,7 @@
   import Button from '$lib/components/atoms/Button.atom.svelte';
   import { DIALOGS } from '$lib/constants/dialogs';
   import { playSound } from '$lib/utils/audio';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let {
     isOpen = false,
@@ -99,8 +100,8 @@
     <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
       {#if step === 1}
         <AcnhBubble
-          title="Orville [Tour Guide]"
-          dialogText={DIALOGS.standbyWizard.step1}
+          title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step1 : DIALOGS.standbyWizard.lunaStep1}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10 pr-4 md:pr-10">
@@ -119,8 +120,8 @@
 
       {:else if step === 2}
         <AcnhBubble
-          title="Orville [Tour Guide]"
-          dialogText={DIALOGS.standbyWizard.step2(GATE_THEMES[requestGateType]?.name)}
+          title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step2(GATE_THEMES[requestGateType]?.name) : DIALOGS.standbyWizard.lunaStep2(GATE_THEMES[requestGateType]?.name)}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-5 relative z-10 pr-4 md:pr-8">
@@ -189,8 +190,8 @@
 
       {:else if step === 3}
         <AcnhBubble
-          title="Orville [Tour Guide]"
-          dialogText={DIALOGS.standbyWizard.step3}
+          title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step3 : DIALOGS.standbyWizard.lunaStep3}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -209,8 +210,8 @@
 
       {:else if step === 4}
         <AcnhBubble
-          title="Orville [Tour Guide]"
-          dialogText={DIALOGS.standbyWizard.step4}
+          title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyWizard.step4 : DIALOGS.standbyWizard.lunaStep4}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">

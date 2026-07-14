@@ -315,7 +315,7 @@
               <div class="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200/50 p-4 rounded-[24px] space-y-2">
                 <h4 class="font-system font-black text-[#D35400] text-xs flex items-center gap-1 font-bold">
                   <Sparkles class="w-4 h-4 text-amber-500 fill-amber-500" />
-                  Orville's Official Island Travel Review
+                  {dalStore.systemMode === 'DAL' ? "Orville's Official Island Travel Review" : "Luna's Official Dream Review"}
                 </h4>
                 <p class="text-slate-600 text-xs italic font-sans leading-relaxed text-left font-semibold">
                   "{myFlight.review}"
@@ -324,7 +324,7 @@
             {:else}
               <div class="bg-[#A2D2FF]/10 border border-[#0084CC]/10 p-4 rounded-[24px] text-center">
                 <p class="text-sm text-slate-500 mb-2 leading-relaxed font-semibold">
-                  Ask Orville to compile Wilbur's flight deck observations and publish an official Travel Review brochure!
+                  {dalStore.systemMode === 'DAL' ? "Ask Orville to compile Wilbur's flight deck observations and publish an official Travel Review brochure!" : "Ask Luna to observe your dream and publish an official Dream Review brochure!"}
                 </p>
                 <button
                   onclick={() => handleGenerateAIReview(myFlight.id)}
@@ -349,10 +349,10 @@
           <!-- MATCHMAKER COMPONENT -->
           <div class="bg-[#FFFCEF] rounded-[32px] border-4 border-[#FFEAA7] p-4 shadow-sm text-[#4A4A4A]">
             <div class="flex items-center gap-2 border-b border-[#FFEAA7] pb-2 mb-3">
-              <span class="text-xl">🦤</span>
+              <span class="text-xl">{dalStore.systemMode === 'DAL' ? '🦤' : '🌙'}</span>
               <div>
-                <h3 class="font-system font-black text-xs text-[#0084CC] uppercase leading-none font-bold">Smart Flight Matchmaker</h3>
-                <span class="text-xs font-system text-slate-400 font-bold uppercase mt-0.5 block">ORVILLE'S MATCH COUNTER</span>
+                <h3 class="font-system font-black text-xs {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} uppercase leading-none font-bold">{dalStore.systemMode === 'DAL' ? 'Smart Flight Matchmaker' : 'Dream Connector'}</h3>
+                <span class="text-xs font-system text-slate-400 font-bold uppercase mt-0.5 block">{dalStore.systemMode === 'DAL' ? "ORVILLE'S MATCH COUNTER" : "LUNA'S CONNECTION COUNTER"}</span>
               </div>
             </div>
 
@@ -366,7 +366,7 @@
             {:else}
               <div class="space-y-3">
                 <div class="bg-white/80 p-2.5 rounded-2xl border border-[#FFEAA7] text-xs text-[#4A4A4A] text-left font-semibold">
-                  💡 <strong>Orville:</strong> "Look! We have standby passengers looking to match your flight's category! Clear them for immediate boarding!"
+                  💡 <strong>{dalStore.systemMode === 'DAL' ? 'Orville' : 'Luna'}:</strong> "{dalStore.systemMode === 'DAL' ? "Look! We have standby passengers looking to match your flight's category! Clear them for immediate boarding!" : "A dreamer seeks a slumber like yours... Invite them to join."}"
                 </div>
 
                 {#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match (match.id)}

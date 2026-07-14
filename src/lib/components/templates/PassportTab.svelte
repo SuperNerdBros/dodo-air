@@ -4,6 +4,7 @@
   import type { Passport } from '$lib/studio-types';
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let {
     passport,
@@ -33,8 +34,8 @@
 <div class="space-y-5 text-left w-100 mx-auto pt-5">
   {#if isActive}
     <AcnhBubble 
-      title="Orville"
-      dialogText={DIALOGS.passportTab.active}
+      title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}
+      dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.passportTab.active : DIALOGS.passportTab.lunaActive}
     />
   {/if}
   <!-- Tab Header Board -->

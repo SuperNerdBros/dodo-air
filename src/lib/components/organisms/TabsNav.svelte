@@ -27,7 +27,8 @@
       </Box>
     {/if}
 
-    <Box class="flex gap-1.5 bg-slate-100 p-1 rounded-2xl w-full md:w-auto">
+    <Box class="flex flex-wrap gap-1.5 bg-slate-100 p-1 rounded-2xl w-full md:w-auto">
+      <!-- Tab 1: Book / Dreamers -->
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'book'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
@@ -37,9 +38,11 @@
         {#if dalStore.systemMode === 'DAL'}
           <Plane class="w-4 h-4" /> Book Flight
         {:else}
-          <Cloud class="w-4 h-4" /> Find Dream
+          <Cloud class="w-4 h-4" /> Dreamers
         {/if}
       </Button>
+      
+      <!-- Tab 2: Hub / Sleep -->
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'hub'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
@@ -49,12 +52,26 @@
         {#if dalStore.systemMode === 'DAL'}
           <Plane class="w-4 h-4" /> My Flight Hub
         {:else}
-          <Cloud class="w-4 h-4" /> My Dream Hub
+          <Cloud class="w-4 h-4" /> Sleep
         {/if}
         {#if dalStore.flights.some((f: any) => f.status !== 'Closed' && f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase())}
           <Text tag="span" class="w-2 h-2 bg-[#FFCC00] rounded-full animate-ping" />
         {/if}
       </Button>
+
+      <!-- Tab 3 (LUNA ONLY): Dream Directory -->
+      {#if dalStore.systemMode === 'LUNA'}
+      <Button
+        onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'directory'; }}
+        class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${
+          dalStore.currentTab === 'directory' ? 'bg-[#4B0082] text-white shadow-sm' : 'hover:bg-slate-200 text-[#4A4A4A]'
+        }`}
+      >
+        <BookOpen class="w-4 h-4" /> Directory
+      </Button>
+      {/if}
+
+      <!-- Tab 4: Radio -->
       <Button
         onclick={() => { dalStore.playSound('beep'); dalStore.currentTab = 'radio'; }}
         class={`flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-system font-black transition-all ${

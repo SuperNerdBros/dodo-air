@@ -8,6 +8,7 @@
   import { flip } from 'svelte/animate';
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte';
 
   let {
     profiles,
@@ -68,29 +69,29 @@
 <div class="space-y-5 text-left pt-5">
   {#if isActive}
     <AcnhBubble 
-      title="Orville"
-      dialogText={DIALOGS.directoryTab.active}
+      title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}
+      dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.directoryTab.active : DIALOGS.directoryTab.lunaActive}
     />
   {/if}
   <!-- Directory Title Board -->
-  <div class="bg-white rounded-3xl border-2 border-[#0084CC]/10 p-4 lg:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+  <div class="bg-white rounded-3xl border-2 {dalStore.systemMode === 'DAL' ? 'border-[#0084CC]/10' : 'border-[#4B0082]/10'} p-4 lg:p-5 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 bg-sky-100 rounded-full flex items-center justify-center text-xl shadow-inner text-[#0084CC]">
-        📇
+      <div class="w-10 h-10 {dalStore.systemMode === 'DAL' ? 'bg-sky-100 text-[#0084CC]' : 'bg-purple-100 text-[#4B0082]'} rounded-full flex items-center justify-center text-xl shadow-inner">
+        {dalStore.systemMode === 'DAL' ? '📇' : '🌙'}
       </div>
       <div>
-        <h2 class="text-base font-system font-black tracking-wider text-[#0084CC] uppercase leading-none">
-          DAL Registered Flyers Directory
+        <h2 class="text-base font-system font-black tracking-wider {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#4B0082]'} uppercase leading-none">
+          {dalStore.systemMode === 'DAL' ? 'DAL Registered Flyers Directory' : 'Luna Dream Address Directory'}
         </h2>
         <span class="text-xs font-system text-slate-400 font-bold uppercase tracking-widest mt-1 block">
-          Discover and vouch for verified islanders in the lounge
+          {dalStore.systemMode === 'DAL' ? 'Discover and vouch for verified islanders in the lounge' : 'Discover and rate dreamscapes from around the world'}
         </span>
       </div>
     </div>
 
     <div class="flex items-center gap-2 font-system text-sm text-slate-500">
-      <span class="bg-sky-50 text-[#0084CC] px-3 py-1 rounded-full font-bold border border-sky-100 uppercase">
-        {profilesList.length} total registered {profilesList.length === 1 ? 'flyer' : 'flyers'}
+      <span class="{dalStore.systemMode === 'DAL' ? 'bg-sky-50 text-[#0084CC] border-sky-100' : 'bg-purple-50 text-[#4B0082] border-purple-100'} px-3 py-1 rounded-full font-bold border uppercase">
+        {profilesList.length} total {dalStore.systemMode === 'DAL' ? 'registered flyers' : 'dreamers'}
       </span>
     </div>
   </div>
@@ -120,21 +121,21 @@
       <div class="flex gap-1 bg-slate-100 p-0.5 rounded-xl">
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'recent'; }}
-          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'recent' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'recent' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-xs' : 'bg-[#4B0082] text-white shadow-xs') : 'text-slate-600 hover:bg-slate-200/50'}"
         >
           Recent Updates
         </button>
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'name'; }}
-          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'name' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'name' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-xs' : 'bg-[#4B0082] text-white shadow-xs') : 'text-slate-600 hover:bg-slate-200/50'}"
         >
           Alphabetical
         </button>
         <button
           onclick={() => { playSound('beep', isMuted); sortBy = 'apples'; }}
-          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'apples' ? 'bg-[#0084CC] text-white shadow-xs' : 'text-slate-600 hover:bg-slate-200/50'}"
+          class="px-3 py-1.5 rounded-lg text-sm font-bold tracking-wide transition-all border-none cursor-pointer {sortBy === 'apples' ? (dalStore.systemMode === 'DAL' ? 'bg-[#0084CC] text-white shadow-xs' : 'bg-[#4B0082] text-white shadow-xs') : 'text-slate-600 hover:bg-slate-200/50'}"
         >
-          🍎 Vouches
+          {dalStore.systemMode === 'DAL' ? '🍎 Vouches' : '⭐ Top Rated'}
         </button>
       </div>
     </div>
@@ -187,11 +188,13 @@
               </span>
             </div>
 
-            <!-- Friend Code -->
+            <!-- Friend Code / Dream Address -->
             <div class="space-y-1">
-              <span class="block text-xs font-system text-[#85806B] uppercase leading-none">FRIEND CODE</span>
+              <span class="block text-xs font-system text-[#85806B] uppercase leading-none">
+                {dalStore.systemMode === 'DAL' ? 'FRIEND CODE' : 'DREAM ADDRESS'}
+              </span>
               <span class="font-system font-bold text-slate-500 text-sm block">
-                {p.friendCode}
+                {dalStore.systemMode === 'DAL' ? p.friendCode : ((p as any).dreamAddress || 'Not set')}
               </span>
             </div>
 
@@ -206,12 +209,18 @@
           <!-- Rating / Vouch stats & CTA button -->
           <div class="mt-4 pt-3.5 border-t border-dashed border-[#E6DFC7] flex items-center justify-between gap-2">
             <div class="flex items-center gap-2 text-sm font-system font-black font-bold">
-              <span class="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2 py-0.5 flex items-center gap-1">
-                🍏 {p.goodApples || 0}
-              </span>
-              <span class="bg-rose-50 text-rose-700 border border-rose-100 rounded-full px-2 py-0.5 flex items-center gap-1">
-                🧅 {p.rottenTurnips || 0}
-              </span>
+              {#if dalStore.systemMode === 'DAL'}
+                <span class="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full px-2 py-0.5 flex items-center gap-1">
+                  🍏 {p.goodApples || 0}
+                </span>
+                <span class="bg-rose-50 text-rose-700 border border-rose-100 rounded-full px-2 py-0.5 flex items-center gap-1">
+                  🧅 {p.rottenTurnips || 0}
+                </span>
+              {:else}
+                <span class="bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-full px-3 py-0.5 flex items-center gap-1">
+                  { 'Z'.padEnd(Math.max(1, (p as any).dreamRating || 1), 'z') }
+                </span>
+              {/if}
             </div>
 
             <span class="btn-acnh btn-acnh-primary ">

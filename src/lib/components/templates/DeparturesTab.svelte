@@ -55,8 +55,8 @@
 <div class="space-y-4 pt-5">
   {#if isActive}
     <AcnhBubble 
-      title="Orville"
-      dialogText={DIALOGS.departuresTab.active}
+      title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}
+      dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.departuresTab.active : DIALOGS.departuresTab.lunaActive}
     />
   {/if}
   <!-- Departures Board - Full Width -->

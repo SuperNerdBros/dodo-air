@@ -69,18 +69,18 @@
     planeColor: 'orange'
   });
 
-  const dialogues: Record<Step, string> = {
-    welcome: DIALOGS.interactiveWelcome.welcome,
-    intro: DIALOGS.interactiveWelcome.intro,
-    modes: DIALOGS.interactiveWelcome.modes,
-    walkthrough: DIALOGS.interactiveWelcome.walkthrough,
-    xp_info: DIALOGS.interactiveWelcome.xpInfo,
+  let dialogues = $derived<Record<Step, string>>({
+    welcome: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.welcome : DIALOGS.interactiveWelcome.lunaWelcome,
+    intro: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.intro : DIALOGS.interactiveWelcome.lunaIntro,
+    modes: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.modes : DIALOGS.interactiveWelcome.lunaModes,
+    walkthrough: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.walkthrough : DIALOGS.interactiveWelcome.lunaWalkthrough,
+    xp_info: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.xpInfo : DIALOGS.interactiveWelcome.lunaXpInfo,
     auth_choice: isGuestExpired 
-      ? "I hope you liked what you saw! " + DIALOGS.interactiveWelcome.authChoice
-      : DIALOGS.interactiveWelcome.authChoice,
-    verify_code: DIALOGS.interactiveWelcome.verifyCode,
-    print_passport: DIALOGS.interactiveWelcome.printPassport
-  };
+      ? "I hope you liked what you saw! " + (dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.authChoice : DIALOGS.interactiveWelcome.lunaAuthChoice)
+      : (dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.authChoice : DIALOGS.interactiveWelcome.lunaAuthChoice),
+    verify_code: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.verifyCode : DIALOGS.interactiveWelcome.lunaVerifyCode,
+    print_passport: dalStore.systemMode === 'DAL' ? DIALOGS.interactiveWelcome.printPassport : DIALOGS.interactiveWelcome.lunaPrintPassport
+  });
 
   // Run typewriter effect when step changes
   $effect(() => {
@@ -494,13 +494,15 @@
   <div class="fixed bottom-0 left-0 right-0 p-4 sm:p-8 pointer-events-none z-50">
     <div class="mx-auto w-full max-w-7xl pointer-events-auto">
       <AcnhBubble
-        title="Orville"
+        title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}
         isIntro={true}
         onDismiss={(currentStep !== 'auth_choice' && currentStep !== 'verify_code' && currentStep !== 'print_passport') ? advanceStep : undefined}
       >
         <div class="flex gap-4 items-start relative z-10">
           <!-- Character Icon -->
-          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
+          <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
+            {dalStore.systemMode === 'DAL' ? '🦤' : '🌙'}
+          </div>
           
           <!-- Animated / Typed Dialogue Text -->
           <div class="flex-1 py-1">

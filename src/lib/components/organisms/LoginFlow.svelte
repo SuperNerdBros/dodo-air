@@ -79,9 +79,9 @@
 
 <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md">
   {#if step === 'email'}
-    <AcnhBubble title="Orville [DAL Dispatch]" onDismiss={onClose}>
+    <AcnhBubble title={dalStore.systemMode === 'DAL' ? "Orville [DAL Dispatch]" : "Luna [Dream Guide]"} onDismiss={onClose}>
       <div class="text-xl font-bold text-slate-700 leading-relaxed mb-6">
-        {DIALOGS.loginFlow.default}
+        {dalStore.systemMode === 'DAL' ? DIALOGS.loginFlow.default : DIALOGS.loginFlow.lunaDefault}
       </div>
       
       <form onsubmit={handleEmailSubmit} class="flex flex-col gap-4 max-w-[500px] mx-auto">
@@ -112,9 +112,13 @@
       </form>
     </AcnhBubble>
   {:else}
-    <AcnhBubble title="Orville [DAL Dispatch]" onDismiss={onClose}>
+    <AcnhBubble title={dalStore.systemMode === 'DAL' ? "Orville [DAL Dispatch]" : "Luna [Dream Guide]"} onDismiss={onClose}>
       <div class="text-xl font-bold text-slate-700 leading-relaxed mb-6">
-        Great! We just sent a temporary flight code to <strong class="text-[#0084CC]">{email}</strong>. What is it?
+        {#if dalStore.systemMode === 'DAL'}
+          Great! We just sent a temporary flight code to <strong class="text-[#0084CC]">{email}</strong>. What is it?
+        {:else}
+          The connection is sent... A temporary dream code was sent to <strong class="text-[#9055d0]">{email}</strong>. What is it?
+        {/if}
       </div>
       
       <form onsubmit={handleCodeSubmit} class="flex flex-col gap-4 max-w-[500px] mx-auto">

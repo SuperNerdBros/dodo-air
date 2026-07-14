@@ -224,6 +224,39 @@
 	}
 }
 
+@layer utilities {
+	/* Luna Theme Variables & Classes */
+	.luna-theme {
+		--luna-bg: 260 50% 10%;
+		--luna-card: 260 40% 15%;
+		--luna-primary: 190 100% 50%;
+		--luna-text: 0 0% 98%;
+		--luna-muted: 260 20% 60%;
+		
+		background: radial-gradient(circle at top right, #2a1b4d, #0b071a 80%);
+		background-attachment: fixed;
+		color: white;
+	}
+
+	.luna-glass {
+		background: rgba(42, 27, 77, 0.4);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(0, 255, 255, 0.15);
+		box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+	}
+
+	.luna-neon-text {
+		color: #00ffff;
+		text-shadow: 0 0 5px rgba(0, 255, 255, 0.5), 0 0 10px rgba(0, 255, 255, 0.3);
+	}
+	
+	.luna-neon-border {
+		border-color: #00ffff;
+		box-shadow: 0 0 10px rgba(0, 255, 255, 0.2), inset 0 0 10px rgba(0, 255, 255, 0.1);
+	}
+}
+
 /* Sexy Scrollbars globally */
 ::-webkit-scrollbar {
 	width: 6px;

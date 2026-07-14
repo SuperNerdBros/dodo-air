@@ -11,6 +11,7 @@
 
 	const pluginUrl: string =
 		(typeof window !== 'undefined' && (window as any).wpApiSettings?.pluginUrl) || '';
+	const mainLogoImg = `${pluginUrl}public/logo.png`;
 	const dalPortImg = `${pluginUrl}public/dal-port.png`;
 	const lunaImg = `${pluginUrl}public/luna.png`;
 
@@ -47,12 +48,9 @@
 
 	{#if mounted}
 		<header class="splash-header" in:fly={{ y: -40, duration: 700, delay: 100, easing: cubicOut }}>
-			<div class="logo-badge">✈</div>
-			<h1 class="splash-title font-system flex flex-col gap-1 leading-none">
-				ACNH Community
-				<small> Online Terminal </small>
-			</h1>
+			<img src={mainLogoImg} alt="ACNH Community Online Terminal" class="main-logo" />
 			<p class="splash-subtitle">Share your dream getaway today.</p>
+			<!-- <div class="logo-badge">✈</div> -->
 		</header>
 
 		<main class="portals">
@@ -372,19 +370,14 @@
 			0 4px 20px rgba(192, 132, 245, 0.4),
 			inset 0 2px 4px rgba(255, 255, 255, 0.8);
 	}
-	.splash-title {
-		font-size: clamp(1.8rem, 5vw, 3.2rem);
-		font-weight: 900;
-		color: #ffffff;
-		/* Soft, colorful default shadow */
-		text-shadow:
-			0 4px 20px rgba(150, 180, 230, 0.6),
-			0 1px 4px rgba(100, 120, 180, 0.8);
-		letter-spacing: -0.02em;
-		margin: 0;
-		transition:
-			text-shadow 0.6s ease,
-			color 0.5s ease;
+	.main-logo {
+		height: 200px;
+		/* max-width: 90vw; */
+		object-fit: contain;
+		margin: 0.5rem 0;
+		filter: drop-shadow(0 4px 15px rgba(255, 255, 255, 0.4))
+			drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+		transition: filter 0.6s ease;
 	}
 	.splash-subtitle {
 		font-size: clamp(0.9rem, 2vw, 1.1rem);
@@ -399,10 +392,9 @@
 	}
 
 	/* Animated shadows based on hover state */
-	.dal-active .splash-title {
-		text-shadow:
-			0 4px 25px rgba(40, 160, 230, 0.7),
-			0 1px 5px rgba(20, 110, 180, 0.9);
+	.dal-active .main-logo {
+		filter: drop-shadow(0 4px 20px rgba(91, 200, 245, 0.7))
+			drop-shadow(0 2px 5px rgba(20, 110, 180, 0.5));
 	}
 	.dal-active .splash-subtitle {
 		text-shadow:
@@ -410,10 +402,9 @@
 			0 1px 4px rgba(20, 110, 180, 0.8);
 	}
 
-	.luna-active .splash-title {
-		text-shadow:
-			0 4px 25px rgba(160, 90, 240, 0.7),
-			0 1px 5px rgba(110, 40, 180, 0.9);
+	.luna-active .main-logo {
+		filter: drop-shadow(0 4px 20px rgba(192, 132, 245, 0.7))
+			drop-shadow(0 2px 5px rgba(110, 40, 180, 0.5));
 	}
 	.luna-active .splash-subtitle {
 		text-shadow:

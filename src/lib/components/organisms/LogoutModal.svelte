@@ -11,15 +11,17 @@
 <div transition:fade={{ duration: 200 }} class="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 md:p-12 gap-6 bg-slate-900/50 backdrop-blur-md">
   <div class="w-full max-w-4xl flex-1 my-10">
     <AcnhBubble 
-      title="Orville [DAL Dispatch]" 
+      title={dalStore.systemMode === 'DAL' ? "Orville [DAL Dispatch]" : "Luna [Dream Guide]"} 
       onDismiss={() => { playSound('beep', dalStore.isMuted); onClose(); }}
     >
       <div class="flex gap-4 items-start relative z-10 pb-4">
-        <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">🦤</div>
+        <div class="hidden sm:flex shrink-0 w-16 h-16 bg-[#FFFCEF] border-[3px] border-[#D1BFAe] rounded-full items-center justify-center text-4xl shadow-inner transform -rotate-6">
+          {dalStore.systemMode === 'DAL' ? '🦤' : '🌙'}
+        </div>
         
         <div class="flex-1">
           <p class="text-xl sm:text-2xl text-[#807256] leading-snug font-medium">
-            {DIALOGS.logoutModal.prompt}
+            {dalStore.systemMode === 'DAL' ? DIALOGS.logoutModal.prompt : DIALOGS.logoutModal.lunaPrompt}
           </p>
         </div>
       </div>

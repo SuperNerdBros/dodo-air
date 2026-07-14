@@ -114,24 +114,29 @@
     <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
       {#if step === 1}
         <AcnhBubble
-          title="Wilbur"
-          dialogText={DIALOGS.hubWizard.step1}
+          title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubWizard.step1 : DIALOGS.hubWizard.lunaStep1}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">HEMISPHERE</label>
+                <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#DDA0DD]'} mb-1.5 uppercase tracking-wider">HEMISPHERE</label>
                 <Select bind:value={formHemisphere} class="w-full bg-white border-[#E6DFC7] border-4 rounded-xl px-3 py-2 font-bold outline-none focus:border-[#0084CC] text-[#4A4A4A]">
                   <option value="Northern">Northern</option>
                   <option value="Southern">Southern</option>
                 </Select>
               </div>
               <div>
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider">SEAPLANE MODEL</label>
+                <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#DDA0DD]'} mb-1.5 uppercase tracking-wider">{dalStore.systemMode === 'DAL' ? 'SEAPLANE MODEL' : 'DREAM BED MODEL'}</label>
                 <Select bind:value={formPlaneType} class="w-full bg-white border-[#E6DFC7] border-4 rounded-xl px-3 py-2 font-bold outline-none focus:border-[#0084CC] text-[#4A4A4A]">
-                  <option value="Switch">🛩️ Switch Model (8 seats)</option>
-                  <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
+                  {#if dalStore.systemMode === 'DAL'}
+                    <option value="Switch">🛩️ Switch Model (8 seats)</option>
+                    <option value="Switch 2">✈️ Switch 2 Model (12 seats)</option>
+                  {:else}
+                    <option value="Switch">🛏️ Switch Bed (8 dreamers)</option>
+                    <option value="Switch 2">🛌 Switch 2 Bed (12 dreamers)</option>
+                  {/if}
                 </Select>
               </div>
             </div>
@@ -144,8 +149,8 @@
 
       {:else if step === 2}
         <AcnhBubble
-          title="Wilbur"
-          dialogText={DIALOGS.hubWizard.step2}
+          title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubWizard.step2 : DIALOGS.hubWizard.lunaStep2}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 grid grid-cols-2 md:grid-cols-5 gap-3 relative z-10 pr-4 md:pr-10 max-h-60 overflow-y-auto hide-scrollbar">
@@ -167,14 +172,14 @@
 
       {:else if step === 3}
         <AcnhBubble
-          title="Wilbur"
-          dialogText={DIALOGS.hubWizard.step3}
+          title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubWizard.step3 : DIALOGS.hubWizard.lunaStep3}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
             <Textarea
               bind:value={formDesc}
-              placeholder="e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach."
+              placeholder={dalStore.systemMode === 'DAL' ? "e.g. Turnips buying for 450! Celeste is near the airport dock. Free DIY card swap on the beach." : "e.g. Come explore my cottagecore dreamscape! Let's build a new garden area together."}
               class="w-full bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-semibold text-[#4A4A4A] outline-none focus:border-[#0084CC] h-24 resize-none text-sm"
               maxlength={180}
             />
@@ -187,8 +192,8 @@
 
       {:else if step === 4}
         <AcnhBubble
-          title="Wilbur"
-          dialogText={DIALOGS.hubWizard.step4}
+          title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubWizard.step4 : DIALOGS.hubWizard.lunaStep4}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10">
@@ -200,7 +205,9 @@
             
             <div class="flex flex-col items-center gap-4 my-4">
               <div class="w-full max-w-[800px]">
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">DODO CODE</label>
+                <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#DDA0DD]'} mb-1.5 uppercase tracking-wider text-center">
+                  {dalStore.systemMode === 'DAL' ? 'DODO CODE' : 'DOZE CODE'}
+                </label>
                 <Input 
                   type="text" 
                   bind:value={formDodo} 
@@ -210,7 +217,7 @@
                 />
               </div>
               <div class="w-full max-w-[800px]">
-                <label class="block text-xs font-system font-black text-[#0084CC] mb-1.5 uppercase tracking-wider text-center">FF MILES COST TO REVEAL CODE</label>
+                <label class="block text-xs font-system font-black {dalStore.systemMode === 'DAL' ? 'text-[#0084CC]' : 'text-[#DDA0DD]'} mb-1.5 uppercase tracking-wider text-center">{dalStore.systemMode === 'DAL' ? 'FF MILES COST TO REVEAL CODE' : 'FF MILES COST TO REVEAL DOZE'}</label>
                 <Input 
                   type="number" 
                   bind:value={formMilesCost} 
@@ -219,7 +226,9 @@
                   max="10000"
                   class="w-full bg-white border-4 border-[#E6DFC7] rounded-2xl px-4 py-3 font-system font-black tracking-widest text-center text-sm sm:text-lg outline-none focus:border-[#0084CC] text-[#4A4A4A]" 
                 />
-                <p class="text-xs text-center text-slate-500 mt-2 font-medium">Price your reveal. Passengers must spend these miles to reveal your gate code. You earn the miles they spend! The higher the cost, the higher quality / more trusted vistors.</p>
+                <p class="text-xs text-center text-slate-500 mt-2 font-medium">
+                  {dalStore.systemMode === 'DAL' ? 'Price your reveal. Passengers must spend these miles to reveal your gate code. You earn the miles they spend! The higher the cost, the higher quality / more trusted vistors.' : 'Price your reveal. Dreamers must spend these miles to reveal your DOZE code. You earn the miles they spend!'}
+                </p>
               </div>
             </div>
 
@@ -227,7 +236,7 @@
               <Button variant="secondary" onclick={prevStep}>Make Changes</Button>
               {#if formDodo.trim().length === 5}
                 <Button variant="primary" onclick={submitWizard} disabled={isSubmittingHost}>
-                  {isSubmittingHost ? 'Dispatching...' : 'Open Gate Now!'}
+                  {isSubmittingHost ? (dalStore.systemMode === 'DAL' ? 'Dispatching...' : 'Connecting...') : (dalStore.systemMode === 'DAL' ? 'Open Gate Now!' : 'Open Dream Now!')}
                 </Button>
               {:else}
                 <Button variant="primary" onclick={nextStep}>
@@ -240,8 +249,8 @@
 
       {:else if step === 5}
         <AcnhBubble
-          title="Wilbur"
-          dialogText={DIALOGS.hubWizard.step5}
+          title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+          dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubWizard.step5 : DIALOGS.hubWizard.lunaStep5}
           onDismiss={() => { playSound('beep', isMuted); onClose(); }}
         >
           <div class="mt-4 space-y-4 relative z-10 pr-4 md:pr-10 text-left">
@@ -307,7 +316,7 @@
             <div class="flex justify-between pt-2">
               <Button variant="secondary" onclick={prevStep}>Back</Button>
               <Button variant="primary" onclick={submitWizard} disabled={isSubmittingHost}>
-                {isSubmittingHost ? 'Dispatching...' : 'Complete Flight Plan'}
+                {isSubmittingHost ? (dalStore.systemMode === 'DAL' ? 'Dispatching...' : 'Connecting...') : (dalStore.systemMode === 'DAL' ? 'Complete Flight Plan' : 'Complete Dream Plan')}
               </Button>
             </div>
           </div>

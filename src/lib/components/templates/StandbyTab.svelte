@@ -55,8 +55,8 @@
   <!-- Booking Action Area -->
   {#if isActive}
     <AcnhBubble 
-      title="Orville"
-      dialogText={DIALOGS.standbyTab.active}
+      title={dalStore.systemMode === 'DAL' ? "Orville" : "Luna"}
+      dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.standbyTab.active : DIALOGS.standbyTab.lunaActive}
     >
       <div class="mt-4 flex justify-center">
         <button

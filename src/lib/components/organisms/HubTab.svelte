@@ -178,9 +178,9 @@
         </Text>
       </Box>
       
-      <AcnhBubble
-        title="Wilbur"
-        dialogText={DIALOGS.hubTab.active}
+      <AcnhBubble 
+        title={dalStore.systemMode === 'DAL' ? "Wilbur" : "Luna"}
+        dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.hubTab.active : DIALOGS.hubTab.lunaActive}
         isActive={dalStore.currentTab === 'hub'}
       >
         <div class="mt-4 flex justify-center">

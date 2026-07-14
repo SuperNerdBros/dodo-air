@@ -11,8 +11,8 @@
   <Box class="fixed inset-0 z-[100] pointer-events-none flex flex-col justify-end p-4 pb-8 sm:p-8">
     <div transition:fly={{ y: 50, duration: 300 }} class="w-full">
       <AcnhBubble
-        title="Orville [Tour Guide]"
-        dialogText={DIALOGS.orvilleIntro.active}
+        title={dalStore.systemMode === 'DAL' ? "Orville [Tour Guide]" : "Luna [Dream Guide]"}
+        dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.orvilleIntro.active : DIALOGS.orvilleIntro.lunaActive}
         isIntro={true}
         onDismiss={() => {
           dalStore.playSound('beep');
@@ -29,7 +29,7 @@
             }}
             class="btn-acnh btn-acnh-primary px-8 py-3 text-sm rounded-full transform hover:scale-105 transition-transform"
           >
-            🎫 ENTER AIRPORT TERMINAL
+            {dalStore.systemMode === 'DAL' ? '🎫 ENTER AIRPORT TERMINAL' : '✨ ENTER DREAMSCAPE'}
           </Button>
         </div>
       </AcnhBubble>
