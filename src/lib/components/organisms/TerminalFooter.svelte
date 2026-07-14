@@ -8,6 +8,18 @@
   let isRefueling = $state(false);
   let fuelRatio = $derived(dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens);
 
+  $effect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#/about') {
+        showAboutModal = true;
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  });
+
+
   async function handleRefuel(amount: number) {
     playSound('success', dalStore.isMuted);
     isRefueling = true;
@@ -58,10 +70,9 @@
         class="font-bold {dalStore.systemMode === 'DAL' ? 'text-[#FFCC00] hover:text-white' : 'text-[#DDA0DD] hover:text-white'} transition-colors"
       >xophz.com</a>
       <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
-      <button 
-        onclick={() => showAboutModal = true}
+      <a href="#/about"
         class="font-semibold text-white/60 hover:text-white transition-colors cursor-pointer"
-      >About</button>
+      >About</a>
       <a href="#/terms"
         class="font-semibold text-white/60 hover:text-white transition-colors"
       >Terms</a>
@@ -109,5 +120,10 @@
 {/if}
 
 {#if showAboutModal}
-  <InteractiveAbout onClose={() => showAboutModal = false} />
+  <InteractiveAbout onClose={() => {
+    showAboutModal = false;
+    if (window.location.hash === '#/about') {
+      window.history.pushState('', document.title, window.location.pathname + window.location.search);
+    }
+  }} />
 {/if}

@@ -97,7 +97,8 @@ export interface FeedbackReview {
 }
 
 export interface UserProfile {
-	friendCode: string;
+	userId: number | string;
+	friendCode?: string;
 	dreamAddress?: string;
 	villagerName: string;
 	islandName: string;

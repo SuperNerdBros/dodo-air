@@ -934,10 +934,3 @@ export const STAMP_CHALLENGES: StampChallenge[] = [
 		]
 	}
 ];
-
-export const generateRandomFriendCode = (): string => {
-	const chars = ['X', '0'];
-	const segment = () =>
-		Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-	return `SW-${segment()}-${segment()}-${segment()}`;
-};

@@ -8,8 +8,7 @@
     TITLE_PART_1,
     TITLE_PART_2,
     AVATAR_ICONS,
-    PLANE_COLORS,
-    generateRandomFriendCode
+    PLANE_COLORS
   } from '$lib/utils/constants';
   import { DIALOGS } from '$lib/constants/dialogs';
   import { scale, fade, fly } from 'svelte/transition';
@@ -55,7 +54,7 @@
     islandName: '',
     titlePart1: 'Freshly Picked',
     titlePart2: 'Islander',
-    friendCode: generateRandomFriendCode(),
+    friendCode: '',
     avatarIcon: '🦤',
     signature: 'Wings up, skies clear!',
     hasCreated: false,
@@ -138,6 +137,10 @@
 
   async function handleEmailSubmit(e: SubmitEvent) {
     e.preventDefault();
+    if (!passportForm.villagerName || !passportForm.islandName) {
+      errorMsg = 'Please enter your Villager and Island names.';
+      return;
+    }
     if (!email) {
       errorMsg = 'Please enter a valid email address.';
       return;
@@ -148,7 +151,11 @@
       const res = await fetch('/wp-json/dodo-air/v1/auth/request-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ 
+          email, 
+          villagerName: passportForm.villagerName, 
+          islandName: passportForm.islandName 
+        })
       });
       if (res.ok) {
         const data = await res.json();
@@ -223,7 +230,7 @@
       islandName: 'Nook Island',
       titlePart1: 'Cozy',
       titlePart2: 'Traveler',
-      friendCode: generateRandomFriendCode(),
+      friendCode: '',
       avatarIcon: '🦤',
       signature: 'Wings up, skies clear!',
       hasCreated: true,
@@ -368,6 +375,30 @@
         </h3>
         
         <form onsubmit={handleEmailSubmit} class="space-y-4 text-left">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">VILLAGER NAME</label>
+              <input
+                type="text"
+                bind:value={passportForm.villagerName}
+                placeholder="e.g. Orville"
+                class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
+                disabled={isLoading}
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">ISLAND NAME</label>
+              <input
+                type="text"
+                bind:value={passportForm.islandName}
+                placeholder="e.g. Nook Island"
+                class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
+                disabled={isLoading}
+                required
+              />
+            </div>
+          </div>
           <div>
             <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">EMAIL ADDRESS</label>
             <input

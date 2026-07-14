@@ -7,8 +7,7 @@
     TITLE_PART_2,
     AVATAR_ICONS,
     PASSPORT_COLORS,
-    PLANE_COLORS,
-    generateRandomFriendCode
+    PLANE_COLORS
   } from '$lib/utils/constants';
   import { scale, fade } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
@@ -40,8 +39,8 @@
     }
 
     let finalFriendCode = form.friendCode.trim();
-    if (!finalFriendCode || finalFriendCode === 'SW-XXXX-XXXX-XXXX' || finalFriendCode === 'SW-') {
-      finalFriendCode = generateRandomFriendCode();
+    if (finalFriendCode === 'SW-XXXX-XXXX-XXXX' || finalFriendCode === 'SW-') {
+      finalFriendCode = '';
     }
 
     const updated: Passport = {

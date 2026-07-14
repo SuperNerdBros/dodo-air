@@ -6,8 +6,7 @@
     TITLE_PART_1,
     TITLE_PART_2,
     AVATAR_ICONS,
-    PLANE_COLORS,
-    generateRandomFriendCode
+    PLANE_COLORS
   } from '$lib/utils/constants';
   import { scale, fade } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
@@ -25,7 +24,7 @@
     islandName: '',
     titlePart1: 'Freshly Picked',
     titlePart2: 'Islander',
-    friendCode: generateRandomFriendCode(),
+    friendCode: '',
     avatarIcon: '🦤',
     signature: 'Wings up, skies clear!',
     hasCreated: false,
@@ -46,8 +45,8 @@
     if (!passportForm.villagerName.trim() || !passportForm.islandName.trim()) return;
 
     let finalFriendCode = passportForm.friendCode.trim();
-    if (!finalFriendCode || finalFriendCode === 'SW-XXXX-XXXX-XXXX' || finalFriendCode === 'SW-') {
-      finalFriendCode = generateRandomFriendCode();
+    if (finalFriendCode === 'SW-XXXX-XXXX-XXXX' || finalFriendCode === 'SW-') {
+      finalFriendCode = '';
     }
 
     const updated: Passport = {
@@ -66,7 +65,7 @@
       islandName: 'Nook Island',
       titlePart1: 'Cozy',
       titlePart2: 'Traveler',
-      friendCode: generateRandomFriendCode(),
+      friendCode: '',
       avatarIcon: '🦤',
       signature: 'Wings up, skies clear!',
       hasCreated: true,

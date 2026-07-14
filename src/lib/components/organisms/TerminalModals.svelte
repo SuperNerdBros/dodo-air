@@ -23,19 +23,19 @@
   let reviewError = $state('');
 
   async function handleSubmitReview(ratingType: 'apple' | 'turnip', comment: string) {
-    if (!dalStore.selectedFriendCode) return;
+    if (!dalStore.selectedUserId) return;
     if (!dalStore.passport.hasCreated) {
       reviewError = "You must print your custom Passport at the dispatch counter before submitting trust feedback!";
       return;
     }
-    if (dalStore.passport.friendCode === dalStore.selectedFriendCode) {
+    if (dalStore.passport.friendCode === dalStore.selectedUserId) {
       reviewError = "You cannot rate your own island profile!";
       return;
     }
     isSubmittingReview = true;
     reviewError = '';
     try {
-      await TerminalAPI.submitReview(dalStore.selectedFriendCode, {
+      await TerminalAPI.submitReview(dalStore.selectedUserId, {
           ratingType,
           voterName: dalStore.passport.villagerName,
           voterIsland: dalStore.passport.islandName,
@@ -43,7 +43,7 @@
           comment
       });
       dalStore.playSound('success');
-      selectedProfileReviews = await TerminalAPI.getReviews(dalStore.selectedFriendCode);
+      selectedProfileReviews = await TerminalAPI.getReviews(dalStore.selectedUserId);
       await dalStore.fetchState();
     } catch (err: any) {
       reviewError = err.error || "Failed to submit rating.";
@@ -120,8 +120,8 @@
 />
 
 <TrustProfileModal
-  selectedFriendCode={dalStore.selectedFriendCode}
-  onClose={() => dalStore.selectedFriendCode = null}
+  selectedUserId={dalStore.selectedUserId}
+  onClose={() => dalStore.selectedUserId = null}
   profiles={dalStore.profiles}
   {selectedProfileReviews}
   onSubmitReview={handleSubmitReview}

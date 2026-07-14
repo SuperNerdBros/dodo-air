@@ -123,21 +123,13 @@
   // Sync profile when passport is created or changed (auth & contents guard optimized)
   let lastSyncedData = '';
   $effect(() => {
-    if (dalStore.passport.hasCreated && dalStore.passport.friendCode && dalStore.isLoggedIn) {
-      const payload = {
-        villagerName: dalStore.passport.villagerName,
-        islandName: dalStore.passport.islandName,
-        avatarIcon: dalStore.passport.avatarIcon,
-        title: `${dalStore.passport.titlePart1} ${dalStore.passport.titlePart2}`,
-        signature: dalStore.passport.signature,
-        colorIndex: dalStore.passport.colorIndex,
-        dreamAddress: dalStore.passport.dreamAddress
-      };
+    if (dalStore.passport.hasCreated && dalStore.isLoggedIn) {
+      const payload = dalStore.passport;
       const serialized = JSON.stringify(payload);
       if (serialized !== lastSyncedData) {
         lastSyncedData = serialized;
         console.log("[Diagnostic] Auto-syncing profile data changes to server...");
-        fetch(`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(dalStore.passport.friendCode)}`, {
+        fetch(`/wp-json/dodo-air/v1/profiles/me`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: serialized
@@ -462,7 +454,7 @@
           bind:selectedFlightId={dalStore.selectedFlightId}
           passport={dalStore.passport}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
+          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
           isMuted={dalStore.isMuted}
           isActive={currentTab === 'book'}
         />
@@ -473,7 +465,7 @@
           requests={dalStore.requests}
           passport={dalStore.passport}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
+          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
           handleRemoveStandbyRequest={TerminalActions.removeStandbyRequest}
           setShowStandbyModal={(v) => dalStore.showStandbyModal = v}
           isMuted={dalStore.isMuted}
@@ -487,7 +479,7 @@
           passport={dalStore.passport}
           requests={dalStore.requests}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
+          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
           handleHostFlight={TerminalActions.hostFlight}
           formError={dalStore.formError}
           bind:formDodo={dalStore.formDodo}
@@ -512,7 +504,7 @@
       <div class="{currentTab === 'directory' ? 'block' : 'hidden'} h-full">
         <DirectoryTab
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
+          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
           passport={dalStore.passport}
           isMuted={dalStore.isMuted}
           isActive={currentTab === 'directory'}
@@ -545,7 +537,7 @@
         handlePostChat={TerminalActions.postChat}
         isPostingChat={dalStore.isPostingChat}
         profiles={dalStore.profiles}
-        openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
+        openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
         passport={dalStore.passport}
         isMuted={dalStore.isMuted}
         onClose={() => { isRadioOpen = false; }}
@@ -562,7 +554,7 @@
     {/if}
 
   
-<TerminalModals {handleSavePassport} openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }} />
+<TerminalModals {handleSavePassport} openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }} />
 </div>
 <svg class="hidden" xmlns="http://www.w3.org/2000/svg" version="1.1">
   <defs>

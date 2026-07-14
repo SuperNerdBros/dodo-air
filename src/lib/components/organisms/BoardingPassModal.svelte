@@ -181,7 +181,7 @@
           {#if isPassengerCheckedIn}
             <div class="bp-code-reveal">
               <span class="bp-code-label">
-                {dalStore.systemMode === 'DAL' ? '🟢 BOARDED — DODO CODE' : '🟢 ENTERING SLUMBER — DOZE CODE'}
+                {dalStore.systemMode === 'DAL' ? '🟢 BOARDED - DODO CODE' : '🟢 ENTERING SLUMBER - DOZE CODE'}
               </span>
               <span class="bp-code-value">{selectedFlight.dodoCode}</span>
               <button

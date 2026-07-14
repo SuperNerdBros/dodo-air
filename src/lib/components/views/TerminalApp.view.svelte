@@ -5,7 +5,7 @@
   import TabsNav from '../organisms/TabsNav.svelte';
   import BookTab from '../organisms/BookTab.svelte';
   import HubTab from '../organisms/HubTab.svelte';
-  import RadioTab from '../organisms/RadioTab.svelte';
+
   import PassportOnboarding from '../organisms/PassportOnboarding.svelte';
   import PassportDrawer from '../organisms/PassportDrawer.svelte';
   import PassportEdit from '../organisms/PassportEdit.svelte';
@@ -72,8 +72,7 @@
         <BookTab />
       {:else if dalStore.currentTab === 'hub'}
         <HubTab />
-      {:else if dalStore.currentTab === 'radio'}
-        <RadioTab />
+
       {/if}
     </Box>
   {/if}

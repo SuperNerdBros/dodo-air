@@ -7,7 +7,7 @@
   import { backOut } from 'svelte/easing';
 
   let {
-    selectedFriendCode,
+    selectedUserId,
     onClose,
     profiles,
     selectedProfileReviews,
@@ -16,7 +16,7 @@
     isSubmittingReview = false,
     isMuted = false
   } = $props<{
-    selectedFriendCode: string | null;
+    selectedUserId: string | null;
     onClose: () => void;
     profiles: Record<string, UserProfile>;
     selectedProfileReviews: FeedbackReview[];
@@ -30,11 +30,11 @@
   let reviewComment = $state('');
 
   let prof = $derived.by<UserProfile>(() => {
-    if (!selectedFriendCode) return {} as UserProfile;
-    return profiles[selectedFriendCode] || {
-      friendCode: selectedFriendCode,
-      villagerName: selectedFriendCode.startsWith('SW-TEMP-') ? selectedFriendCode.split('-')[2] : 'Unregistered Resident',
-      islandName: selectedFriendCode.startsWith('SW-TEMP-') ? selectedFriendCode.split('-')[3] : 'Mystery Island',
+    if (!selectedUserId) return {} as UserProfile;
+    return profiles[selectedUserId] || {
+      friendCode: selectedUserId,
+      villagerName: selectedUserId.startsWith('SW-TEMP-') ? selectedUserId.split('-')[2] : 'Unregistered Resident',
+      islandName: selectedUserId.startsWith('SW-TEMP-') ? selectedUserId.split('-')[3] : 'Mystery Island',
       avatarIcon: '🦤',
       title: 'Frequent Flyer',
       signature: 'Skies are blue, wings are up!',
@@ -56,7 +56,7 @@
   }
 </script>
 
-{#if selectedFriendCode}
+{#if selectedUserId}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="fixed inset-0 bg-[#006094]/40 backdrop-blur-md flex items-center justify-center p-4 z-50 overflow-y-auto" transition:fade={{ duration: 200 }}>

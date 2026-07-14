@@ -5,6 +5,7 @@ import {
 	type Passport,
 	type FlightStatus
 } from '../types';
+import { io, Socket } from 'socket.io-client';
 
 export class DalState {
 	currentTab: 'book' | 'hub' | 'radio' = $state('book');
@@ -14,6 +15,7 @@ export class DalState {
 	requests: StandbyRequest[] = $state([]);
 	chatter: ChatterMessage[] = $state([]);
 	selectedFlightId: string | null = $state(null);
+	selectedUserId: string | number | null = $state(null);
 
 	totalIslanders = $state(0);
 	onlineIslanders = $state(0);
@@ -38,7 +40,7 @@ export class DalState {
 		islandName: '',
 		titlePart1: 'Freshly Picked',
 		titlePart2: 'Islander',
-		friendCode: 'SW-XXXX-XXXX-XXXX',
+		friendCode: '',
 		avatarIcon: '🦤',
 		signature: 'Wings up, skies clear!',
 		hasCreated: false,
@@ -106,6 +108,19 @@ export class DalState {
 
 	init() {
 		if (typeof window !== 'undefined') {
+			// Connect to WebSocket Server
+			try {
+				const socket = io('https://chatter.ai.studio');
+				socket.on('new_chat', (msg: ChatterMessage) => {
+					this.chatter = [msg, ...this.chatter];
+					if (this.chatter.length > 50) {
+						this.chatter = this.chatter.slice(0, 50);
+					}
+				});
+			} catch (e) {
+				console.error('Failed to connect to radio tower socket:', e);
+			}
+
 			// Intercept fetch to automatically include X-WP-Nonce for REST API calls
 			const originalFetch = window.fetch;
 			window.fetch = async function (...args: any[]) {

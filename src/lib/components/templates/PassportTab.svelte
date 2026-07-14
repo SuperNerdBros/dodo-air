@@ -217,7 +217,7 @@
            islandName: '',
            titlePart1: 'Freshly Picked',
            titlePart2: 'Islander',
-           friendCode: 'SW-',
+           friendCode: '',
            avatarIcon: '🦤',
            signature: 'Wings up, skies clear!',
            hasCreated: false,

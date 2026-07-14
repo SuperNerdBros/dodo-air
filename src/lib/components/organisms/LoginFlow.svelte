@@ -4,8 +4,10 @@
 	import { DIALOGS } from '$lib/constants/dialogs';
 
 	let { onClose }: { onClose?: () => void } = $props();
-	let step: 'email' | 'code' = $state('email');
+	let step: 'email' | 'register' | 'code' = $state('email');
 	let email = $state('');
+	let villagerName = $state('');
+	let islandName = $state('');
 	let code = $state('');
 	let isLoading = $state(false);
 	let error = $state('');
@@ -36,7 +38,49 @@
 				dalStore.playSound('success');
 			} else {
 				const data = await res.json();
-				error = data.message || 'Failed to request code. Please try again.';
+				if (data.code === 'user_not_found') {
+					step = 'register';
+					dalStore.playSound('beep');
+				} else {
+					error = data.message || 'Failed to request code. Please try again.';
+					dalStore.playSound('beep');
+				}
+			}
+		} catch (err) {
+			error = 'A network error occurred.';
+			dalStore.playSound('beep');
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	async function handleRegisterSubmit(e: Event) {
+		e.preventDefault();
+		if (!villagerName || !islandName) {
+			error = 'Please enter your Villager and Island names.';
+			return;
+		}
+		error = '';
+		isLoading = true;
+		try {
+			const res = await fetch('/wp-json/dodo-air/v1/auth/request-code', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ email, villagerName, islandName })
+			});
+			if (res.ok) {
+				const data = await res.json();
+				if (data.dev_code) {
+					console.log(
+						'%c[DEV] Temporary Login Code: ' + data.dev_code,
+						'color: #0084CC; font-weight: bold; font-size: 14px;'
+					);
+				}
+				step = 'code';
+				dalStore.playSound('success');
+			} else {
+				const data = await res.json();
+				error = data.message || 'Failed to register. Please try again.';
 				dalStore.playSound('beep');
 			}
 		} catch (err) {
@@ -87,7 +131,9 @@
 		<AcnhBubble
 			title={dalStore.systemMode === 'DAL' ? 'Orville' : 'Luna [Dream Guide]'}
 			onDismiss={onClose}
-			dialogText={dalStore.systemMode === 'DAL' ? DIALOGS.loginFlow.default : DIALOGS.loginFlow.lunaDefault}
+			dialogText={dalStore.systemMode === 'DAL' 
+				? 'To access the DAL terminal, we need to verify your Frequent Flyer passport! Please enter your email address.' 
+				: 'Welcome dreamer... Please enter your email address to connect.'}
 		>
 			<form onsubmit={handleEmailSubmit} class="flex flex-col gap-4 max-w-[500px] mx-auto mt-6">
 				<input
@@ -114,6 +160,70 @@
 						disabled={isLoading}
 					>
 						{isLoading ? 'Checking...' : 'Next'}
+					</button>
+				</div>
+			</form>
+		</AcnhBubble>
+	{:else if step === 'register'}
+		<AcnhBubble
+			title={dalStore.systemMode === 'DAL' ? 'Orville' : 'Luna [Dream Guide]'}
+			onDismiss={onClose}
+			dialogText={dalStore.systemMode === 'DAL' 
+				? "It looks like you're a new flyer! What is your name and the island you live on?" 
+				: "Ah, a new soul... What should I call you, and where do you dream from?"}
+		>
+			<form onsubmit={handleRegisterSubmit} class="flex flex-col gap-4 max-w-[500px] mx-auto mt-6">
+				<input
+					type="email"
+					bind:value={email}
+					class="w-full bg-[#FAF8F2] opacity-70 border-[#0084CC]/30 border-2 rounded-xl px-4 py-3 text-lg font-bold text-[#0084CC] placeholder-slate-300 outline-none"
+					disabled
+				/>
+				<div class="grid grid-cols-2 gap-4">
+					<input
+						type="text"
+						bind:value={villagerName}
+						placeholder="Villager Name"
+						class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-4 py-3 text-lg font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:bg-white focus:border-[#0084CC]"
+						disabled={isLoading}
+						required
+					/>
+					<input
+						type="text"
+						bind:value={islandName}
+						placeholder="Island Name"
+						class="w-full bg-[#FAF8F2] border-[#0084CC]/30 border-2 rounded-xl px-4 py-3 text-lg font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:bg-white focus:border-[#0084CC]"
+						disabled={isLoading}
+						required
+					/>
+				</div>
+
+				{#if error}
+					<div
+						class="text-red-500 font-bold text-sm bg-red-50 p-3 rounded-xl border border-red-200"
+					>
+						{error}
+					</div>
+				{/if}
+
+				<div class="flex justify-between mt-2">
+					<button
+						type="button"
+						onclick={() => {
+							step = 'email';
+							error = '';
+						}}
+						class="text-slate-400 hover:text-slate-600 font-bold px-4 py-3 rounded-2xl transition-all"
+						disabled={isLoading}
+					>
+						Back
+					</button>
+					<button
+						type="submit"
+						class="bg-[#F1AE04] hover:bg-[#FACC15] text-white font-black text-xl px-8 py-3 rounded-2xl shadow-sm hover:shadow-md transition-all active:scale-95 disabled:opacity-50"
+						disabled={isLoading}
+					>
+						{isLoading ? 'Creating...' : 'Register'}
 					</button>
 				</div>
 			</form>

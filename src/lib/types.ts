@@ -8,6 +8,7 @@ export interface Passenger {
 	name: string;
 	island: string;
 	checkedInAt: string;
+	friendCode?: string;
 }
 
 export type FlightStatus = 'Scheduled' | 'Boarding' | 'Departed' | 'Delayed' | 'Closed';
@@ -63,7 +64,8 @@ export interface Passport {
 	islandName: string;
 	titlePart1: string;
 	titlePart2: string;
-	friendCode: string;
+	friendCode?: string;
+	userId?: number | string;
 	dreamAddress?: string;
 	avatarIcon: string;
 	signature: string;

@@ -28,7 +28,8 @@ RUN corepack enable && corepack prepare pnpm@latest-9 --activate
 
 # Set environment variables for production
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=8080
+ENV HOST=0.0.0.0
 
 # Copy necessary files from builder
 COPY --from=builder /app/build ./build
@@ -39,7 +40,7 @@ COPY --from=builder /app/pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile
 
 # Expose the application port
-EXPOSE 3000
+EXPOSE 8080
 
 # Start the application
 CMD ["node", "build"]

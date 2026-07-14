@@ -84,9 +84,9 @@ export const TerminalAPI = {
 		return true;
 	},
 
-	async submitReview(friendCode: string, payload: any) {
+	async submitReview(userId: string | number, payload: any) {
 		const res = await fetch(
-			`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(friendCode)}/rate`,
+			`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(userId)}/rate`,
 			{
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -97,9 +97,9 @@ export const TerminalAPI = {
 		return true;
 	},
 
-	async getReviews(friendCode: string) {
+	async getReviews(userId: string | number) {
 		const res = await fetch(
-			`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(friendCode)}/reviews`
+			`/wp-json/dodo-air/v1/profiles/${encodeURIComponent(userId)}/reviews`
 		);
 		if (!res.ok) throw new Error('Failed');
 		return await res.json();
