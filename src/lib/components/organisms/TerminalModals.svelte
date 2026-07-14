@@ -114,9 +114,7 @@
   onClose={() => dalStore.showMilesModal = false}
   passport={dalStore.passport}
   onClaimStamp={(id, miles) => {
-    dalStore.passport.claimedStampIds.push(id);
-    dalStore.passport.miles += miles;
-    dalStore.earnStampProgress('hasCustomized'); // fallback generic update
+    dalStore.claimStampMiles(id, miles);
   }}
   isMuted={dalStore.isMuted}
 />

@@ -352,26 +352,23 @@ export class DalState {
 		if (typeof window !== 'undefined') {
 			localStorage.setItem('dal_passport', JSON.stringify(this.passport));
 
-			// Sync GP/Miles with backend
+			// Sync GP/Miles with backend using the new Gamification-enabled endpoint
 			try {
-				const formData = new FormData();
-				formData.append('action', 'xp_sync_gp_debt');
-				if ((window as any).wpApiSettings?.nonce) {
-					formData.append('_ajax_nonce', (window as any).wpApiSettings.nonce);
-				}
-
-				await fetch('/wp-admin/admin-ajax.php?action=xp_sync_gp_debt', {
-					method: 'POST',
-					body: JSON.stringify({ gp: this.passport.miles }),
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
-
 				const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 				if ((window as any).wpApiSettings?.nonce) {
 					headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
 				}
+				
+				await fetch('/wp-json/dodo-air/v1/stamps/claim', {
+					method: 'POST',
+					headers,
+					body: JSON.stringify({
+						stampId: stampId,
+						miles: amount
+					})
+				});
+
+				// Also sync the passport state for good measure
 				await fetch(
 					'/wp-json/dodo-air/v1/profiles/' + encodeURIComponent(this.passport.friendCode),
 					{
