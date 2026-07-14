@@ -33,6 +33,10 @@
       <span class="hidden sm:inline text-slate-300">|</span>
       <span>Created by <a href="https://xophz.com" target="_blank" rel="noopener noreferrer" class="font-bold underline text-[#0084CC] hover:text-[#006094]">xophz.com</a></span>
       <span class="hidden sm:inline text-slate-300">|</span>
+      <a href="#/terms" class="font-bold underline text-[#0084CC] hover:text-[#006094]">Terms</a>
+      <span class="hidden sm:inline text-slate-300">|</span>
+      <a href="#/privacy" class="font-bold underline text-[#0084CC] hover:text-[#006094]">Privacy</a>
+      <span class="hidden sm:inline text-slate-300">|</span>
       <span>v{__APP_VERSION__}</span>
     </div>
 

@@ -26,7 +26,13 @@
 
   // Dialogue steps
   type Step = 'welcome' | 'intro' | 'modes' | 'walkthrough' | 'xp_info' | 'auth_choice' | 'verify_code' | 'print_passport';
-  let currentStep = $state<Step>('welcome');
+  
+  let isGuestExpired = false;
+  if (typeof window !== 'undefined') {
+    isGuestExpired = localStorage.getItem('dal_guest_expired') === 'true';
+  }
+  
+  let currentStep = $state<Step>(isGuestExpired ? 'auth_choice' : 'welcome');
 
   // Interactive modes helper uses dalStore.systemMode directly
 
@@ -69,7 +75,9 @@
     modes: DIALOGS.interactiveWelcome.modes,
     walkthrough: DIALOGS.interactiveWelcome.walkthrough,
     xp_info: DIALOGS.interactiveWelcome.xpInfo,
-    auth_choice: DIALOGS.interactiveWelcome.authChoice,
+    auth_choice: isGuestExpired 
+      ? "I hope you liked what you saw! " + DIALOGS.interactiveWelcome.authChoice
+      : DIALOGS.interactiveWelcome.authChoice,
     verify_code: DIALOGS.interactiveWelcome.verifyCode,
     print_passport: DIALOGS.interactiveWelcome.printPassport
   };
@@ -176,6 +184,7 @@
       });
       if (res.ok) {
         dalStore.playSound('success');
+        localStorage.removeItem('dal_guest_expired');
         
         // Fetch current state which will now populate the passport from server-side database
         const stateRes = await fetch('/wp-json/dodo-air/v1/state');
@@ -227,6 +236,11 @@
       planeType: 'Switch',
       planeColor: 'orange'
     };
+    
+    // Set 3-minute guest pass expiration
+    const expiresAt = Date.now() + 3 * 60 * 1000;
+    localStorage.setItem('dal_guest_expires', expiresAt.toString());
+
     onSavePassport(guestPassport);
   }
 
@@ -385,8 +399,6 @@
               {/if}
             </button>
 
-            <!-- 
-
             <div class="relative flex py-1 items-center">
               <div class="flex-grow border-t border-[#E6DFC7]/50"></div>
               <span class="flex-shrink mx-3 text-xs font-black text-slate-400 uppercase tracking-wider">or</span>
@@ -399,10 +411,13 @@
               class="w-full bg-[#FAF8F2] hover:bg-slate-50 border border-slate-300 text-slate-600 font-system font-black py-3 rounded-2xl transition-all uppercase tracking-wide text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
               disabled={isLoading}
             >
-              🏝️ Just Browse as Guest
+              🏝️ 3-Minute Guest Pass
             </button> 
-            
-            -->
+            <div class="text-center mt-3">
+              <span class="text-[10px] text-slate-400 font-system uppercase tracking-wider">
+                By entering, you agree to our <a href="#/terms" class="underline text-[#0084CC] hover:text-[#006094]">Terms</a> and <a href="#/privacy" class="underline text-[#0084CC] hover:text-[#006094]">Privacy Policy</a>.
+              </span>
+            </div>
           </div>
         </form>
       </div>

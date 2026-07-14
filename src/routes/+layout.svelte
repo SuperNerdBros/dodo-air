@@ -25,10 +25,16 @@
   import PassportTab from '$lib/components/templates/PassportTab.svelte';
   import TerminalFooter from '$lib/components/organisms/TerminalFooter.svelte';
   import LogoutModal from '$lib/components/organisms/LogoutModal.svelte';
+  import SplashPage from '$lib/components/organisms/SplashPage.svelte';
+  import PrivacyTab from '$lib/components/templates/PrivacyTab.svelte';
+  import TermsTab from '$lib/components/templates/TermsTab.svelte';
 
   // Navigation
   let hashPath = $state('');
   let currentTab = $derived(
+    hashPath.includes('splash') ? 'splash' :
+    hashPath.includes('privacy') ? 'privacy' :
+    hashPath.includes('terms') ? 'terms' :
     hashPath.includes('islands') ? 'book' :
     hashPath.includes('standby') ? 'standby' :
     hashPath.includes('hub') ? 'hub' :
@@ -42,7 +48,7 @@
   onMount(() => {
     // Initialize hash on load if empty
     if (!window.location.hash || window.location.hash === '#/') {
-      window.location.hash = '#/islands';
+      window.location.hash = '#/splash';
     }
     hashPath = window.location.hash;
     if (hashPath.startsWith('#/boarding-pass/')) {
@@ -127,6 +133,35 @@
           headers: { 'Content-Type': 'application/json' },
           body: serialized
         }).catch(err => console.error("Error auto-syncing profile:", err));
+      }
+    }
+  });
+
+  // 3-Minute Guest Pass tracking
+  $effect(() => {
+    if (!dalStore.isLoggedIn && dalStore.passport.hasCreated) {
+      const expiresStr = localStorage.getItem('dal_guest_expires');
+      if (expiresStr) {
+        const expiresAt = parseInt(expiresStr, 10);
+        const timeRemaining = expiresAt - Date.now();
+        if (timeRemaining <= 0) {
+          dalStore.passport.hasCreated = false;
+          localStorage.removeItem('dal_guest_expires');
+          localStorage.removeItem('dal_passport');
+          localStorage.setItem('dal_guest_expired', 'true');
+          dalStore.playSound('beep');
+        } else {
+          const timer = setTimeout(() => {
+            if (!dalStore.isLoggedIn) {
+              dalStore.passport.hasCreated = false;
+              localStorage.removeItem('dal_guest_expires');
+              localStorage.removeItem('dal_passport');
+              localStorage.setItem('dal_guest_expired', 'true');
+              dalStore.playSound('beep');
+            }
+          }, timeRemaining);
+          return () => clearTimeout(timer);
+        }
       }
     }
   });
@@ -374,6 +409,14 @@
       />
     {/if}
 
+    <!-- Splash Portal Screen -->
+    {#if currentTab === 'splash'}
+      <SplashPage
+        onEnterDAL={() => { window.location.hash = '#/islands'; }}
+        onEnterLuna={() => { dalStore.systemMode = 'LUNA'; localStorage.setItem('dal_system_mode', 'LUNA'); window.location.hash = '#/islands'; }}
+      />
+    {/if}
+
     <!-- Main Terminal Grid System -->
     <div class="w-full flex-1 flex flex-col relative mt-2 gap-4">
       <main class="flex-1 flex flex-col gap-4 items-stretch min-w-0">
@@ -443,7 +486,7 @@
         />
       </div>
 
-      <div class="{currentTab === 'directory' ? 'block' : 'hidden'}">
+      <div class="{currentTab === 'directory' ? 'block' : 'hidden'} h-full">
         <DirectoryTab
           profiles={dalStore.profiles}
           openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedFriendCode = code; }}
@@ -451,6 +494,14 @@
           isMuted={dalStore.isMuted}
           isActive={currentTab === 'directory'}
         />
+      </div>
+
+      <div class="{currentTab === 'privacy' ? 'block' : 'hidden'} h-full">
+        <PrivacyTab isActive={currentTab === 'privacy'} />
+      </div>
+
+      <div class="{currentTab === 'terms' ? 'block' : 'hidden'} h-full">
+        <TermsTab isActive={currentTab === 'terms'} />
       </div>
     </div>
       {@render children()}

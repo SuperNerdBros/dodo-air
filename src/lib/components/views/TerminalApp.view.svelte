@@ -19,8 +19,30 @@
   onMount(() => {
     dalStore.fetchState();
     
-    // Polling every 5 seconds
-    const interval = setInterval(() => dalStore.fetchState(false), 5000);
+    let interval: ReturnType<typeof setInterval>;
+
+    const startPolling = () => {
+      // Polling every 24 seconds (24000ms)
+      interval = setInterval(() => dalStore.fetchState(false), 24000);
+    };
+
+    const stopPolling = () => {
+      if (interval) clearInterval(interval);
+    };
+
+    startPolling();
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        // Immediately fetch stale data upon returning to the tab, then restart polling
+        dalStore.fetchState(false);
+        startPolling();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     
     // Timer for clock
     const clockInterval = setInterval(() => {
@@ -28,8 +50,9 @@
     }, 1000);
 
     return () => {
-      clearInterval(interval);
+      stopPolling();
       clearInterval(clockInterval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   });
 </script>
