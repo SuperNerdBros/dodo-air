@@ -4,7 +4,6 @@
   import InteractiveAbout from '$lib/components/organisms/InteractiveAbout.svelte';
   import { playSound } from '$lib/utils/audio';
   
-  let showFuelModal = $state(false);
   let showAboutModal = $state(false);
   let isRefueling = $state(false);
   let fuelRatio = $derived(dalStore.aiFuel.aiTokens / dalStore.aiFuel.maxTokens);
@@ -77,7 +76,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      onclick={() => { playSound('beep', dalStore.isMuted); showFuelModal = true; }}
+      onclick={() => { playSound('beep', dalStore.isMuted); dalStore.showFuelModal = true; }}
       class="flex items-center gap-2.5 z-10 {dalStore.systemMode === 'DAL'
         ? 'bg-[#006094]/60 border-[#FFCC00]/30 hover:border-[#FFCC00]/60'
         : 'bg-[#290048]/60 border-[#DDA0DD]/30 hover:border-[#DDA0DD]/60'} border rounded-full px-3.5 py-1.5 cursor-pointer select-none group transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
@@ -99,12 +98,12 @@
     </div>
 </footer>
 
-{#if showFuelModal}
+{#if dalStore.showFuelModal}
   <FuelDepotModal
     isOpen={true}
     aiFuel={dalStore.aiFuel}
     onRefuel={handleRefuel}
-    onClose={() => showFuelModal = false}
+    onClose={() => dalStore.showFuelModal = false}
     {isRefueling}
   />
 {/if}

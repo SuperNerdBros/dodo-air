@@ -59,6 +59,7 @@ export class DalState {
 	passportForm: Passport = $state({ ...this.passport });
 	showPassportDrawer = $state(false);
 	showMilesModal = $state(false);
+	showFuelModal = $state(false);
 	showOrvilleIntro = $state(true);
 
 	// Standby Request Form State

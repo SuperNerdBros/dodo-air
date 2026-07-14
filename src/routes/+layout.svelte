@@ -284,13 +284,14 @@
         <!-- Mode Toggle Button -->
         <button 
           onclick={() => { playSound('beep', dalStore.isMuted); dalStore.toggleSystemMode(); }}
-          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
+          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white relative group overflow-hidden"
           title="Switch between Dodo Airlines & Luna's Dreamscape"
         >
+          <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
           {#if dalStore.systemMode === 'DAL'}
-            <Moon class="w-5 h-5" />
+            <Moon class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           {:else}
-            <Plane class="w-5 h-5" />
+            <Plane class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           {/if}
         </button>
         
@@ -303,19 +304,21 @@
         <!-- Traffic Control Button -->
         <button 
           onclick={() => { playSound('beep', dalStore.isMuted); dalStore.isTrafficModalOpen = true; }}
-          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white"
+          class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white relative group overflow-hidden"
           title="Traffic Control & Radar Center"
         >
-          <Radio class="w-5 h-5" />
+          <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
+          <Radio class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
         </button>
         
         <!-- Radio Toggle Button -->
         <button 
           onclick={() => { playSound('beep', dalStore.isMuted); isRadioOpen = !isRadioOpen; }}
-          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
+          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {isRadioOpen ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'} relative group overflow-hidden"
           title="Toggle Radio Tower"
         >
-          <Wifi class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'}" />
+          <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
+          <Wifi class="w-5 h-5 {isRadioOpen ? 'text-[#43b581]' : 'opacity-70'} group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
         </button>
         
         <!-- Login/Logout Button -->
@@ -328,13 +331,14 @@
               showLoginModal = true; 
             }
           }}
-          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {dalStore.isLoggedIn ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'}"
+          class="w-10 h-10 rounded-2xl border transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white {dalStore.isLoggedIn ? 'border-white/10 bg-white/10 shadow-inner hover:bg-white/5' : 'border-white/20 bg-white/10 hover:bg-white/25'} relative group overflow-hidden"
           title={dalStore.isLoggedIn ? 'Logout' : 'Login'}
         >
+          <div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
           {#if dalStore.isLoggedIn}
-            <Lock class="w-5 h-5 opacity-70" />
+            <Lock class="w-5 h-5 opacity-70 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           {:else}
-            <Unlock class="w-5 h-5" />
+            <Unlock class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
           {/if}
         </button>
       </TerminalHeader>

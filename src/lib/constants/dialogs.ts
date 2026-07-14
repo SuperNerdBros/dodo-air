@@ -99,9 +99,16 @@ export const DIALOGS = {
 	},
 	interactiveAbout: {
 		intro: "Hey there! I'm X, the developer behind this terminal. Thanks for stopping by!",
-		project: "This is an open-source, unofficial companion app for the ACNH community. It's built to make finding and hosting flights easier and more fun.",
-		github: "Since this is an open-source project, I'd love your help! You can submit issues, feature requests, or code contributions on my GitHub.",
-		closing: "Ready to get back to the terminal? Safe travels, and happy flying!"
+		project:
+			"This is an open-source, unofficial companion app for the ACNH community. It's built to make finding and hosting flights easier and more fun.",
+		support:
+			"Building and running this terminal takes time and jet fuel! If you'd like to support the project, any tip is incredibly appreciated.",
+		github:
+			"I'd love your help building the community. You can join our Discord, submit issues, or contribute code on GitHub.",
+		thankYou:
+			'Oh my gosh, thank you so much! Your support means the world to me and helps keep the seaplanes flying!',
+		closing:
+			'I hope you enjoy the terminal as much as I have creating it. Safe travels, and happy flying!'
 	},
 	loginFlow: {
 		default:
@@ -148,5 +155,24 @@ export const DIALOGS = {
 			`This dream is full (${cap} dreamers). Please wait for someone to wake up.`,
 		dalBook: (id: string) => `Ready to board flight ${id}? Let's get your boarding pass printed!`,
 		lunaBook: (id: string) => `Are you ready to enter dream ${id}? Let's print your dream ticket.`
+	},
+
+	fuelDepot: {
+		wilburIntro:
+			"Hey kid! We've got a bit of a situation here at the DAL Community Power Station. Our AI algorithms are running on fumes!",
+		lunaIntro:
+			'Dreamer... the incense that powers this realm is fading. The spirits that guide your journeys require sustenance.',
+		wilburMetrics:
+			'Every time we generate a Travel Review or power up a Radio Chatter Bot, it drains our jet fuel. If the tank goes dry, those systems go offline!',
+		lunaMetrics:
+			'Each vision we weave and every whisper in the dark consumes our mystical energy. Without it, the dreamscape will grow quiet.',
+		wilburRefuel:
+			"This terminal is a community effort! If you've got some spare Bells—err, I mean, real-world currency—you can pump 5,000 gallons into the tank right now!",
+		lunaRefuel:
+			'If you find value in these dreams, a worldly donation will restore our power. Choose a method below to instantly replenish the incense by 5,000.',
+		wilburThankYou:
+			"November Oscar Whisker! Thanks for the fuel drop, kid! We operate on the honor system here, so I've already pumped the 5,000 gallons into the tank. Hope you actually sent those Bells!",
+		lunaThankYou:
+			'Your kindness is felt throughout the dreamscape... I have reignited the incense in good faith. May your spirit remain truthful in its waking hours.'
 	}
 };

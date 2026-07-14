@@ -4,7 +4,7 @@
   import { dalStore } from '$lib/stores/dal.svelte';
   import { onMount, onDestroy } from 'svelte';
 
-  let { title = 'Orville [DAL Dispatch]', children, onDismiss, dialogText = '', isActive = true, isIntro = false, class: className = 'mx-auto w-full lg:w-3/4 max-w-none lg:max-w-5xl' }: { title?: string, children?: Snippet, onDismiss?: () => void, dialogText?: string, isActive?: boolean, isIntro?: boolean, class?: string } = $props();
+  let { title = 'Orville [DAL Dispatch]', children, onDismiss, dialogText = '', isActive = true, isIntro = false, class: className = 'mx-auto w-full lg:w-3/4 max-w-none lg:max-w-5xl', textDone = $bindable(false) }: { title?: string, children?: Snippet, onDismiss?: () => void, dialogText?: string, isActive?: boolean, isIntro?: boolean, class?: string, textDone?: boolean } = $props();
 
   const CHARACTER_COLORS: Record<string, { bg: string; text: string }> = {
     Orville: { bg: '#f1d23b', text: '#1b5b7f' },
@@ -18,7 +18,6 @@
    
 
   let typedText = $state('');
-  let textDone = $state(false);
   let textTimer: ReturnType<typeof setInterval> | null = null;
 
   $effect(() => {
