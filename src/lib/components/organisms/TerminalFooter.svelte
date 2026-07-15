@@ -80,7 +80,7 @@
         class="font-semibold text-white/60 hover:text-white transition-colors"
       >Privacy</a>
       <span class="{dalStore.systemMode === 'DAL' ? 'text-sky-300/30' : 'text-purple-300/30'} hidden sm:inline">|</span>
-      <span class="text-white/40 font-mono text-[10px]">v{__APP_VERSION__}</span>
+      <span class="text-white/40 font-mono text-[10px]">v{dalStore.appVersion}</span>
     </div>
 
     <!-- Right: AI Fuel Gauge -->

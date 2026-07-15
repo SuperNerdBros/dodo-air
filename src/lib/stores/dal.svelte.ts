@@ -34,6 +34,7 @@ export class DalState {
 	visitors = $state(0);
 	alltimePilots = $state(0);
 	alltimePassengers = $state(0);
+	appVersion = $state('0.0.0');
 
 	myPassports: Passport[] = $state([]);
 	activePassportIndex: number = $state(0);
@@ -130,7 +131,9 @@ export class DalState {
 		if (typeof window !== 'undefined') {
 			// Connect to WebSocket Server
 			try {
-				const socket = io('https://dodo-chatter.fly.dev');
+				const socket = io('https://dodo-chatter.fly.dev', {
+					transports: ['websocket']
+				});
 				socket.on('new_chat', (msg: ChatterMessage) => {
 					this.chatter = [msg, ...this.chatter];
 					if (this.chatter.length > 50) {
@@ -426,6 +429,9 @@ export class DalState {
 					this.visitors = data.analytics.visitors || 0;
 					this.alltimePilots = data.analytics.alltimePilots || 0;
 					this.alltimePassengers = data.analytics.alltimePassengers || 0;
+				}
+				if (data.version) {
+					this.appVersion = data.version;
 				}
 				if (data.myPassports) {
 					this.myPassports = data.myPassports;
