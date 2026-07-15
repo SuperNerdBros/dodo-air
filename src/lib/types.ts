@@ -28,6 +28,11 @@ export interface Flight {
 	review?: string;
 	isCustomAIReviewGenerating?: boolean;
 	travelType?: 'DAL' | 'LUNA';
+	planeType?: 'Switch' | 'Switch 2';
+	capacity?: number;
+	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
+	hostFriendCode?: string;
+	milesCost?: number;
 }
 
 export interface ChatterMessage {
@@ -64,9 +69,13 @@ export interface Passport {
 	islandName: string;
 	titlePart1: string;
 	titlePart2: string;
-	friendCode?: string;
+	friendCode: string;
 	userId?: number | string;
 	dreamAddress?: string;
+	flightNumber?: string;
+	nativeFruit?: string;
+	planeType?: 'Switch' | 'Switch 2';
+	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
 	avatarIcon: string;
 	signature: string;
 	hasCreated: boolean;
@@ -78,6 +87,7 @@ export interface Passport {
 	hasChatted?: boolean;
 	hasCustomized?: boolean;
 	hasRequested?: boolean;
+	xp?: number;
 }
 
 export interface StampChallenge {

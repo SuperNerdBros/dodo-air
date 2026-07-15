@@ -30,7 +30,7 @@
 
   let showStatusGuide = $state(false);
   let activeFilter = $state<'All' | 'Scheduled' | 'Boarding'>('All');
-  let filteredFlights = $derived(flights.filter(f => activeFilter === 'All' || f.status === activeFilter));
+  let filteredFlights = $derived(flights.filter((f: Flight) => activeFilter === 'All' || f.status === activeFilter));
 
   function getHostProfile(hostName: string, islandName: string) {
     return (Object.values(profiles) as UserProfile[]).find(

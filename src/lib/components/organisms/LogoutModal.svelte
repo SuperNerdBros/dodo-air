@@ -5,7 +5,7 @@
   import { dalStore } from '$lib/stores/dal.svelte';
   import { playSound } from '$lib/utils/audio';
 
-  let { onClose } = $props();
+  let { onClose }: { onClose: () => void } = $props();
 </script>
 
 <div transition:fade={{ duration: 200 }} class="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 md:p-12 gap-6 bg-slate-900/50 backdrop-blur-md">

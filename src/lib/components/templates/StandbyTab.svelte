@@ -31,7 +31,7 @@
   let activeView = $state<'global' | 'mine'>('global');
 
   let myRequests = $derived(
-    requests.filter(req => 
+    requests.filter((req: StandbyRequest) => 
       passport.hasCreated && (
         req.friendCode 
           ? req.friendCode === passport.friendCode 

@@ -84,6 +84,7 @@ export interface Passport {
 	planeType?: 'Switch' | 'Switch 2';
 	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
 	flightNumber?: string;
+	xp?: number;
 }
 
 export interface FeedbackReview {

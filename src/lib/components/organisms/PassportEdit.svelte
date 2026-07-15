@@ -26,7 +26,8 @@
       hasCreated: true,
       hasCustomized: true
     };
-    localStorage.setItem('dal_passport', JSON.stringify(dalStore.passport));
+    // Sync logic is handled automatically via reactivity in +layout.svelte 
+    // when dalStore.passport.hasCreated and dalStore.isLoggedIn is true.
     dalStore.isEditingPassport = false;
     dalStore.showPassportDrawer = false;
     dalStore.playSound('success');

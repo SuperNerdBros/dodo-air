@@ -8,7 +8,7 @@
   import { Plane, PlaneTakeoff, PlaneLanding, Ticket, Radio, Users, BookOpen, Lock, Clock, Unlock, Moon, Wifi } from '@lucide/svelte';
   import { playSound } from '$lib/utils/audio';
   import { dalStore } from '$lib/stores/dal.svelte';
-  
+  import { updated } from '$app/stores';
 
   import SoundToggle from '$lib/components/atoms/SoundToggle.svelte';
   import TabButton from '$lib/components/atoms/TabButton.atom.svelte';
@@ -46,6 +46,13 @@
   let isTabChanging = $state(false);
 
   onMount(() => {
+    const unsubUpdate = updated.subscribe((value) => {
+      if (value) {
+        console.log('[Diagnostic] New app version detected. Forcing reload to bust cache.');
+        window.location.reload();
+      }
+    });
+
     // Remove the initial static loader
     const loader = document.getElementById('dal-loader-wrapper');
     if (loader) {
@@ -138,34 +145,6 @@
     }
   });
 
-  // 3-Minute Guest Pass tracking
-  $effect(() => {
-    if (!dalStore.isLoggedIn && dalStore.passport.hasCreated) {
-      const expiresStr = localStorage.getItem('dal_guest_expires');
-      if (expiresStr) {
-        const expiresAt = parseInt(expiresStr, 10);
-        const timeRemaining = expiresAt - Date.now();
-        if (timeRemaining <= 0) {
-          dalStore.passport.hasCreated = false;
-          localStorage.removeItem('dal_guest_expires');
-          localStorage.removeItem('dal_passport');
-          localStorage.setItem('dal_guest_expired', 'true');
-          dalStore.playSound('beep');
-        } else {
-          const timer = setTimeout(() => {
-            if (!dalStore.isLoggedIn) {
-              dalStore.passport.hasCreated = false;
-              localStorage.removeItem('dal_guest_expires');
-              localStorage.removeItem('dal_passport');
-              localStorage.setItem('dal_guest_expired', 'true');
-              dalStore.playSound('beep');
-            }
-          }, timeRemaining);
-          return () => clearTimeout(timer);
-        }
-      }
-    }
-  });
 
 
   $effect(() => {
@@ -224,15 +203,6 @@
       hasCustomized: true
     };
     
-    const existingIndex = dalStore.myPassports.findIndex(p => p.friendCode === dalStore.passport.friendCode);
-    if (existingIndex >= 0) {
-      dalStore.myPassports[existingIndex] = dalStore.passport;
-    } else {
-      dalStore.myPassports = [...dalStore.myPassports, dalStore.passport];
-    }
-    localStorage.setItem('dal_passports', JSON.stringify(dalStore.myPassports));
-
-    localStorage.setItem('dal_passport', JSON.stringify(dalStore.passport));
     dalStore.isEditingPassport = false;
     dalStore.showPassportDrawer = false;
     dalStore.playSound('success');
@@ -443,7 +413,7 @@
           setShowMilesModal={(v) => dalStore.showMilesModal = v}
           setIsEditingPassport={(v) => dalStore.isEditingPassport = v}
           isMuted={dalStore.isMuted}
-          playSound={(id) => playSound(id, dalStore.isMuted)}
+          playSound={(id: any) => playSound(id, dalStore.isMuted)}
           isActive={currentTab === 'passport'}
         />
       </div>
@@ -554,7 +524,7 @@
     {/if}
 
   
-<TerminalModals {handleSavePassport} openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }} />
+<TerminalModals {handleSavePassport} openProfileModal={(code: string) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }} />
 </div>
 <svg class="hidden" xmlns="http://www.w3.org/2000/svg" version="1.1">
   <defs>

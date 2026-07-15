@@ -54,7 +54,6 @@ export class DalState {
 		hasRequested: false,
 		xp: 0
 	});
-	myPassports: Passport[] = $state([]);
 
 	isTrafficModalOpen = $state(false);
 	isEditingPassport = $state(false);
@@ -144,34 +143,9 @@ export class DalState {
 				return originalFetch.apply(window, args as any);
 			};
 
-			try {
-				const saved = localStorage.getItem('dal_passport');
-				if (saved) {
-					const parsed = JSON.parse(saved);
-					if (parsed.villagerName || parsed.hasCreated) {
-						this.passport = {
-							miles: 2000,
-							claimedStampIds: [],
-							hasBoarded: false,
-							hasHosted: false,
-							hasChatted: false,
-							hasCustomized: false,
-							hasRequested: false,
-							xp: 0,
-							...parsed
-						};
-						this.passportForm = { ...this.passport };
-					}
-				}
-				const savedPassports = localStorage.getItem('dal_passports');
-				if (savedPassports) {
-					this.myPassports = JSON.parse(savedPassports);
-				} else if (this.passport.hasCreated) {
-					this.myPassports = [this.passport];
-				}
-			} catch (e) {
-				console.error(e);
-			}
+			// Wait for fetchState to populate passport.
+			// No localStorage for passports!
+
 
 			this.showOrvilleIntro = localStorage.getItem('dal_orville_intro') !== 'hidden';
 			this.chatSender = localStorage.getItem('dal_chat_sender') || '';
@@ -307,7 +281,7 @@ export class DalState {
 
 		this.passport[field] = true;
 		if (typeof window !== 'undefined') {
-			localStorage.setItem('dal_passport', JSON.stringify(this.passport));
+
 			try {
 				const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 				if ((window as any).wpApiSettings?.nonce) {
@@ -353,7 +327,7 @@ export class DalState {
 		this.passport.miles = data.miles;
 		
 		if (typeof window !== 'undefined') {
-			localStorage.setItem('dal_passport', JSON.stringify(this.passport));
+
 		}
 		this.playSound('success');
 	}
@@ -366,7 +340,7 @@ export class DalState {
 		this.passport.claimedStampIds = [...currentClaimed, stampId];
 
 		if (typeof window !== 'undefined') {
-			localStorage.setItem('dal_passport', JSON.stringify(this.passport));
+
 
 			// Sync GP/Miles with backend using the new Gamification-enabled endpoint
 			try {
@@ -404,12 +378,17 @@ export class DalState {
 	async fetchState(showIndicator = false) {
 		if (showIndicator) this.isSyncing = true;
 		try {
-			const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+			const headers: Record<string, string> = { 
+				'Content-Type': 'application/json',
+				'Cache-Control': 'no-cache, no-store, must-revalidate',
+				'Pragma': 'no-cache',
+				'Expires': '0'
+			};
 			if (typeof window !== 'undefined' && (window as any).wpApiSettings?.nonce) {
 				headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
 			}
 
-			const res = await fetch('/wp-json/dodo-air/v1/state', { headers });
+			const res = await fetch(`/wp-json/dodo-air/v1/state?t=${Date.now()}`, { headers });
 			if (res.ok) {
 				const data = await res.json();
 				this.flights = data.flights || [];
@@ -431,8 +410,7 @@ export class DalState {
 					const updatedPassport = { ...this.passport, ...data.myPassport };
 					if (JSON.stringify(this.passport) !== JSON.stringify(updatedPassport)) {
 						this.passport = updatedPassport;
-						if (typeof window !== 'undefined')
-							localStorage.setItem('dal_passport', JSON.stringify(this.passport));
+						this.passportForm = { ...this.passport };
 					}
 				}
 			}
@@ -489,7 +467,6 @@ export class DalState {
 				this.userEmail = '';
 				this.playSound('beep');
 				if (typeof window !== 'undefined') {
-					localStorage.removeItem('dal_passport');
 					window.location.reload();
 				}
 			}
@@ -497,6 +474,47 @@ export class DalState {
 			console.error('Failed to logout:', err);
 			this.playSound('beep');
 		}
+	}
+
+	async deletePassport() {
+		this.passport = {
+			villagerName: '',
+			islandName: '',
+			titlePart1: 'Freshly Picked',
+			titlePart2: 'Islander',
+			friendCode: '',
+			avatarIcon: '🦤',
+			signature: 'Wings up, skies clear!',
+			hasCreated: false,
+			colorIndex: 1,
+			miles: 2000,
+			claimedStampIds: [],
+			hasBoarded: false,
+			hasHosted: false,
+			hasChatted: false,
+			hasCustomized: false,
+			hasRequested: false,
+			xp: 0
+		};
+		this.passportForm = { ...this.passport };
+		
+		if (typeof window !== 'undefined') {
+			try {
+				const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+				if ((window as any).wpApiSettings?.nonce) {
+					headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
+				}
+				
+				await fetch('/wp-json/dodo-air/v1/profiles/me', {
+					method: 'POST',
+					headers,
+					body: JSON.stringify(this.passport)
+				});
+			} catch (e) {
+				console.error('Failed to delete passport on backend', e);
+			}
+		}
+		this.playSound('success');
 	}
 }
 

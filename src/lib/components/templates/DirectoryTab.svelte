@@ -35,11 +35,12 @@
     const query = searchQuery.toLowerCase().trim();
     if (!query) return true;
     return (
-      p.villagerName.toLowerCase().includes(query) ||
-      p.islandName.toLowerCase().includes(query) ||
-      p.friendCode.toLowerCase().includes(query) ||
-      p.title.toLowerCase().includes(query) ||
-      p.signature.toLowerCase().includes(query)
+      (p.villagerName || '').toLowerCase().includes(query) ||
+      (p.islandName || '').toLowerCase().includes(query) ||
+      (p.friendCode || '').toLowerCase().includes(query) ||
+      (p.titlePart1 || '').toLowerCase().includes(query) ||
+      (p.titlePart2 || '').toLowerCase().includes(query) ||
+      (p.signature || '').toLowerCase().includes(query)
     );
   }));
 
@@ -184,7 +185,7 @@
             <div class="space-y-1">
               <span class="block text-xs font-system text-[#85806B] uppercase leading-none">PASSPORT TITLE</span>
               <span class="inline-block bg-[#F5F2E6] border border-[#E6DFC7] rounded-sm px-1.5 py-0.5 text-xs font-system font-bold text-[#80765A] uppercase truncate max-w-full">
-                {p.title || 'Freshly Picked Islander'}
+                {p.titlePart1 || 'Freshly Picked'} {p.titlePart2 || 'Islander'}
               </span>
             </div>
 

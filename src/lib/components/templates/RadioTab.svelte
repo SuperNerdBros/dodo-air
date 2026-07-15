@@ -36,7 +36,7 @@
   let durationHours = $state(1);
 
   let filteredChatter = $derived(
-    chatter.filter(msg => {
+    chatter.filter((msg: ChatterMessage) => {
       if (!msg.timestamp) return true;
       const msgTime = new Date(msg.timestamp).getTime();
       const cutoff = Date.now() - (durationHours * 60 * 60 * 1000);

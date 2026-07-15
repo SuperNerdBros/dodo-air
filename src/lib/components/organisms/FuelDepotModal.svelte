@@ -31,7 +31,7 @@
 		if (isOpen) {
 			dialogStep = 0;
 			showQuickPay = false;
-			dalStore.playSound(dalStore.systemMode === 'DAL' ? 'success' : 'chime');
+			dalStore.playSound(dalStore.systemMode === 'DAL' ? 'success' : 'bell');
 		}
 	});
 
@@ -167,7 +167,7 @@
 									onclick={(e) => {
 										e.stopPropagation();
 										showQuickPay = !showQuickPay;
-										dalStore.playSound('chime');
+										dalStore.playSound('bell');
 									}}
 									aria-label="Quick Refuel"
 								>

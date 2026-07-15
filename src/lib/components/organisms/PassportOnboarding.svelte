@@ -26,7 +26,8 @@
       hasCreated: true,
       hasCustomized: true
     };
-    localStorage.setItem('dal_passport', JSON.stringify(dalStore.passport));
+    
+    // Will be auto-synced by +layout.svelte effect.
     dalStore.isEditingPassport = false;
     dalStore.showPassportDrawer = false;
     dalStore.playSound('success');
