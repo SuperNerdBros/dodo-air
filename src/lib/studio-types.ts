@@ -25,6 +25,7 @@ export interface Flight {
 	status: FlightStatus;
 	passengers: Passenger[];
 	createdAt: string;
+	scheduledTime?: string;
 	announcement?: string;
 	review?: string;
 	isCustomAIReviewGenerating?: boolean;
@@ -112,6 +113,8 @@ export interface UserProfile {
 	colorIndex: number;
 	goodApples: number;
 	rottenTurnips: number;
+	dreamRatingAvg?: number;
+	dreamRatingCount?: number;
 	vouchers?: Record<string, 'apple' | 'turnip'>;
 	updatedAt: string;
 	flightNumber?: string;

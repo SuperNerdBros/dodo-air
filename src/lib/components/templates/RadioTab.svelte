@@ -113,10 +113,11 @@
   <!-- ═══ Chat Feed ═══ -->
   <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
     {#each [...filteredChatter].reverse() as msg (msg.id)}
-      {@const isOrville = msg.type === 'orville'}
+      {@const isLuna = msg.type === 'orville' && msg.sender?.toLowerCase().includes('luna')}
+      {@const isOrville = msg.type === 'orville' && !isLuna}
       {@const isWilbur = msg.type === 'wilbur'}
       {@const isSystem = msg.type === 'system'}
-      {@const isNpc = isOrville || isWilbur}
+      {@const isNpc = isOrville || isLuna || isWilbur}
 
       {#if isSystem}
         <div class="radio-msg radio-msg--system font-system" transition:slide={{ duration: 200 }}>
@@ -127,7 +128,7 @@
         <div class="radio-msg radio-msg--npc" transition:slide={{ duration: 200 }}>
           <div class="flex flex-col items-center gap-1">
             <div class="radio-avatar radio-avatar--npc">
-              {isOrville ? (dalStore.systemMode === 'DAL' ? '🦤' : '💤') : '🕶️'}
+              {isLuna ? '💤' : isOrville ? '🦤' : '🕶️'}
             </div>
             {#if msg.timestamp}
               <span class="text-[8px] font-bold text-[#0084CC]/60 font-system text-center" style="letter-spacing:-0.5px">
@@ -138,7 +139,7 @@
           <div class="radio-bubble radio-bubble--npc">
             <span class="radio-bubble__sender font-system">
               {msg.sender}
-              <span class="radio-bubble__npc-tag font-system">{isOrville ? (dalStore.systemMode === 'DAL' ? 'TOWER' : 'GUIDE') : (dalStore.systemMode === 'DAL' ? 'PILOT' : 'DREAMER')}</span>
+              <span class="radio-bubble__npc-tag font-system">{isLuna ? 'GUIDE' : isOrville ? 'TOWER' : (dalStore.systemMode === 'DAL' ? 'PILOT' : 'DREAMER')}</span>
             </span>
             <p class="radio-bubble__text">{msg.text}</p>
           </div>

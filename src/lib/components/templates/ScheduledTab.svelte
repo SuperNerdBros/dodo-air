@@ -33,16 +33,54 @@
 
   let activeSchedules = $derived(mySchedules.filter((s: any) => s.day === selectedDay));
 
+  function parseTime(timeStr: string, isEnd: boolean) {
+    if (!timeStr) return 0;
+    const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!match) return 0;
+    const h12 = parseInt(match[1], 10);
+    const m = parseInt(match[2], 10);
+    const period = match[3].toUpperCase();
+    
+    let h24 = h12;
+    if (period === 'PM' && h12 !== 12) h24 += 12;
+    if (period === 'AM' && h12 === 12) h24 = 0;
+    
+    let val = h24 * 4 + m / 15;
+    if (isEnd && val === 0) val = 96;
+    return val;
+  }
+
   async function handleAdd(e: Event) {
     e.preventDefault();
     if (!formStartTime || !formEndTime) return;
+    if (actualStart >= actualEnd) return;
     isSubmitting = true;
+
     try {
+      let mergedStart = actualStart;
+      let mergedEnd = actualEnd;
+
+      let sameDay = mySchedules.filter((s: any) => s.day === selectedDay);
+      
+      // Delete old overlapping schedules and find the bounds
+      for (let s of sameDay) {
+        let sStart = s.actualStart !== undefined ? s.actualStart : parseTime(s.startTime, false);
+        let sEnd = s.actualEnd !== undefined ? s.actualEnd : parseTime(s.endTime, true);
+        
+        if (Math.max(mergedStart, sStart) <= Math.min(mergedEnd, sEnd)) {
+          mergedStart = Math.min(mergedStart, sStart);
+          mergedEnd = Math.max(mergedEnd, sEnd);
+          await onDeleteSchedule(s.id);
+        }
+      }
+
       await onAddSchedule({
         day: selectedDay,
-        startTime: formStartTime,
-        endTime: formEndTime,
-        mode: dalStore.systemMode
+        startTime: formatTime(mergedStart),
+        endTime: formatTime(mergedEnd),
+        mode: dalStore.systemMode,
+        actualStart: mergedStart,
+        actualEnd: mergedEnd
       });
       playSound('success', isMuted);
     } catch (e) {

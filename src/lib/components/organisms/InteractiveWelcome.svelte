@@ -47,6 +47,7 @@
   let verificationCode = $state('');
   let isLoading = $state(false);
   let errorMsg = $state('');
+  let needsNames = $state(false);
 
   // Passport creation form state
   let passportForm = $state<Passport>({
@@ -137,12 +138,12 @@
 
   async function handleEmailSubmit(e: SubmitEvent) {
     e.preventDefault();
-    if (!passportForm.villagerName || !passportForm.islandName) {
-      errorMsg = 'Please enter your Villager and Island names.';
-      return;
-    }
     if (!email) {
       errorMsg = 'Please enter a valid email address.';
+      return;
+    }
+    if (needsNames && (!passportForm.villagerName || !passportForm.islandName)) {
+      errorMsg = 'Please enter your Villager and Island names.';
       return;
     }
     errorMsg = '';
@@ -166,7 +167,12 @@
         dalStore.playSound('success');
       } else {
         const data = await res.json();
-        errorMsg = data.message || 'Failed to request code. Please try again.';
+        if (data.code === 'needs_names') {
+          needsNames = true;
+          errorMsg = data.message;
+        } else {
+          errorMsg = data.message || 'Failed to request code. Please try again.';
+        }
         dalStore.playSound('beep');
       }
     } catch (err) {
@@ -250,6 +256,7 @@
     const expiresAt = Date.now() + 3 * 60 * 1000;
     localStorage.setItem('dal_guest_expires', expiresAt.toString());
 
+    dalStore.isLoggedIn = true;
     onSavePassport(guestPassport);
   }
 
@@ -375,30 +382,32 @@
         </h3>
         
         <form onsubmit={handleEmailSubmit} class="space-y-4 text-left">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">VILLAGER NAME</label>
-              <input
-                type="text"
-                bind:value={passportForm.villagerName}
-                placeholder="e.g. Orville"
-                class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
-                disabled={isLoading}
-                required
-              />
+          {#if needsNames}
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">VILLAGER NAME</label>
+                <input
+                  type="text"
+                  bind:value={passportForm.villagerName}
+                  placeholder="e.g. Orville"
+                  class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
+                  disabled={isLoading}
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">ISLAND NAME</label>
+                <input
+                  type="text"
+                  bind:value={passportForm.islandName}
+                  placeholder="e.g. Nook Island"
+                  class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
+                  disabled={isLoading}
+                  required
+                />
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">ISLAND NAME</label>
-              <input
-                type="text"
-                bind:value={passportForm.islandName}
-                placeholder="e.g. Nook Island"
-                class="w-full bg-[#FAF8F2] border-2 border-[#E6DFC7] rounded-2xl px-4 py-3 text-sm font-bold text-[#0084CC] placeholder-slate-300 outline-none focus:border-[#0084CC] focus:bg-white"
-                disabled={isLoading}
-                required
-              />
-            </div>
-          </div>
+          {/if}
           <div>
             <label class="block text-xs font-black text-[#0084CC] mb-1.5 uppercase font-system tracking-wider">EMAIL ADDRESS</label>
             <input

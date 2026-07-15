@@ -179,7 +179,7 @@
               {dalStore.systemMode === 'DAL' ? 'ACTIVE PILOT CONSOLE' : 'ACTIVE DREAM STATE'}
             </span>
             <h2 class="text-2xl font-black font-system tracking-normal mt-1 font-bold">
-              {dalStore.systemMode === 'DAL' ? 'Flight' : 'Dream'} {myFlight.id} {dalStore.systemMode === 'DAL' ? 'to' : 'at'} '{myFlight.islandName}'
+              {dalStore.systemMode === 'DAL' ? 'Flight' : 'Dream'} {myFlight.flightNumber || myFlight.id} {dalStore.systemMode === 'DAL' ? 'to' : 'at'} '{myFlight.islandName}'
             </h2>
             <p class="text-xs {dalStore.systemMode === 'DAL' ? 'text-sky-200' : 'text-purple-200'} mt-0.5">
               Island host: <strong>{myFlight.hostName}</strong> | {dalStore.systemMode === 'DAL' ? 'Gate' : 'Dream'} Theme: <strong>{(dalStore.systemMode === 'DAL' ? (GATE_THEMES[myFlight.gate] || GATE_THEMES[1]) : (DREAM_THEMES[myFlight.gate] || DREAM_THEMES[1])).name}</strong>

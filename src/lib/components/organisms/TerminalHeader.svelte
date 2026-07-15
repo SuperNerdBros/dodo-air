@@ -10,9 +10,7 @@
 		Moon,
 		CloudMoon,
 		Users,
-		Ticket,
-		Stamp,
-		Fuel
+		Ticket
 	} from '@lucide/svelte';
 	import Box from '../atoms/Box.atom.svelte';
 	import Text from '../atoms/Text.atom.svelte';
@@ -230,22 +228,6 @@
 
 		<!-- Sleek Toolbar Group -->
 		<Box class="flex items-center gap-2 w-full sm:w-auto justify-center sm:justify-end">
-			<button
-				class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white relative group overflow-hidden"
-				onclick={() => { dalStore.playSound('beep'); dalStore.showFuelModal = true; }}
-				title="Open Fuel Depot"
-			>
-				<div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
-				<Fuel class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
-			</button>
-			<button
-				class="w-10 h-10 rounded-2xl border border-white/20 bg-white/10 hover:bg-white/25 transition-all flex items-center justify-center shadow-md cursor-pointer active:scale-95 text-white relative group overflow-hidden"
-				onclick={() => { dalStore.playSound('beep'); dalStore.showMilesModal = true; }}
-				title="Open Stamp Book"
-			>
-				<div class="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-white/20 pointer-events-none transition-transform duration-500 transform translate-y-full group-hover:translate-y-0"></div>
-				<Stamp class="w-5 h-5 group-hover:scale-110 transition-transform duration-300 drop-shadow-sm" />
-			</button>
 			{#if children}
 				{@render children()}
 			{/if}

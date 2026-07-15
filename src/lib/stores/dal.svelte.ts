@@ -187,114 +187,13 @@ export class DalState {
 		this.playSound('bell');
 	}
 
-	private _audioCtx: AudioContext | null = null;
-
-	private getAudioContext() {
-		if (typeof window === 'undefined') return null;
-		if (!this._audioCtx) {
-			const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-			if (AudioCtx) {
-				this._audioCtx = new AudioCtx();
-			}
-		}
-		return this._audioCtx;
-	}
-
 	playSound(type: 'beep' | 'chatter' | 'success' | 'airplane' | 'bell') {
 		if (this.isMuted) return;
-		try {
-			const ctx = this.getAudioContext();
-			if (!ctx) return;
-
-			if (ctx.state === 'suspended') {
-				ctx.resume();
-			}
-
-			const osc = ctx.createOscillator();
-			const gain = ctx.createGain();
-			osc.connect(gain);
-			gain.connect(ctx.destination);
-
-			if (type === 'beep') {
-				osc.type = 'sine';
-				osc.frequency.setValueAtTime(800, ctx.currentTime);
-				gain.gain.setValueAtTime(0.001, ctx.currentTime);
-				gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.02);
-				gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.08);
-				osc.start();
-				osc.stop(ctx.currentTime + 0.1);
-			} else if (type === 'success') {
-				osc.type = 'triangle';
-				osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-				gain.gain.setValueAtTime(0.001, ctx.currentTime);
-				gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.03);
-
-				const osc2 = ctx.createOscillator();
-				const gain2 = ctx.createGain();
-				osc2.connect(gain2);
-				gain2.connect(ctx.destination);
-				osc2.type = 'triangle';
-				osc2.frequency.setValueAtTime(659.25, ctx.currentTime + 0.12); // E5
-				gain2.gain.setValueAtTime(0.001, ctx.currentTime + 0.12);
-				gain2.gain.linearRampToValueAtTime(0.012, ctx.currentTime + 0.15);
-				gain2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
-				osc2.start(ctx.currentTime + 0.12);
-				osc2.stop(ctx.currentTime + 0.45);
-
-				const osc3 = ctx.createOscillator();
-				const gain3 = ctx.createGain();
-				osc3.connect(gain3);
-				gain3.connect(ctx.destination);
-				osc3.type = 'triangle';
-				osc3.frequency.setValueAtTime(783.99, ctx.currentTime + 0.24); // G5
-				gain3.gain.setValueAtTime(0.001, ctx.currentTime + 0.24);
-				gain3.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.27);
-				gain3.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.48);
-				osc3.start(ctx.currentTime + 0.24);
-				osc3.stop(ctx.currentTime + 0.5);
-
-				gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
-				osc.start();
-				osc.stop(ctx.currentTime + 0.4);
-			} else if (type === 'airplane') {
-				osc.type = 'triangle';
-				osc.frequency.setValueAtTime(110, ctx.currentTime);
-				osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.8);
-				gain.gain.setValueAtTime(0.001, ctx.currentTime);
-				gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + 0.15);
-				gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.9);
-				osc.start();
-				osc.stop(ctx.currentTime + 0.95);
-			} else if (type === 'bell') {
-				osc.type = 'sine';
-				osc.frequency.setValueAtTime(783.99, ctx.currentTime); // G5
-				gain.gain.setValueAtTime(0.001, ctx.currentTime);
-				gain.gain.linearRampToValueAtTime(0.012, ctx.currentTime + 0.04);
-				gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
-				osc.start();
-				osc.stop(ctx.currentTime + 0.45);
-
-				const osc2 = ctx.createOscillator();
-				const gain2 = ctx.createGain();
-				osc2.connect(gain2);
-				gain2.connect(ctx.destination);
-				osc2.type = 'sine';
-				osc2.frequency.setValueAtTime(987.77, ctx.currentTime + 0.12); // B5
-				gain2.gain.setValueAtTime(0.001, ctx.currentTime + 0.12);
-				gain2.gain.linearRampToValueAtTime(0.009, ctx.currentTime + 0.16);
-				gain2.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.55);
-				osc2.start(ctx.currentTime + 0.12);
-				osc2.stop(ctx.currentTime + 0.6);
-			} else if (type === 'chatter') {
-				osc.type = 'sine';
-				osc.frequency.setValueAtTime(500 + Math.random() * 200, ctx.currentTime);
-				gain.gain.setValueAtTime(0.001, ctx.currentTime);
-				gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.01);
-				gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
-				osc.start();
-				osc.stop(ctx.currentTime + 0.06);
-			}
-		} catch (e) {}
+		if (typeof window !== 'undefined') {
+			import('../utils/audio').then(({ playSound }) => {
+				playSound(type, this.isMuted);
+			});
+		}
 	}
 
 	async earnStampProgress(
@@ -415,8 +314,49 @@ export class DalState {
 			const res = await fetch(`/wp-json/dodo-air/v1/state?t=${Date.now()}`, { headers });
 			if (res.ok) {
 				const data = await res.json();
-				this.flights = data.flights || [];
-				this.dreams = data.dreams || [];
+				
+				// Chronological sort helper
+				const dayMap: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+				const parseTime = (timeStr: string) => {
+					const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+					if (!match) return 0;
+					let hours = parseInt(match[1]);
+					const mins = parseInt(match[2]);
+					const ampm = match[3].toUpperCase();
+					if (ampm === 'PM' && hours < 12) hours += 12;
+					if (ampm === 'AM' && hours === 12) hours = 0;
+					return hours * 60 + mins;
+				};
+
+				const sortChronological = (arr: any[]) => {
+					if (!arr) return [];
+					const todayIdx = new Date().getDay();
+					const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+					const todayStr = days[todayIdx];
+					
+					return arr.sort((a, b) => {
+						const extractData = (str: string) => {
+							if (!str) return { relDay: -1, time: 0 };
+							let dayStr = todayStr;
+							let timePart = str;
+							const parts = str.split(' ');
+							if (days.includes(parts[0])) {
+								dayStr = parts[0];
+								timePart = parts.slice(1).join(' ');
+							}
+							const relDay = (dayMap[dayStr] - todayIdx + 7) % 7;
+							const time = parseTime(timePart.split('-')[0] || '');
+							return { relDay, time };
+						};
+						const dataA = extractData(a.scheduledTime || '');
+						const dataB = extractData(b.scheduledTime || '');
+						if (dataA.relDay !== dataB.relDay) return dataA.relDay - dataB.relDay;
+						return dataA.time - dataB.time;
+					});
+				};
+
+				this.flights = sortChronological(data.flights || []);
+				this.dreams = sortChronological(data.dreams || []);
 				this.chatter = data.chatter || [];
 				this.requests = data.requests || [];
 				if (data.totalIslanders !== undefined) this.totalIslanders = data.totalIslanders;

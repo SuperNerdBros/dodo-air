@@ -71,8 +71,14 @@
 			<div class="flex flex-wrap gap-2 items-center mb-2">
 				{#each dalStore.myPassports as p, i}
 					<button
-						class="px-3 py-1.5 rounded-xl font-system text-xs uppercase font-bold border-2 transition-all {dalStore.activePassportIndex === i ? 'bg-[#0084CC] text-white border-[#006bb3]' : 'bg-white text-[#4A4A4A] border-slate-200 hover:bg-slate-50'}"
-						onclick={() => { playSound('beep', isMuted); dalStore.activePassportIndex = i; }}
+						class="px-3 py-1.5 rounded-xl font-system text-xs uppercase font-bold border-2 transition-all {dalStore.activePassportIndex ===
+						i
+							? 'bg-[#0084CC] text-white border-[#006bb3]'
+							: 'bg-white text-[#4A4A4A] border-slate-200 hover:bg-slate-50'}"
+						onclick={() => {
+							playSound('beep', isMuted);
+							dalStore.activePassportIndex = i;
+						}}
 					>
 						{p.villagerName || 'New Passport'}
 					</button>
@@ -80,8 +86,8 @@
 				{#if dalStore.isLoggedIn}
 					<button
 						class="px-3 py-1.5 rounded-xl font-system text-xs uppercase font-bold border-2 border-dashed border-[#0084CC] text-[#0084CC] hover:bg-sky-50 transition-all"
-						onclick={() => { 
-							playSound('beep', isMuted); 
+						onclick={() => {
+							playSound('beep', isMuted);
 							const newPassport = dalStore._defaultPassport();
 							dalStore.myPassports = [...dalStore.myPassports, newPassport];
 							dalStore.activePassportIndex = dalStore.myPassports.length - 1;
@@ -196,8 +202,14 @@
 							>
 							<div class="flex items-center justify-between gap-2">
 								<span
-									class="min-w-[100px] font-system font-black tracking-wide text-[#0084CC] text-sm block bg-sky-50 p-1.5 rounded-lg text-center border border-sky-200 flex-1 truncate"
-									>{isGuest ? 'Not registered' : passport.flightNumber || 'Not set'}</span
+									class="min-w-[150px] font-system font-black tracking-wide text-[#0084CC] text-sm block bg-sky-50 p-1.5 rounded-lg text-center border border-sky-200 flex-1 truncate"
+									>{isGuest
+										? 'Not registered'
+										: passport.flightNumber
+											? passport.flightNumber.startsWith('DAL-')
+												? passport.flightNumber
+												: 'DAL-' + passport.flightNumber
+											: 'Not set'}</span
 								>
 								{#if !isGuest && passport.flightNumber}
 									<button

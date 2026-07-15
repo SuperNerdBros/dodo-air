@@ -22,45 +22,126 @@ export const TerminalActions = {
 		}
 		dalStore.isSubmittingHost = true;
 		try {
-			const newFlight = await TerminalAPI.hostFlight({
-				hostName: dalStore.passport.villagerName,
-				islandName: dalStore.passport.islandName,
-				dodoCode: cleanDodo,
-				hemisphere: dalStore.formHemisphere,
-				gate: Number(dalStore.formGate),
-				description:
-					dalStore.formDesc.trim() ||
-					`Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
-				planeType: dalStore.formPlaneType,
-				planeColor: dalStore.passport.planeColor || 'orange',
-				hostFriendCode: dalStore.passport.friendCode,
-				hostUserId: dalStore.passport.userId,
-				milesCost: Number(dalStore.formMilesCost)
-			});
+			const pendingSchedules = (e as any).pendingSchedules || [];
+			
+			const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+			const todayStr = days[new Date().getDay()];
 
-			// If the event provided pending schedules, save them now
-			const pendingSchedules = (e as any).pendingSchedules;
+			let createdFlights: any[] = [];
+
 			if (pendingSchedules && pendingSchedules.length > 0) {
 				for (const schedule of pendingSchedules) {
-					// We pass the new flight's id implicitly or just rely on the API to link them
-					// Assuming the API links schedule to user, which it does in addSchedule
-					await TerminalActions.addSchedule({
-						day: schedule.day,
-						startTime: schedule.startTime,
-						endTime: schedule.endTime,
-						mode: schedule.mode
+					let scheduledTimeStr = `${schedule.startTime} - ${schedule.endTime}`;
+					if (schedule.day !== todayStr) {
+						scheduledTimeStr = `${schedule.day} ${scheduledTimeStr}`;
+					}
+					
+					const newFlight = await TerminalAPI.hostFlight({
+						hostName: dalStore.passport.villagerName,
+						islandName: dalStore.passport.islandName,
+						dodoCode: cleanDodo,
+						hemisphere: dalStore.formHemisphere,
+						gate: Number(dalStore.formGate),
+						description:
+							dalStore.formDesc.trim() ||
+							`Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
+						planeType: dalStore.formPlaneType,
+						planeColor: dalStore.passport.planeColor || 'orange',
+						hostFriendCode: dalStore.passport.friendCode,
+						hostUserId: dalStore.passport.userId,
+						milesCost: Number(dalStore.formMilesCost),
+						flightNumber: dalStore.passport.flightNumber,
+						scheduledTime: scheduledTimeStr
 					});
+					createdFlights.push(newFlight);
+				}
+			} else {
+				const newFlight = await TerminalAPI.hostFlight({
+					hostName: dalStore.passport.villagerName,
+					islandName: dalStore.passport.islandName,
+					dodoCode: cleanDodo,
+					hemisphere: dalStore.formHemisphere,
+					gate: Number(dalStore.formGate),
+					description:
+						dalStore.formDesc.trim() ||
+						`Welcome to ${dalStore.passport.islandName}! Come over and relax! 🌴`,
+					planeType: dalStore.formPlaneType,
+					planeColor: dalStore.passport.planeColor || 'orange',
+					hostFriendCode: dalStore.passport.friendCode,
+					hostUserId: dalStore.passport.userId,
+					milesCost: Number(dalStore.formMilesCost),
+					flightNumber: dalStore.passport.flightNumber,
+					scheduledTime: ''
+				});
+				createdFlights.push(newFlight);
+			}
+
+			// If the event provided pending schedules, sync them now
+			if (pendingSchedules !== undefined) {
+				const pendingIds = pendingSchedules.map((s: any) => s.id);
+
+				// Delete removed schedules
+				for (const oldSchedule of dalStore.mySchedules) {
+					if (!pendingIds.includes(oldSchedule.id)) {
+						await TerminalActions.deleteSchedule(oldSchedule.id);
+					}
+				}
+
+				// Add new schedules (only those with tmp_ prefix)
+				for (const schedule of pendingSchedules) {
+					if (schedule.id && String(schedule.id).startsWith('tmp_')) {
+						await TerminalActions.addSchedule({
+							day: schedule.day,
+							startTime: schedule.startTime,
+							endTime: schedule.endTime,
+							mode: schedule.mode
+						});
+					}
 				}
 			}
+			// Sort createdFlights chronologically so earliest is first
+			const dayMap: { [key: string]: number } = { 'Sun': 0, 'Mon': 1, 'Tue': 2, 'Wed': 3, 'Thu': 4, 'Fri': 5, 'Sat': 6 };
+			const todayIdx = new Date().getDay();
+			
+			const parseTime = (timeStr: string) => {
+				const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+				if (!match) return 0;
+				let hours = parseInt(match[1]);
+				const mins = parseInt(match[2]);
+				const ampm = match[3].toUpperCase();
+				if (ampm === 'PM' && hours < 12) hours += 12;
+				if (ampm === 'AM' && hours === 12) hours = 0;
+				return hours * 60 + mins;
+			};
+
+			createdFlights.sort((a, b) => {
+				const extractData = (str: string) => {
+					if (!str) return { relDay: 0, time: 0 };
+					let dayStr = todayStr;
+					let timePart = str;
+					const parts = str.split(' ');
+					if (days.includes(parts[0])) {
+						dayStr = parts[0];
+						timePart = parts.slice(1).join(' ');
+					}
+					const relDay = (dayMap[dayStr] - todayIdx + 7) % 7;
+					const time = parseTime(timePart.split('-')[0]);
+					return { relDay, time };
+				};
+				const dataA = extractData(a.scheduledTime);
+				const dataB = extractData(b.scheduledTime);
+				if (dataA.relDay !== dataB.relDay) return dataA.relDay - dataB.relDay;
+				return dataA.time - dataB.time;
+			});
 
 			if (dalStore.systemMode === 'DAL') {
 				dalStore.playSound('airplane');
-				dalStore.flights = [newFlight, ...dalStore.flights];
+				dalStore.flights = [...createdFlights, ...dalStore.flights];
 			} else {
 				dalStore.playSound('bell');
-				dalStore.dreams = [newFlight, ...dalStore.dreams];
+				dalStore.dreams = [...createdFlights, ...dalStore.dreams];
 			}
-			dalStore.selectedFlightId = newFlight.id;
+			dalStore.selectedFlightId = createdFlights[0].id;
 			dalStore.formDodo = '';
 			dalStore.formDesc = '';
 			dalStore.fetchState();
@@ -176,7 +257,7 @@ export const TerminalActions = {
 			dalStore.playSound('success');
 
 			await TerminalAPI.postChat({
-				sender: 'Orville [AI]',
+				sender: 'Orville',
 				text: `🎉 MATCH MADE! Passenger ${request.name} is cleared for immediate takeoff and flying to ${dalStore.passport.islandName}! Clear skies ahead! 🛩️`
 			});
 			dalStore.fetchState();
@@ -187,7 +268,11 @@ export const TerminalActions = {
 
 	async postChat(e: Event) {
 		e.preventDefault();
-		if (!dalStore.isLoggedIn || !dalStore.passport.villagerName.trim() || !dalStore.chatText.trim()) {
+		if (
+			!dalStore.isLoggedIn ||
+			!dalStore.passport.villagerName.trim() ||
+			!dalStore.chatText.trim()
+		) {
 			dalStore.playSound('beep');
 			return;
 		}

@@ -5,12 +5,24 @@
 
 export type SoundType = 'beep' | 'chatter' | 'success' | 'airplane' | 'bell' | 'thwip' | 'stamp' | 'chime' | 'pop' | 'tally';
 
+let sharedAudioCtx: AudioContext | null = null;
+
 export const playSound = (type: SoundType, isMuted: boolean) => {
 	if (isMuted) return;
 	try {
-		const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-		if (!AudioCtx) return;
-		const ctx = new AudioCtx();
+		if (typeof window === 'undefined') return;
+
+		if (!sharedAudioCtx) {
+			const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+			if (!AudioCtx) return;
+			sharedAudioCtx = new AudioCtx();
+		}
+
+		const ctx = sharedAudioCtx;
+		if (ctx.state === 'suspended') {
+			ctx.resume().catch(() => {});
+		}
+
 		const osc = ctx.createOscillator();
 		const gain = ctx.createGain();
 		osc.connect(gain);
@@ -87,13 +99,13 @@ export const playSound = (type: SoundType, isMuted: boolean) => {
 			osc2.start(ctx.currentTime + 0.12);
 			osc2.stop(ctx.currentTime + 0.6);
 		} else if (type === 'chatter') {
-			osc.type = 'sine';
-			osc.frequency.setValueAtTime(500 + Math.random() * 200, ctx.currentTime);
+			osc.type = 'square';
+			osc.frequency.setValueAtTime(250 + Math.random() * 100, ctx.currentTime);
 			gain.gain.setValueAtTime(0.001, ctx.currentTime);
-			gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.01);
-			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.05);
+			gain.gain.linearRampToValueAtTime(0.015, ctx.currentTime + 0.01);
+			gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
 			osc.start();
-			osc.stop(ctx.currentTime + 0.06);
+			osc.stop(ctx.currentTime + 0.05);
 		} else if (type === 'thwip') {
 			osc.type = 'sine';
 			osc.frequency.setValueAtTime(400, ctx.currentTime);

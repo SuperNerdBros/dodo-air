@@ -62,7 +62,7 @@
                 </Box>
                 <Box>
                   <Box class="flex items-center flex-wrap gap-1">
-                    <Text tag="span" class="font-system text-xs font-black text-[#0084CC] tracking-wider">{flight.id}</Text>
+                    <Text tag="span" class="font-system text-xs font-black text-[#0084CC] tracking-wider">{flight.flightNumber ? (flight.flightNumber.startsWith('DAL-') ? flight.flightNumber : 'DAL-' + flight.flightNumber) : flight.id}</Text>
                     <Text tag="span" class="text-xs font-system font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.2 rounded-full">
                       🌎 {flight.hemisphere}
                     </Text>
