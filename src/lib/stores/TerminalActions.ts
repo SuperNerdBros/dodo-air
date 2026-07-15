@@ -34,6 +34,7 @@ export const TerminalActions = {
 				planeType: dalStore.formPlaneType,
 				planeColor: dalStore.passport.planeColor || 'orange',
 				hostFriendCode: dalStore.passport.friendCode,
+				hostUserId: dalStore.passport.userId,
 				milesCost: Number(dalStore.formMilesCost)
 			});
 
@@ -88,6 +89,7 @@ export const TerminalActions = {
 				title: `${dalStore.passport.titlePart1} ${dalStore.passport.titlePart2}`,
 				avatar: dalStore.passport.avatarIcon,
 				friendCode: dalStore.passport.friendCode,
+				userId: dalStore.passport.userId || '',
 				gateType: Number(dalStore.requestGateType),
 				timePreference: dalStore.requestTime,
 				memo: dalStore.requestMemo.trim() || 'Looking for an open island gate to visit! 🌴'
@@ -126,7 +128,8 @@ export const TerminalActions = {
 			await TerminalAPI.boardFlight(flightId, {
 				name: dalStore.passport.villagerName,
 				island: dalStore.passport.islandName,
-				friendCode: dalStore.passport.friendCode
+				friendCode: dalStore.passport.friendCode,
+				userId: dalStore.passport.userId
 			});
 			dalStore.playSound('success');
 			dalStore.revealedCodes = { ...dalStore.revealedCodes, [flightId]: true };
@@ -166,7 +169,8 @@ export const TerminalActions = {
 			await TerminalAPI.boardFlight(flightId, {
 				name: request.name,
 				island: request.island,
-				friendCode: request.friendCode
+				friendCode: request.friendCode,
+				userId: request.userId
 			});
 			await TerminalAPI.removeStandbyRequest(request.id);
 			dalStore.playSound('success');
@@ -183,15 +187,15 @@ export const TerminalActions = {
 
 	async postChat(e: Event) {
 		e.preventDefault();
-		if (!dalStore.chatSender.trim() || !dalStore.chatText.trim()) {
+		if (!dalStore.isLoggedIn || !dalStore.passport.villagerName.trim() || !dalStore.chatText.trim()) {
 			dalStore.playSound('beep');
 			return;
 		}
 		dalStore.isPostingChat = true;
 		try {
 			await TerminalAPI.postChat({
-				sender: dalStore.chatSender.trim(),
-				island: dalStore.chatIsland.trim() || undefined,
+				sender: dalStore.passport.villagerName.trim(),
+				island: dalStore.passport.islandName.trim() || undefined,
 				text: dalStore.chatText.trim()
 			});
 			dalStore.playSound('chatter');

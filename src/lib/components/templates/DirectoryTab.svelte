@@ -18,7 +18,7 @@
     isActive = false
   } = $props<{
     profiles: Record<string, UserProfile>;
-    openProfileModal: (friendCode: string) => void;
+    openProfileModal: (id: string | number) => void;
     passport: Passport;
     isMuted?: boolean;
     isActive?: boolean;
@@ -145,14 +145,14 @@
   <!-- Directory Grid -->
   {#if sortedProfiles.length > 0}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {#each sortedProfiles as p (p.friendCode)}
+      {#each sortedProfiles as p (p.userId || p.friendCode)}
         {@const activeColor = PASSPORT_COLORS[p.colorIndex || 0] || PASSPORT_COLORS[1]}
         {@const isMe = passport.friendCode && p.friendCode === passport.friendCode}
         
         <!-- svelte-ignore a11y_click_events_have_key_events -->
         <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
-          onclick={() => openProfileModal(p.friendCode)}
+          onclick={() => openProfileModal(p.userId || p.friendCode)}
           class="relative flex flex-col justify-between bg-[#FFFCEF] rounded-[32px] border-4 border-[#E6DFC7] p-5 shadow-sm hover:shadow-md cursor-pointer hover:scale-[1.02] transition-all overflow-hidden {isMe ? 'ring-4 ring-[#FFCC00] ring-offset-2' : ''}"
         >
           <!-- Me sticker badge -->

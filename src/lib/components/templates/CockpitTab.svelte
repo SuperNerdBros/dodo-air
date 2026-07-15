@@ -50,7 +50,7 @@
     requests: StandbyRequest[];
     handleClearForTakeoff: (match: StandbyRequest, flightId: string) => void;
     profiles: Record<string, UserProfile>;
-    openProfileModal: (friendCode: string) => void;
+    openProfileModal: (id: string | number) => void;
     isMuted?: boolean;
     mySchedules?: any[];
     handleAddSchedule?: (e: Event, dateStr: string) => void;
@@ -379,7 +379,7 @@
                         <span 
                           onclick={() => {
                             const p = getPassengerProfile(match.name, match.island);
-                            openProfileModal(p ? p.friendCode : match.friendCode || `SW-TEMP-${match.name}-${match.island}`);
+                            openProfileModal(p ? (p.userId || p.friendCode || '') : (match.userId || match.friendCode || `SW-TEMP-${match.name}-${match.island}`));
                           }}
                           class="font-system font-black text-xs block text-[#0084CC] hover:underline cursor-pointer font-bold"
                         >

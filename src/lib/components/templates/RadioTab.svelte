@@ -26,7 +26,7 @@
     handlePostChat: (e: SubmitEvent) => void;
     isPostingChat?: boolean;
     profiles: Record<string, UserProfile>;
-    openProfileModal: (friendCode: string) => void;
+    openProfileModal: (id: string | number) => void;
     passport: Passport;
     isMuted?: boolean;
     onClose?: () => void;
@@ -153,7 +153,7 @@
               onclick={() => {
                 const p = getProfile(msg.sender, msg.island);
                 if (p) {
-                  openProfileModal(p.friendCode);
+                  openProfileModal(p.userId || p.friendCode || '');
                 } else {
                   openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
                 }
@@ -176,7 +176,7 @@
                 onclick={() => {
                   const p = getProfile(msg.sender, msg.island);
                   if (p) {
-                    openProfileModal(p.friendCode);
+                    openProfileModal(p.userId || p.friendCode || '');
                   } else {
                     openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
                   }
@@ -215,51 +215,31 @@
   </div>
 
   <!-- ═══ Input Dock ═══ -->
-  <form onsubmit={handlePostChat} class="radio-input-dock">
-    <div class="radio-input-dock__fields">
-      <div class="radio-field">
-        <label for="radio-callsign-tpl" class="radio-field__label font-system">NAME</label>
+  <div class="radio-input-dock">
+    {#if dalStore.isLoggedIn}
+      <form onsubmit={handlePostChat} class="radio-input-dock__send-row">
         <input
-          id="radio-callsign-tpl"
           type="text"
-          bind:value={chatSender}
-          placeholder="Your Name"
-          class="radio-field__input font-sans"
-          maxlength="14"
+          bind:value={chatText}
+          placeholder={dalStore.systemMode === 'DAL' ? "Transmit on the airwaves..." : "Whisper into the dream..."}
+          class="radio-field__input radio-field__input--message font-sans"
+          maxlength="100"
         />
+        <button
+          type="submit"
+          disabled={!chatText.trim() || isPostingChat}
+          class="radio-send-btn btn-acnh btn-acnh-primary font-system"
+        >
+          <Send class="w-4 h-4" />
+          Send
+        </button>
+      </form>
+    {:else}
+      <div class="text-center p-2">
+        <p class="text-sm font-system font-bold text-[#0084CC]">Please log in to transmit</p>
       </div>
-      <div class="radio-field">
-        <label for="radio-island-tpl" class="radio-field__label font-system">ISLAND</label>
-        <input
-          id="radio-island-tpl"
-          type="text"
-          bind:value={chatIsland}
-          placeholder="Island Name"
-          class="radio-field__input font-sans"
-          maxlength="14"
-        />
-      </div>
-    </div>
-
-    <div class="radio-input-dock__send-row">
-      <input
-        type="text"
-        bind:value={chatText}
-        placeholder={chatSender ? (dalStore.systemMode === 'DAL' ? "Transmit on the airwaves..." : "Whisper into the dream...") : (dalStore.systemMode === 'DAL' ? "Enter callsign to transmit" : "Enter dreamer name to whisper")}
-        disabled={!chatSender.trim()}
-        class="radio-field__input radio-field__input--message font-sans"
-        maxlength="100"
-      />
-      <button
-        type="submit"
-        disabled={!chatSender.trim() || !chatText.trim() || isPostingChat}
-        class="radio-send-btn btn-acnh btn-acnh-primary font-system"
-      >
-        <Send class="w-4 h-4" />
-        Send
-      </button>
-    </div>
-  </form>
+    {/if}
+  </div>
 </div>
 
 <style>

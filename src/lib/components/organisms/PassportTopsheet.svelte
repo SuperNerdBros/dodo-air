@@ -25,6 +25,8 @@
 
   let activeColor = $derived(PASSPORT_COLORS[passport.colorIndex || 0] || PASSPORT_COLORS[0]);
 
+  // import dalStore so we can use its properties for switching
+  import { dalStore } from '$lib/stores/dal.svelte';
 </script>
 
 {#if showPassportDrawer}
@@ -52,6 +54,33 @@
     >
       <X class="w-6 h-6" />
     </button>
+
+    <!-- Passport Switcher -->
+    {#if dalStore.myPassports && dalStore.myPassports.length > 0}
+      <div class="flex flex-wrap gap-2 items-center w-full mt-4 mb-2">
+        {#each dalStore.myPassports as p, i}
+          <button
+            class="px-3 py-1.5 rounded-xl font-system text-xs uppercase font-bold border-2 transition-all {dalStore.activePassportIndex === i ? 'bg-[#0084CC] text-white border-[#006bb3]' : 'bg-white text-[#4A4A4A] border-slate-200 hover:bg-slate-50'}"
+            onclick={() => { playSound('beep', isMuted); dalStore.activePassportIndex = i; }}
+          >
+            {p.villagerName || 'New Passport'}
+          </button>
+        {/each}
+        {#if dalStore.isLoggedIn}
+          <button
+            class="px-3 py-1.5 rounded-xl font-system text-xs uppercase font-bold border-2 border-dashed border-[#0084CC] text-[#0084CC] hover:bg-sky-50 transition-all"
+            onclick={() => { 
+              playSound('beep', isMuted); 
+              const newPassport = dalStore._defaultPassport();
+              dalStore.myPassports = [...dalStore.myPassports, newPassport];
+              dalStore.activePassportIndex = dalStore.myPassports.length - 1;
+            }}
+          >
+            + New Passport
+          </button>
+        {/if}
+      </div>
+    {/if}
 
     <Box class="flex flex-col sm:flex-row gap-6 mt-4">
       <!-- Left Profile Area -->

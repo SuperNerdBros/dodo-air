@@ -9,6 +9,7 @@ export interface Passenger {
 	island: string;
 	checkedInAt: string;
 	friendCode?: string;
+	userId?: string | number;
 }
 
 export type FlightStatus = 'Scheduled' | 'Boarding' | 'Departed' | 'Delayed' | 'Closed';
@@ -32,6 +33,7 @@ export interface Flight {
 	capacity?: number;
 	planeColor?: 'blue' | 'green' | 'orange' | 'yellow';
 	hostFriendCode?: string;
+	hostUserId?: string | number;
 	milesCost?: number;
 }
 
@@ -58,6 +60,7 @@ export interface StandbyRequest {
 	title: string;
 	avatar: string;
 	friendCode: string;
+	userId: string | number;
 	gateType: number;
 	timePreference: string;
 	memo: string;

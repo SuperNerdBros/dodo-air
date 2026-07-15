@@ -32,8 +32,9 @@
   let prof = $derived.by<UserProfile>(() => {
     if (!selectedUserId) return {} as UserProfile;
     return profiles[selectedUserId] || {
+      userId: selectedUserId,
       friendCode: selectedUserId,
-      villagerName: selectedUserId.startsWith('SW-TEMP-') ? selectedUserId.split('-')[2] : 'Unregistered Resident',
+      villagerName: String(selectedUserId).startsWith('SW-TEMP-') ? String(selectedUserId).split('-')[2] : 'Unregistered Resident',
       islandName: selectedUserId.startsWith('SW-TEMP-') ? selectedUserId.split('-')[3] : 'Mystery Island',
       avatarIcon: '🦤',
       title: 'Frequent Flyer',
@@ -95,7 +96,7 @@
         </div>
         <div class="sm:text-right text-sm font-system text-slate-500 border-t sm:border-t-0 sm:border-l border-[#E6DFC7]/40 pt-2 sm:pt-0 sm:pl-3 max-w-[140px] w-full sm:w-auto">
           <span class="block text-xs uppercase font-bold text-slate-400 leading-none">FRIEND ID</span>
-          <span class="font-bold text-slate-700 block mt-1 leading-none">{prof.friendCode?.startsWith('SW-TEMP-') ? 'NOT LINKED' : (prof.friendCode || '')}</span>
+          <span class="font-bold text-slate-700 block mt-1 leading-none">{(prof.friendCode || String(prof.userId))?.startsWith('SW-TEMP-') ? 'NOT LINKED' : (prof.friendCode || '')}</span>
         </div>
       </div>
 

@@ -23,7 +23,7 @@
     selectedFlightId: string | null;
     passport: Passport;
     profiles: Record<string, UserProfile>;
-    openProfileModal: (friendCode: string) => void;
+    openProfileModal: (id: string | number) => void;
     isMuted?: boolean;
     isActive?: boolean;
   }>();
@@ -196,9 +196,11 @@
               {#each filteredFlights as flight (flight.id)}
                 {@const isSelected = selectedFlightId === flight.id}
                 {@const hasBoarded = flight.passengers.some((p: Passenger) => 
-                  p.friendCode 
-                    ? p.friendCode === passport.friendCode 
-                    : p.name.toLowerCase() === passport.villagerName.toLowerCase()
+                  p.userId 
+                    ? String(p.userId) === String(passport.userId) 
+                    : p.friendCode 
+                      ? p.friendCode === passport.friendCode 
+                      : p.name.toLowerCase() === passport.villagerName.toLowerCase()
                 )}
                 {@const activeTheme = dalStore.systemMode === 'DAL' ? (GATE_THEMES[flight.gate] || GATE_THEMES[1]) : (DREAM_THEMES[flight.gate] || DREAM_THEMES[1])}
                 {@const planeColorVal = PLANE_COLORS.find(pc => pc.id === (flight.planeColor || 'orange')) || PLANE_COLORS[0]}
@@ -267,7 +269,7 @@
                       <span 
                         onclick={(e) => {
                           e.stopPropagation();
-                          openProfileModal(hostProfile ? hostProfile.friendCode : `SW-TEMP-${flight.hostName}-${flight.islandName}`);
+                          openProfileModal(hostProfile ? (hostProfile.userId || hostProfile.friendCode || '') : `SW-TEMP-${flight.hostName}-${flight.islandName}`);
                         }}
                         class="font-bold text-amber-700 hover:text-amber-900 cursor-pointer text-sm underline-offset-2 hover:underline"
                         title="View host trust profile"
@@ -278,7 +280,7 @@
                         <span 
                           onclick={(e) => {
                             e.stopPropagation();
-                            openProfileModal(hostProfile.friendCode);
+                            openProfileModal(hostProfile.userId || hostProfile.friendCode || '');
                           }}
                           class="inline-flex items-center gap-1 text-[9px] font-system bg-[#E8F8F5] text-[#117A65] border border-[#A3E4D7] rounded-full px-1.5 py-0.5 font-black cursor-pointer hover:bg-[#D1F2EB]"
                           title="Good Apples count"
@@ -304,7 +306,7 @@
                       {new Date(flight.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </div>
                     <div class="text-[9px] text-slate-400 mt-0.5 font-bold tracking-wider uppercase">
-                      {dalStore.systemMode === 'DAL' ? 'Scheduled' : 'Logged'}
+                      {dalStore.systemMode === 'DAL' ? 'Listed' : 'Logged'}
                     </div>
                   </td>
 

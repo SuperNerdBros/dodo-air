@@ -28,7 +28,7 @@
       reviewError = "You must print your custom Passport at the dispatch counter before submitting trust feedback!";
       return;
     }
-    if (dalStore.passport.friendCode === dalStore.selectedUserId) {
+    if (String(dalStore.passport.userId) === String(dalStore.selectedUserId) || (!dalStore.passport.userId && dalStore.passport.friendCode === dalStore.selectedUserId)) {
       reviewError = "You cannot rate your own island profile!";
       return;
     }

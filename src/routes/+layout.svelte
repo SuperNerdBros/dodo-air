@@ -131,7 +131,10 @@
   let lastSyncedData = '';
   $effect(() => {
     if (dalStore.passport.hasCreated && dalStore.isLoggedIn) {
-      const payload = dalStore.passport;
+      const payload = {
+        passports: dalStore.myPassports,
+        activePassportIndex: dalStore.activePassportIndex
+      };
       const serialized = JSON.stringify(payload);
       if (serialized !== lastSyncedData) {
         lastSyncedData = serialized;
@@ -212,9 +215,11 @@
 
   let myFlight = $derived(activeFlights.find(f => 
     f.status !== 'Closed' && (
-      f.hostFriendCode 
-        ? f.hostFriendCode === dalStore.passport.friendCode
-        : (f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === dalStore.passport.islandName.toLowerCase())
+      f.hostUserId 
+        ? String(f.hostUserId) === String(dalStore.passport.userId)
+        : f.hostFriendCode 
+          ? f.hostFriendCode === dalStore.passport.friendCode
+          : (f.hostName.toLowerCase() === dalStore.passport.villagerName.toLowerCase() && f.islandName.toLowerCase() === dalStore.passport.islandName.toLowerCase())
     )
   ) || null);
 
@@ -386,7 +391,7 @@
     />
 
     <!-- Onboarding & Login Screen: Interactive typewriter walkthrough and registration dialog -->
-    {#if !dalStore.passport.hasCreated && !dalStore.isAuthChecking}
+    {#if !dalStore.isLoggedIn && !dalStore.isAuthChecking}
       <InteractiveWelcome
         onSavePassport={handleSavePassport}
         isMuted={dalStore.isMuted}
@@ -424,7 +429,7 @@
           bind:selectedFlightId={dalStore.selectedFlightId}
           passport={dalStore.passport}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
+          openProfileModal={(id) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }}
           isMuted={dalStore.isMuted}
           isActive={currentTab === 'book'}
         />
@@ -435,7 +440,7 @@
           requests={dalStore.requests}
           passport={dalStore.passport}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
+          openProfileModal={(id) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }}
           handleRemoveStandbyRequest={TerminalActions.removeStandbyRequest}
           setShowStandbyModal={(v) => dalStore.showStandbyModal = v}
           isMuted={dalStore.isMuted}
@@ -449,7 +454,7 @@
           passport={dalStore.passport}
           requests={dalStore.requests}
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
+          openProfileModal={(id) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }}
           handleHostFlight={TerminalActions.hostFlight}
           formError={dalStore.formError}
           bind:formDodo={dalStore.formDodo}
@@ -474,7 +479,7 @@
       <div class="{currentTab === 'directory' ? 'block' : 'hidden'} h-full">
         <DirectoryTab
           profiles={dalStore.profiles}
-          openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
+          openProfileModal={(id) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }}
           passport={dalStore.passport}
           isMuted={dalStore.isMuted}
           isActive={currentTab === 'directory'}
@@ -507,7 +512,7 @@
         handlePostChat={TerminalActions.postChat}
         isPostingChat={dalStore.isPostingChat}
         profiles={dalStore.profiles}
-        openProfileModal={(code) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }}
+        openProfileModal={(id) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }}
         passport={dalStore.passport}
         isMuted={dalStore.isMuted}
         onClose={() => { isRadioOpen = false; }}
@@ -524,7 +529,7 @@
     {/if}
 
   
-<TerminalModals {handleSavePassport} openProfileModal={(code: string) => { dalStore.playSound('beep'); dalStore.selectedUserId = code; }} />
+<TerminalModals {handleSavePassport} openProfileModal={(id: string | number) => { dalStore.playSound('beep'); dalStore.selectedUserId = id; }} />
 </div>
 <svg class="hidden" xmlns="http://www.w3.org/2000/svg" version="1.1">
   <defs>

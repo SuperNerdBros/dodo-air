@@ -32,9 +32,11 @@
 
   let passengersList = $derived(selectedFlight?.passengers || []);
   let passengerIndex = $derived(passengersList.findIndex((p: Passenger) => 
-    p.friendCode 
-      ? p.friendCode === passport.friendCode 
-      : p.name.toLowerCase() === passport.villagerName.toLowerCase()
+    p.userId 
+      ? String(p.userId) === String(passport.userId) 
+      : p.friendCode 
+        ? p.friendCode === passport.friendCode 
+        : p.name.toLowerCase() === passport.villagerName.toLowerCase()
   ));
   let isPassengerCheckedIn = $derived(passengerIndex !== -1);
   
@@ -187,9 +189,11 @@
               <button
                 onclick={() => {
                   const p = passengersList.find((pass: Passenger) =>
-                    pass.friendCode
-                      ? pass.friendCode === passport.friendCode
-                      : pass.name.toLowerCase() === passport.villagerName.toLowerCase()
+                    pass.userId 
+                      ? String(pass.userId) === String(passport.userId) 
+                      : pass.friendCode
+                        ? pass.friendCode === passport.friendCode
+                        : pass.name.toLowerCase() === passport.villagerName.toLowerCase()
                   );
                   if (p) onLeaveFlight(selectedFlight.id, p.id);
                 }}

@@ -35,25 +35,46 @@ export class DalState {
 	alltimePilots = $state(0);
 	alltimePassengers = $state(0);
 
-	passport: Passport = $state({
-		villagerName: '',
-		islandName: '',
-		titlePart1: 'Freshly Picked',
-		titlePart2: 'Islander',
-		friendCode: '',
-		avatarIcon: '🦤',
-		signature: 'Wings up, skies clear!',
-		hasCreated: false,
-		colorIndex: 1,
-		miles: 2000,
-		claimedStampIds: [],
-		hasBoarded: false,
-		hasHosted: false,
-		hasChatted: false,
-		hasCustomized: false,
-		hasRequested: false,
-		xp: 0
-	});
+	myPassports: Passport[] = $state([]);
+	activePassportIndex: number = $state(0);
+
+	get passport(): Passport {
+		if (!this.myPassports || this.myPassports.length === 0) {
+			return this._defaultPassport();
+		}
+		return this.myPassports[this.activePassportIndex] || this.myPassports[0];
+	}
+
+	set passport(val: Passport) {
+		if (!this.myPassports || this.myPassports.length === 0) {
+			this.myPassports = [val];
+			this.activePassportIndex = 0;
+		} else {
+			this.myPassports[this.activePassportIndex] = val;
+		}
+	}
+
+	_defaultPassport(): Passport {
+		return {
+			villagerName: '',
+			islandName: '',
+			titlePart1: 'Freshly Picked',
+			titlePart2: 'Islander',
+			friendCode: '',
+			avatarIcon: '🦤',
+			signature: 'Wings up, skies clear!',
+			hasCreated: false,
+			colorIndex: 1,
+			miles: 2000,
+			claimedStampIds: [],
+			hasBoarded: false,
+			hasHosted: false,
+			hasChatted: false,
+			hasCustomized: false,
+			hasRequested: false,
+			xp: 0
+		};
+	}
 
 	isTrafficModalOpen = $state(false);
 	isEditingPassport = $state(false);
@@ -109,7 +130,7 @@ export class DalState {
 		if (typeof window !== 'undefined') {
 			// Connect to WebSocket Server
 			try {
-				const socket = io('https://chatter.ai.studio');
+				const socket = io('https://dodo-chatter.fly.dev');
 				socket.on('new_chat', (msg: ChatterMessage) => {
 					this.chatter = [msg, ...this.chatter];
 					if (this.chatter.length > 50) {
@@ -288,11 +309,11 @@ export class DalState {
 					headers['X-WP-Nonce'] = (window as any).wpApiSettings.nonce;
 				}
 				await fetch(
-					'/wp-json/dodo-air/v1/profiles/' + encodeURIComponent(this.passport.friendCode),
+					'/wp-json/dodo-air/v1/profiles/' + encodeURIComponent(this.passport.userId || this.passport.friendCode),
 					{
 						method: 'POST',
 						headers,
-						body: JSON.stringify(this.passport)
+						body: JSON.stringify({ passports: this.myPassports, activePassportIndex: this.activePassportIndex })
 					}
 				);
 			} catch (e) {
@@ -360,11 +381,11 @@ export class DalState {
 
 				// Also sync the passport state for good measure
 				await fetch(
-					'/wp-json/dodo-air/v1/profiles/' + encodeURIComponent(this.passport.friendCode),
+					'/wp-json/dodo-air/v1/profiles/' + encodeURIComponent(this.passport.userId || this.passport.friendCode),
 					{
 						method: 'POST',
 						headers,
-						body: JSON.stringify(this.passport)
+						body: JSON.stringify({ passports: this.myPassports, activePassportIndex: this.activePassportIndex })
 					}
 				);
 			} catch (e) {
@@ -406,7 +427,13 @@ export class DalState {
 					this.alltimePilots = data.analytics.alltimePilots || 0;
 					this.alltimePassengers = data.analytics.alltimePassengers || 0;
 				}
-				if (data.myPassport && (!this.passport.hasCreated || data.myPassport.hasCreated)) {
+				if (data.myPassports) {
+					this.myPassports = data.myPassports;
+					if (data.activePassportIndex !== undefined) {
+						this.activePassportIndex = data.activePassportIndex;
+					}
+					this.passportForm = { ...this.passport };
+				} else if (data.myPassport && (!this.passport.hasCreated || data.myPassport.hasCreated)) {
 					const updatedPassport = { ...this.passport, ...data.myPassport };
 					if (JSON.stringify(this.passport) !== JSON.stringify(updatedPassport)) {
 						this.passport = updatedPassport;
@@ -508,7 +535,7 @@ export class DalState {
 				await fetch('/wp-json/dodo-air/v1/profiles/me', {
 					method: 'POST',
 					headers,
-					body: JSON.stringify(this.passport)
+					body: JSON.stringify({ passports: this.myPassports, activePassportIndex: this.activePassportIndex })
 				});
 			} catch (e) {
 				console.error('Failed to delete passport on backend', e);

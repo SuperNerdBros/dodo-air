@@ -21,7 +21,7 @@
     requests: StandbyRequest[];
     passport: Passport;
     profiles: Record<string, UserProfile>;
-    openProfileModal: (friendCode: string) => void;
+    openProfileModal: (id: string | number) => void;
     handleRemoveStandbyRequest: (id: string) => void;
     setShowStandbyModal: (show: boolean) => void;
     isMuted?: boolean;
@@ -33,9 +33,11 @@
   let myRequests = $derived(
     requests.filter((req: StandbyRequest) => 
       passport.hasCreated && (
-        req.friendCode 
-          ? req.friendCode === passport.friendCode 
-          : req.name.toLowerCase() === passport.villagerName.toLowerCase()
+        req.userId 
+          ? String(req.userId) === String(passport.userId) 
+          : req.friendCode 
+            ? req.friendCode === passport.friendCode 
+            : req.name.toLowerCase() === passport.villagerName.toLowerCase()
       )
     )
   );
@@ -117,9 +119,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-8 px-2">
           {#each displayedRequests as req (req.id)}
             {@const isMine = passport.hasCreated && (
-              req.friendCode 
-                ? req.friendCode === passport.friendCode 
-                : req.name.toLowerCase() === passport.villagerName.toLowerCase()
+              req.userId 
+                ? String(req.userId) === String(passport.userId) 
+                : req.friendCode 
+                  ? req.friendCode === passport.friendCode 
+                  : req.name.toLowerCase() === passport.villagerName.toLowerCase()
             )}
             
             <div
@@ -144,7 +148,7 @@
                   <div class="w-12 h-12 bg-slate-50 border-2 border-slate-100 rounded-xl flex items-center justify-center text-3xl shadow-xs shrink-0 cursor-pointer hover:scale-105 transition-transform"
                        onclick={() => {
                          const p = getPassengerProfile(req.name, req.island);
-                         openProfileModal(p ? p.friendCode : req.friendCode || `SW-TEMP-${req.name}-${req.island}`);
+                         openProfileModal(p ? (p.userId || p.friendCode || '') : (req.userId || req.friendCode || `SW-TEMP-${req.name}-${req.island}`));
                        }}
                        title="View passenger trust profile">
                     {req.avatar}
