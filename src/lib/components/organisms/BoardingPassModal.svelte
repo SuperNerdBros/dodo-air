@@ -33,10 +33,8 @@
 	let flightNumberDisplay = $derived(
 		selectedFlight
 			? selectedFlight.flightNumber
-				? selectedFlight.flightNumber.startsWith('DAL-') ||
-					selectedFlight.flightNumber.startsWith('LUNA-')
-					? selectedFlight.flightNumber
-					: (dalStore.systemMode === 'DAL' ? 'DAL-' : 'LUNA-') + selectedFlight.flightNumber
+				? (dalStore.systemMode === 'DAL' ? 'DAL-' : 'LUL-') +
+					selectedFlight.flightNumber.replace(/^(DAL-|LUL-|LUNA-)/i, '')
 				: selectedFlight.id
 			: ''
 	);
@@ -58,7 +56,7 @@
 	let seatAssigned = $derived(`${String(seatNum).padStart(2, '0')}${seatLetter}`);
 	let boardingNumVal = $derived(
 		selectedFlight
-			? `#${dalStore.systemMode === 'DAL' ? 'DAL' : 'LUNA'}-${flightNumberDisplay.replace('DAL-', '').replace('LUNA-', '')}-${String(seatNum).padStart(2, '0')}`
+			? `#${dalStore.systemMode === 'DAL' ? 'DAL' : 'LUL'}-${flightNumberDisplay.replace('DAL-', '').replace('LUL-', '')}-${String(seatNum).padStart(2, '0')}`
 			: ''
 	);
 	let fromCode = $derived(

@@ -378,11 +378,8 @@
 											<div>
 												<div class="font-black text-[#0084CC] text-sm flex items-center gap-1.5">
 													{flight.flightNumber
-														? flight.flightNumber.startsWith('DAL-') ||
-															flight.flightNumber.startsWith('LUNA-')
-															? flight.flightNumber
-															: (dalStore.systemMode === 'DAL' ? 'DAL-' : 'LUNA-') +
-																flight.flightNumber
+														? (dalStore.systemMode === 'DAL' ? 'DAL-' : 'LUL-') +
+															flight.flightNumber.replace(/^(DAL-|LUL-|LUNA-)/i, '')
 														: flight.id}
 													<span
 														class="text-[9px] font-bold bg-[#A2D2FF]/25 text-[#006094] px-1.5 py-0.5 rounded-full leading-none"

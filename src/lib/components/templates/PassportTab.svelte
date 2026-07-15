@@ -206,9 +206,7 @@
 									>{isGuest
 										? 'Not registered'
 										: passport.flightNumber
-											? passport.flightNumber.startsWith('DAL-')
-												? passport.flightNumber
-												: 'DAL-' + passport.flightNumber
+											? (dalStore.systemMode === 'DAL' ? 'DAL-' : 'LUL-') + passport.flightNumber.replace(/^(DAL-|LUL-|LUNA-)/i, '')
 											: 'Not set'}</span
 								>
 								{#if !isGuest && passport.flightNumber}
