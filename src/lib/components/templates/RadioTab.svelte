@@ -112,7 +112,7 @@
 
   <!-- ═══ Chat Feed ═══ -->
   <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
-    {#each [...filteredChatter].reverse() as msg (msg.id)}
+    {#each [...filteredChatter].reverse() as msg, i (msg.id || i)}
       {@const isLuna = msg.type === 'orville' && msg.sender?.toLowerCase().includes('luna')}
       {@const isOrville = msg.type === 'orville' && !isLuna}
       {@const isWilbur = msg.type === 'wilbur'}
@@ -145,6 +145,7 @@
           </div>
         </div>
       {:else}
+        {@const p = getProfile(msg.sender, msg.island)}
         <div class="radio-msg radio-msg--user" transition:slide={{ duration: 200 }}>
           <div class="flex flex-col items-center gap-1">
             <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -152,7 +153,6 @@
             <div 
               class="radio-avatar radio-avatar--user font-system"
               onclick={() => {
-                const p = getProfile(msg.sender, msg.island);
                 if (p) {
                   openProfileModal(p.userId || p.friendCode || '');
                 } else {
@@ -163,6 +163,14 @@
             >
               {getInitials(msg.sender)}
             </div>
+            {#if p}
+              <span class="radio-bubble__trust-badge font-system">
+                🍏 {p.goodApples || 0}
+                {#if p.rottenTurnips > 0}
+                  <span class="radio-bubble__trust-bad">|🧅 {p.rottenTurnips}</span>
+                {/if}
+              </span>
+            {/if}
             {#if msg.timestamp}
               <span class="text-[8px] font-bold text-[#8C7A5A]/60 font-system text-center" style="letter-spacing:-0.5px">
                 {new Date(msg.timestamp).toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'})}
@@ -175,30 +183,17 @@
               <!-- svelte-ignore a11y_no_static_element_interactions -->
               <span 
                 onclick={() => {
-                  const p = getProfile(msg.sender, msg.island);
                   if (p) {
                     openProfileModal(p.userId || p.friendCode || '');
                   } else {
                     openProfileModal(`SW-TEMP-${msg.sender}-${msg.island || 'Home'}`);
                   }
                 }}
-                class="hover:underline cursor-pointer"
+                class="hover:underline cursor-pointer text-[#8C7A5A]"
                 title="View chat user profile"
               >
-                {msg.sender}
+                <strong class="text-[#0084CC]">{msg.sender}</strong>@{msg.island || p?.islandName || 'island'}
               </span>
-              {#if msg.island}
-                <span class="radio-bubble__island font-mono">🏝️ {msg.island}</span>
-              {/if}
-              {#if getProfile(msg.sender, msg.island)}
-                {@const p = getProfile(msg.sender, msg.island)}
-                <span class="radio-bubble__trust-badge font-system">
-                  🍏 {p?.goodApples || 0}
-                  {#if p && p.rottenTurnips > 0}
-                    <span class="radio-bubble__trust-bad">|🧅 {p.rottenTurnips}</span>
-                  {/if}
-                </span>
-              {/if}
             </span>
             <p class="radio-bubble__text">{msg.text}</p>
           </div>

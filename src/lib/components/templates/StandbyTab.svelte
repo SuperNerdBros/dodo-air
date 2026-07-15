@@ -117,7 +117,7 @@
         </div>
       {:else}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-8 px-2">
-          {#each displayedRequests as req (req.id)}
+          {#each displayedRequests as req, i (req.id || i)}
             {@const isMine = passport.hasCreated && (
               req.userId 
                 ? String(req.userId) === String(passport.userId) 

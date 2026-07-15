@@ -304,7 +304,7 @@
 							</tr>
 						</thead>
 						<tbody class="divide-y divide-slate-100">
-							{#each filteredFlights as flight (flight.id + '-' + flight.createdAt)}
+							{#each filteredFlights as flight, i (flight.id ? flight.id + '-' + i : i)}
 								{@const isSelected = selectedFlightId === flight.id}
 								{@const hasBoarded = flight.passengers.some((p: Passenger) =>
 									p.userId

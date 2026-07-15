@@ -393,7 +393,7 @@
 							</div>
 						{:else}
 							<div class="space-y-2">
-								{#each myFlight.passengers as p (p.id)}
+								{#each myFlight.passengers as p, i (p.id || i)}
 									<div
 										class="flex items-center justify-between bg-[#FAF8F2] border border-[#E6DFC7]/50 p-2.5 rounded-2xl"
 									>
@@ -530,7 +530,7 @@
 										: 'A dreamer seeks a slumber like yours... Invite them to join.'}"
 								</div>
 
-								{#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match (match.id)}
+								{#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match, i (match.id || i)}
 									<div
 										class="bg-white p-3 rounded-2xl border-2 border-[#0084CC]/20 shadow-xs space-y-2 text-left"
 									>
