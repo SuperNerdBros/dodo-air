@@ -182,7 +182,7 @@
 							>
 							<span
 								class="font-system font-black tracking-wide text-slate-600 text-sm block bg-slate-50 p-1.5 rounded-lg text-center border border-slate-200 truncate"
-								>{isGuest ? 'Not registered' : passport.friendCode}</span
+								>{isGuest ? 'Not registered' : passport.friendCode || 'Not set'}</span
 							>
 						</div>
 

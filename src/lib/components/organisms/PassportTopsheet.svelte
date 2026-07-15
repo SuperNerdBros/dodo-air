@@ -128,7 +128,7 @@
         <Box class="grid grid-cols-2 gap-4">
           <Box class="space-y-1">
             <Text tag="span" class="block text-[10px] font-system font-bold text-[#85806B] uppercase">FRIEND CODE</Text>
-            <Text tag="span" class="font-system font-black tracking-wide text-slate-600 text-sm block bg-slate-50 p-1.5 rounded-lg text-center border border-slate-200">{passport.friendCode}</Text>
+            <Text tag="span" class="font-system font-black tracking-wide text-slate-600 text-sm block bg-slate-50 p-1.5 rounded-lg text-center border border-slate-200">{passport.friendCode || 'Not set'}</Text>
           </Box>
           
           <Box class="space-y-1">
