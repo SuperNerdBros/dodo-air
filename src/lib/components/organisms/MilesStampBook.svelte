@@ -5,6 +5,7 @@
   import { scale, fade } from 'svelte/transition';
   import { backOut, cubicOut } from 'svelte/easing';
   import { tweened } from 'svelte/motion';
+  import StampDate from '../atoms/StampDate.svelte';
 
   let {
     isOpen = false,
@@ -207,6 +208,7 @@
                         {#if isClaimed}
                           <div class={`stamp stamp--${lIdx + 1}`}>
                             <img src="{baseUrl}/img/stamp-{category}.png" class="stamp__image drop-shadow-md" alt="stamped" />
+                            <StampDate {category} dateText="03/20/20" />
                           </div>
                         {:else if canClaim}
                           <div class="absolute inset-0 bg-yellow-300/50 rounded-full animate-pulse blur-md w-24 h-24 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
@@ -255,8 +257,9 @@
 
                 <div class={`stamp-wrapper stamp-wrapper--${lIdx + 1}`}>
                   {#if isClaimed}
-                    <div class="stamp">
+                    <div class="stamp stamp--{lIdx + 1}">
                       <img src="{baseUrl}/img/stamp-{category}.png" class="stamp__image drop-shadow-sm" alt="stamped" />
+                      <StampDate {category} dateText="03/20/20" />
                     </div>
                   {:else if canClaim}
                     <div class="stamp">
@@ -498,7 +501,8 @@
   .achievement__spaces--6 .stamp-wrapper--5 { top: 51px; left: 211px; transform: rotate(-8deg); }
   .achievement__spaces--6 .stamp-wrapper--6 { top: 0; left: 265px; transform: rotate(8deg); }
 
-  .achievement__spaces .stamp__image { width: 100%; display: block; }
+  .achievement__spaces .stamp { position: relative; display: block; width: 100%; }
+  .achievement__spaces .stamp__image { width: 100%; height: auto; max-width: none; display: block; }
 
   @media (min-width: 768px) {
     .stamp-wrapper__tier { font-size: 22px; }
@@ -645,7 +649,7 @@
   .card-badges .stamp-wrapper {
     height: 145px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
   }
-  .card-badges .stamp { height: 100%; display: flex; align-items: center; justify-content: center; }
+  .card-badges .stamp { height: 100%; position: relative; }
 
   /* positioning stamps on carousel track */
   .card-badges--1 .stamp-wrapper { height: 155px; }
@@ -699,7 +703,7 @@
   .card-badges--6 .stamp--5 { transform: translate(3%, 0%) rotate(6deg); }
   .card-badges--6 .stamp--6 { transform: translate(4%, 0%) rotate(-10deg); }
 
-  .card-badges .stamp__image { height: 100%; display: block; }
+  .card-badges .stamp__image { height: 100%; width: auto; max-width: none; display: block; }
 
   /* CAROUSEL BUTTONS */
   .carousel__button {
