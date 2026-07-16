@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import FuelDepotModal from '$lib/components/organisms/FuelDepotModal.svelte';
 	import InteractiveAbout from '$lib/components/organisms/InteractiveAbout.svelte';
 	import { playSound } from '$lib/utils/audio';

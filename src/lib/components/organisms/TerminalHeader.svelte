@@ -15,7 +15,7 @@
 	import Box from '../atoms/Box.atom.svelte';
 	import Text from '../atoms/Text.atom.svelte';
 	import Button from '../atoms/Button.atom.svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children?: Snippet } = $props();

@@ -2,7 +2,7 @@
 	import { fade } from 'svelte/transition';
 	import { DIALOGS } from '$lib/constants/dialogs';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import { playSound } from '$lib/utils/audio';
 
 	let { onClose }: { onClose: () => void } = $props();

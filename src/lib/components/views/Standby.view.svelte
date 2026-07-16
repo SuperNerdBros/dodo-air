@@ -4,7 +4,7 @@
   import type { StandbyRequest, Passport, UserProfile } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
   import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
@@ -117,7 +117,7 @@
         </div>
       {:else}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-8 px-2">
-          {#each displayedRequests as req, i (req.id || i)}
+          {#each displayedRequests as req, i (req.id ? req.id + '-' + i : i)}
             {@const isMine = passport.hasCreated && (
               req.userId 
                 ? String(req.userId) === String(passport.userId) 

@@ -67,6 +67,46 @@ export interface StandbyRequest {
 	createdAt: string;
 }
 
+export interface AcnhItem {
+	name: string;
+	imageUrl: string;
+	category: 'item' | 'villager' | 'recipe';
+}
+
+export interface TradeListing {
+	id: string;
+	authorId: string | number;
+	authorName: string;
+	authorIsland: string;
+	authorAvatar: string;
+	lfItems: AcnhItem[];
+	ftItems: AcnhItem[];
+	travelPreference: 'will_travel' | 'will_host' | 'flexible' | 'mm_required';
+	status: 'open' | 'negotiating' | 'completed' | 'canceled';
+	createdAt: string;
+}
+
+export interface TradeMessage {
+	id: string;
+	senderId: string | number;
+	senderName: string;
+	text: string;
+	timestamp: string;
+	type: 'user' | 'system' | 'dal';
+}
+
+export interface TradeSession {
+	id: string;
+	listingId: string;
+	hostId: string | number;
+	travelerId: string | number;
+	middlemanId?: string | number | null;
+	dodoCode: string | null;
+	status: 'awaiting_code' | 'in_transit' | 'depositing' | 'verifying' | 'distributing' | 'completed' | 'disputed';
+	chatLog: TradeMessage[];
+	createdAt: string;
+}
+
 export interface Passport {
 	villagerName: string;
 	islandName: string;

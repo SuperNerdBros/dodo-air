@@ -4,7 +4,7 @@
 	import type { Passport } from '$lib/studio-types';
 	import { DIALOGS } from '$lib/constants/dialogs';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 
 	let {
 		passport,
@@ -216,7 +216,7 @@
 											playSound('beep', isMuted);
 											try {
 												// @ts-ignore
-												const { dalStore } = await import('$lib/stores/dal.svelte');
+												const { dalStore } = await import('$lib/stores/dal.svelte.ts');
 												await dalStore.rerollFlightNumber();
 											} catch (e: any) {
 												alert(e.error || e.message || 'Error rerolling');

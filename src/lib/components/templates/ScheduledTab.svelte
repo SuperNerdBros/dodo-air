@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Calendar, Clock, Plus, Trash2 } from '@lucide/svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { playSound } from '$lib/utils/audio';
 
   let { mySchedules = [], onAddSchedule, onDeleteSchedule, isMuted = false } = $props<{

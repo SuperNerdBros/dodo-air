@@ -5,7 +5,7 @@
   import { PASSPORT_COLORS } from '$lib/utils/constants';
   import { scale, fade } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 
   let {
     selectedUserId,

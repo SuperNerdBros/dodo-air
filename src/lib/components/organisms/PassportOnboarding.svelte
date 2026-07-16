@@ -7,7 +7,7 @@
   import Input from '../atoms/Input.atom.svelte';
   import Select from '../atoms/Select.atom.svelte';
   import Form from '../atoms/Form.atom.svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { TITLE_PART_1, TITLE_PART_2, AVATAR_ICONS } from '$lib/types';
 
   function updateFriendCode(e: Event) {

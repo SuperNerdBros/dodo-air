@@ -8,7 +8,7 @@
   import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
   import { TerminalActions } from '$lib/stores/TerminalActions';
   import { TerminalAPI } from '$lib/api/TerminalAPI';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { fade } from 'svelte/transition';
   
   let { handleSavePassport, openProfileModal } = $props();

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Compass, Ticket, Plane, BookOpen, Eye, Users, Cloud, X, Radio } from '@lucide/svelte';
 	import { playSound } from '$lib/utils/audio';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 
 	let {
 		isOpen,

@@ -2,7 +2,7 @@
   import { fly } from 'svelte/transition';
   import Box from '../atoms/Box.atom.svelte';
   import Button from '../atoms/Button.atom.svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import AcnhBubble from '../molecules/AcnhBubble.svelte';
   import { DIALOGS } from '$lib/constants/dialogs';
 </script>

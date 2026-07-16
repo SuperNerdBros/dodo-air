@@ -9,7 +9,7 @@
 	import Form from '../atoms/Form.atom.svelte';
 	import { DIALOGS } from '$lib/constants/dialogs';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import { GATE_THEMES, DREAM_THEMES } from '$lib/utils/constants';
 	import type { FlightStatus, StandbyRequest } from '$lib/types';
 

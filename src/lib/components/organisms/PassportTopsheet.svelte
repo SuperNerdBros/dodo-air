@@ -26,7 +26,7 @@
   let activeColor = $derived(PASSPORT_COLORS[passport.colorIndex || 0] || PASSPORT_COLORS[0]);
 
   // import dalStore so we can use its properties for switching
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 </script>
 
 {#if showPassportDrawer}

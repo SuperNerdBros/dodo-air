@@ -1,3 +1,9 @@
 [submodule "docs"]
 	path = docs
 	url = git@github.com:SuperNerdBros/dodo-air.wiki.git
+[submodule "api"]
+	path = api
+	url = git@github.com:SuperNerdBros/nookipedia-api.git
+[submodule "directory/ac-miles"]
+	path = directory/ac-miles
+	url = git@github.com:xopherdeep/ac-miles.git

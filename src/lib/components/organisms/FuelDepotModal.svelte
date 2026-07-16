@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PenLine, MessageSquare, Banknote, Heart } from '@lucide/svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import { scale, fade } from 'svelte/transition';
 	import { backOut } from 'svelte/easing';
 	import AcnhBubble from '../molecules/AcnhBubble.svelte';

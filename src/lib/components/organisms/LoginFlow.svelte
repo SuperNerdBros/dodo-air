@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 	import { DIALOGS } from '$lib/constants/dialogs';
 

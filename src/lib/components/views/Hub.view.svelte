@@ -10,7 +10,7 @@
 	} from '$lib/studio-types';
 	import { playSound } from '$lib/utils/audio';
 	import { GATE_THEMES, DREAM_THEMES, PLANE_COLORS } from '$lib/utils/constants';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import { DIALOGS } from '$lib/constants/dialogs';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
 
@@ -393,7 +393,7 @@
 							</div>
 						{:else}
 							<div class="space-y-2">
-								{#each myFlight.passengers as p, i (p.id || i)}
+								{#each myFlight.passengers as p, i (p.id ? p.id + '-' + i : i)}
 									<div
 										class="flex items-center justify-between bg-[#FAF8F2] border border-[#E6DFC7]/50 p-2.5 rounded-2xl"
 									>
@@ -530,7 +530,7 @@
 										: 'A dreamer seeks a slumber like yours... Invite them to join.'}"
 								</div>
 
-								{#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match, i (match.id || i)}
+								{#each requests.filter((r: StandbyRequest) => r.gateType === myFlight.gate) as match, i (match.id ? match.id + '-' + i : i)}
 									<div
 										class="bg-white p-3 rounded-2xl border-2 border-[#0084CC]/20 shadow-xs space-y-2 text-left"
 									>

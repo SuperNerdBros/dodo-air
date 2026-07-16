@@ -1,7 +1,7 @@
 <script lang="ts">
   import { formatFriendCode } from '$lib/utils/format';
   import type { Passport } from '$lib/studio-types';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
   import PassportEditModal from '$lib/components/organisms/PassportEditModal.svelte';
   import {

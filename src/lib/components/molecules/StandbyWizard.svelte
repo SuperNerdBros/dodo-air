@@ -5,7 +5,7 @@
   import Button from '$lib/components/atoms/Button.atom.svelte';
   import { DIALOGS } from '$lib/constants/dialogs';
   import { playSound } from '$lib/utils/audio';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 
   let {
     isOpen = false,

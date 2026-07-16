@@ -1,4 +1,4 @@
-import { dalStore } from './dal.svelte';
+import { dalStore } from './dal.svelte.ts';
 import { TerminalAPI } from '../api/TerminalAPI';
 import type { FlightStatus, StandbyRequest } from '../studio-types';
 

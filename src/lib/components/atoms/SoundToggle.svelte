@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Volume2, VolumeX } from '@lucide/svelte';
   import { playSound } from '$lib/utils/audio';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 
   let { isMuted = $bindable(false), onToggle } = $props<{
     isMuted: boolean;

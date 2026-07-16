@@ -14,7 +14,7 @@
   import MilesModal from '../organisms/MilesModal.svelte';
   // @ts-ignore
   import OrvilleIntro from '../organisms/OrvilleIntro.svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 
   onMount(() => {
     dalStore.fetchState();

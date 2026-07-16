@@ -40,6 +40,12 @@ export const DIALOGS = {
 		lunaActive:
 			'Welcome to the Dreamers directory. Browse active DOZE codes, or await your turn to slumber.'
 	},
+	flightPreview: {
+		active:
+			"Right-o! Here are the full details for this flight! Check the gate theme, passenger count, and description. When you're ready, grab your boarding pass and let's get you in the air!",
+		lunaActive:
+			'Here are the full details for this dream... Review the dreamscape, dreamer count, and description. When you feel ready, obtain your doze code and drift into slumber...'
+	},
 	orvilleIntro: {
 		active:
 			'Right-o! Welcome to the DAL online terminal! Check the radar for flights, broadcast your DODO CODE, and coordinate with others worldwide!',
@@ -174,5 +180,27 @@ export const DIALOGS = {
 			"November Oscar Whisker! Thanks for the fuel drop, kid! We operate on the honor system here, so I've already pumped the 5,000 gallons into the tank. Hope you actually sent those Bells!",
 		lunaThankYou:
 			'Your kindness is felt throughout the dreamscape... I have reignited the incense in good faith. May your spirit remain truthful in its waking hours.'
+	},
+	
+	// --- Trading Post / Middleman ---
+	interactiveTrade: {
+		intro: "Welcome to the DAL Trading Post! Here you can safely list items you're Looking For (LF) or have For Trade (FT).",
+		lunaIntro: "Welcome to the exchange of memories... Here you may offer what you have, and seek what you desire.",
+		mmRequest: "Roger that! Requesting a Verified DAL Flight Marshal (Middleman) to oversee your exchange. Please hold while we contact the tower...",
+		lunaMmRequest: "A wise choice... I shall summon a trusted guardian to oversee this exchange. Please wait.",
+		mmAssigned: "We have a Marshal on the line! They will be opening their gates shortly. Stand by for the DODO CODE.",
+		lunaMmAssigned: "A guardian has answered the call. They will open their realm shortly. Prepare yourself.",
+		mmAwaitingCode: "Marshal! We need your authorization code. Please open your gates and enter the DODO CODE below.",
+		lunaMmAwaitingCode: "Guardian... Please open your gateway and provide the DOZE CODE to allow the dreamers to enter.",
+		mmInTransit: "The code is live! Both parties, please head to the airport and fly to the Marshal's island. We'll wait until everyone has landed.",
+		lunaMmInTransit: "The gateway is open. Both dreamers, please drift toward the guardian's realm. We shall wait for your arrival.",
+		mmDepositing: "Welcome to the drop zone. Please deposit your items in the designated areas and stand back so the Marshal can verify the cargo.",
+		lunaMmDepositing: "You have arrived. Please lay your offerings in the designated spaces, and step back so the guardian may inspect them.",
+		mmVerifying: "Cargo is down. Marshal, please visually inspect all items to ensure they match the flight manifest.",
+		lunaMmVerifying: "The offerings are laid bare. Guardian, please inspect them to ensure they align with the agreed truth.",
+		mmDistributing: "Verification complete! Marshal, please distribute the cargo to the respective parties.",
+		lunaMmDistributing: "The truth is verified. Guardian, you may now distribute the offerings.",
+		mmCompleted: "All cargo distributed. Ground crew is clear. Marshal, please press the MINUS BUTTON (-) to terminate the session and force a secure save!",
+		lunaMmCompleted: "The exchange is complete. Guardian, please end the session to safely bind these memories to the waking world."
 	}
 };

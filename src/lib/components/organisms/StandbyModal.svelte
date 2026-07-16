@@ -7,7 +7,7 @@
   import Select from '../atoms/Select.atom.svelte';
   import Textarea from '../atoms/Textarea.atom.svelte';
   import Form from '../atoms/Form.atom.svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { GATE_THEMES, DREAM_THEMES } from '$lib/types';
 
   async function handleCreateStandbyRequest(e: Event) {

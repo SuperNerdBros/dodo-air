@@ -19,10 +19,11 @@
 		Moon,
 		Wifi,
 		Stamp,
-		Fuel
+		Fuel,
+		Handshake
 	} from '@lucide/svelte';
 	import { playSound } from '$lib/utils/audio';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 	import { updated } from '$app/stores';
 
 	import SoundToggle from '$lib/components/atoms/SoundToggle.svelte';
@@ -32,17 +33,18 @@
 	import LoginFlow from '$lib/components/organisms/LoginFlow.svelte';
 	import PassportTopsheet from '$lib/components/organisms/PassportTopsheet.svelte';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
-	import DeparturesTab from '$lib/components/templates/DeparturesTab.svelte';
-	import StandbyTab from '$lib/components/templates/StandbyTab.svelte';
-	import CockpitTab from '$lib/components/templates/CockpitTab.svelte';
+	import IslandsView from '$lib/components/views/Islands.view.svelte';
+	import StandbyView from '$lib/components/views/Standby.view.svelte';
+	import HubView from '$lib/components/views/Hub.view.svelte';
 	import RadioTab from '$lib/components/templates/RadioTab.svelte';
-	import DirectoryTab from '$lib/components/templates/DirectoryTab.svelte';
-	import PassportTab from '$lib/components/templates/PassportTab.svelte';
+	import DirectoryView from '$lib/components/views/Directory.view.svelte';
+	import PassportView from '$lib/components/views/Passport.view.svelte';
+	import TradesView from '$lib/components/views/Trades.view.svelte';
 	import TerminalFooter from '$lib/components/organisms/TerminalFooter.svelte';
 	import LogoutModal from '$lib/components/organisms/LogoutModal.svelte';
 	import SplashPage from '$lib/components/organisms/SplashPage.svelte';
-	import PrivacyTab from '$lib/components/templates/PrivacyTab.svelte';
-	import TermsTab from '$lib/components/templates/TermsTab.svelte';
+	import PrivacyView from '$lib/components/views/Privacy.view.svelte';
+	import TermsView from '$lib/components/views/Terms.view.svelte';
 
 	// Navigation
 	let hashPath = $state('');
@@ -61,7 +63,9 @@
 								? 'hub'
 								: hashPath.includes('directory')
 									? 'directory'
-									: 'passport'
+									: hashPath.includes('trades')
+										? 'trades'
+										: 'passport'
 	);
 
 	// Diagnostics
@@ -289,7 +293,9 @@
 					? 'Welcome to the DAL Flyers Directory! Check out customized passports from all our active flyers. Give a passport a tap to check trust ratings or vouch for them with a Good Apple!'
 					: currentTab === 'standby'
 						? "Can't find an open airport gate that matches your travel itinerary? File a Standby Request above to alert online pilots looking to match passenger lists!"
-						: 'Hey hey! Welcome to Dodo Airlines! Here is your official Frequent Flyer Passport. Keep your details and custom title up-to-date, and make sure to stamp your Stamp Book for FF Miles!'
+						: currentTab === 'trades'
+							? 'Welcome to the DAL Trading Post! Safely connect with other players to trade items, and request a Verified DAL Flight Marshal for extra secure exchanges!'
+							: 'Hey hey! Welcome to Dodo Airlines! Here is your official Frequent Flyer Passport. Keep your details and custom title up-to-date, and make sure to stamp your Stamp Book for FF Miles!'
 	);
 </script>
 
@@ -486,6 +492,21 @@
 				</div>
 
 				<div class="flex items-start gap-1 sm:gap-2">
+					{#if dalStore.systemMode === 'DAL'}
+						<TabButton
+							active={currentTab === 'trades'}
+							systemMode={dalStore.systemMode}
+							isMuted={dalStore.isMuted}
+							onclick={() => {
+								window.location.hash = '#/trades';
+							}}
+						>
+							<Handshake
+								class="w-4 h-4 sm:w-5 sm:h-5 {currentTab === 'trades' ? '' : 'opacity-70'}"
+							/>
+							<span class="hidden sm:inline">Trading Post</span>
+						</TabButton>
+					{/if}
 					<TabButton
 						active={currentTab === 'standby'}
 						systemMode={dalStore.systemMode}
@@ -572,7 +593,7 @@
 				<!-- Dynamic Multi-Tab Content View -->
 				<div class="w-full relative">
 					<div class={currentTab === 'passport' ? 'block' : 'hidden'}>
-						<PassportTab
+						<PassportView
 							passport={dalStore.passport}
 							setShowMilesModal={(v) => (dalStore.showMilesModal = v)}
 							setIsEditingPassport={(v) => (dalStore.isEditingPassport = v)}
@@ -582,8 +603,14 @@
 						/>
 					</div>
 
+					<div class={currentTab === 'trades' ? 'block' : 'hidden'}>
+						{#if currentTab === 'trades'}
+							<TradesView isActive={currentTab === 'trades'} />
+						{/if}
+					</div>
+
 					<div class={currentTab === 'book' ? 'block' : 'hidden'}>
-						<DeparturesTab
+						<IslandsView
 							flights={activeFlights}
 							bind:selectedFlightId={dalStore.selectedFlightId}
 							passport={dalStore.passport}
@@ -598,7 +625,7 @@
 					</div>
 
 					<div class={currentTab === 'standby' ? 'block' : 'hidden'}>
-						<StandbyTab
+						<StandbyView
 							requests={dalStore.requests}
 							passport={dalStore.passport}
 							profiles={dalStore.profiles}
@@ -614,7 +641,7 @@
 					</div>
 
 					<div class={currentTab === 'hub' ? 'block' : 'hidden'}>
-						<CockpitTab
+						<HubView
 							myFlight={myFlight!}
 							passport={dalStore.passport}
 							requests={dalStore.requests}
@@ -645,7 +672,7 @@
 					</div>
 
 					<div class="{currentTab === 'directory' ? 'block' : 'hidden'} h-full">
-						<DirectoryTab
+						<DirectoryView
 							profiles={dalStore.profiles}
 							openProfileModal={(id) => {
 								dalStore.playSound('beep');
@@ -658,11 +685,11 @@
 					</div>
 
 					<div class="{currentTab === 'privacy' ? 'block' : 'hidden'} h-full">
-						<PrivacyTab isActive={currentTab === 'privacy'} />
+						<PrivacyView isActive={currentTab === 'privacy'} />
 					</div>
 
 					<div class="{currentTab === 'terms' ? 'block' : 'hidden'} h-full">
-						<TermsTab isActive={currentTab === 'terms'} />
+						<TermsView isActive={currentTab === 'terms'} />
 					</div>
 				</div>
 				{@render children()}

@@ -8,7 +8,7 @@
   import { flip } from 'svelte/animate';
   import { DIALOGS } from '$lib/constants/dialogs';
   import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
 
   let {
     profiles,
@@ -245,7 +245,7 @@
   <!-- Directory Grid -->
   {#if sortedProfiles.length > 0}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {#each sortedProfiles as p, i (p.userId || p.friendCode || i)}
+      {#each sortedProfiles as p, i ((p.userId || p.friendCode || 'u') + '-' + i)}
         {@const activeColor = PASSPORT_COLORS[p.colorIndex || 0] || PASSPORT_COLORS[1]}
         {@const isMeCard = passport.friendCode && p.friendCode === passport.friendCode}
         

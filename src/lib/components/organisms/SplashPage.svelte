@@ -49,7 +49,7 @@
 	{#if mounted}
 		<header class="splash-header" in:fly={{ y: -40, duration: 700, delay: 100, easing: cubicOut }}>
 			<img src={mainLogoImg} alt="ACNH Community Online Terminal" class="main-logo" />
-			<p class="splash-subtitle">Share your dream getaway today.</p>
+			<p class="splash-subtitle">A place to share your dream getaway.</p>
 			<!-- <div class="logo-badge">✈</div> -->
 		</header>
 

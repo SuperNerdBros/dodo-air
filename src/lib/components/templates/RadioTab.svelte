@@ -2,7 +2,7 @@
   import { Compass, Ticket, Plane, BookOpen, Eye, Users, Cloud, Send, Wifi } from '@lucide/svelte';
   import type { ChatterMessage, Passport, UserProfile } from '$lib/studio-types';
   import { playSound } from '$lib/utils/audio';
-  import { dalStore } from '$lib/stores/dal.svelte';
+  import { dalStore } from '$lib/stores/dal.svelte.ts';
   import { onMount, tick } from 'svelte';
   import { slide } from 'svelte/transition';
 
@@ -112,7 +112,7 @@
 
   <!-- ═══ Chat Feed ═══ -->
   <div bind:this={chatContainerRef} class="radio-feed custom-scrollbar">
-    {#each [...filteredChatter].reverse() as msg, i (msg.id || i)}
+    {#each [...filteredChatter].reverse() as msg, i (msg.id ? msg.id + '-' + i : i)}
       {@const isLuna = msg.type === 'orville' && msg.sender?.toLowerCase().includes('luna')}
       {@const isOrville = msg.type === 'orville' && !isLuna}
       {@const isWilbur = msg.type === 'wilbur'}

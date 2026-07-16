@@ -9,7 +9,7 @@
 	import { DIALOGS } from '$lib/constants/dialogs';
 	import { playSound } from '$lib/utils/audio';
 	import { Calendar, Clock, Plus, Trash2 } from '@lucide/svelte';
-	import { dalStore } from '$lib/stores/dal.svelte';
+	import { dalStore } from '$lib/stores/dal.svelte.ts';
 
 	let {
 		isOpen = false,
