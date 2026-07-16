@@ -7,3 +7,9 @@
 [submodule "directory/ac-miles"]
 	path = directory/ac-miles
 	url = git@github.com:xopherdeep/ac-miles.git
+[submodule "directory/acnh.directory"]
+	path = directory/acnh.directory
+	url = git@github.com:xopherdeep/acnh.directory.git
+[submodule "directory/nook-os"]
+	path = directory/nook-os
+	url = git@github.com:xopherdeep/nook-os.git

@@ -68,7 +68,7 @@
 					<div class="flex flex-wrap items-center gap-1.5">
 						<span>I'm looking for</span>
 						{#each listing.lfItems as item}
-							<span class="font-bold text-sky-700">{item.name}</span>
+							<span class="font-bold text-sky-700">{item.quantity && item.quantity != 1 ? `${item.quantity}x ` : ''}{item.name}</span>
 						{/each}.
 					</div>
 				{/if}
@@ -76,7 +76,7 @@
 					<div class="flex flex-wrap items-center gap-1.5">
 						<span>I have</span>
 						{#each listing.ftItems as item}
-							<span class="font-bold text-emerald-700">{item.name}</span>
+							<span class="font-bold text-emerald-700">{item.quantity && item.quantity != 1 ? `${item.quantity}x ` : ''}{item.name}</span>
 						{/each}
 						<span>to trade.</span>
 					</div>

@@ -3,20 +3,42 @@
 	import { ShieldCheck, Plane, Handshake, PlaneTakeoff, X, PlaneLanding } from '@lucide/svelte';
 	import ItemAutocomplete from '$lib/components/molecules/ItemAutocomplete.svelte';
 	import AcnhBubble from '$lib/components/molecules/AcnhBubble.svelte';
+	import Button from '$lib/components/atoms/Button.atom.svelte';
 	import { dalStore } from '$lib/stores/dal.svelte.ts';
+	import { playSound } from '$lib/utils/audio';
+	import { fade, fly } from 'svelte/transition';
 
 	let formLfItems = $derived(tradeStore.formLfItems);
 	let formFtItems = $derived(tradeStore.formFtItems);
 	let formTravel = $derived(tradeStore.formTravel);
 	let isSubmitting = $derived(tradeStore.isSubmitting);
+	let error = $derived(tradeStore.error);
 
-	let textDone = $state(false);
+	let step = $state(1);
+	let wasOpen = $state(false);
+
+	$effect(() => {
+		if (tradeStore.showCreateModal && !wasOpen) {
+			step = 1;
+		}
+		wasOpen = tradeStore.showCreateModal;
+	});
 
 	function handleClose() {
 		tradeStore.showCreateModal = false;
 	}
 
-	function handleSubmit(e: SubmitEvent) {
+	function nextStep() {
+		playSound('beep');
+		if (step < 4) step++;
+	}
+
+	function prevStep() {
+		playSound('beep');
+		if (step > 1) step--;
+	}
+
+	function handleSubmit(e: Event) {
 		e.preventDefault();
 		tradeStore.createListing(
 			dalStore.passport?.userId || dalStore.passport?.friendCode || 'u-me',
@@ -28,131 +50,198 @@
 </script>
 
 {#if tradeStore.showCreateModal}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="fixed inset-0 z-50 flex flex-col items-center justify-start overflow-y-auto bg-[#004e75]/60 p-4 pt-12 backdrop-blur-md sm:justify-center sm:p-8"
+		class="fixed inset-0 z-[100] flex flex-col justify-end p-4 pb-8 sm:p-8 bg-[#006094]/60 backdrop-blur-sm"
+		transition:fade={{ duration: 200 }}
 	>
-		<!-- Main Content Area -->
-		<div class="relative z-10 w-full max-w-lg pb-48 sm:pb-56">
-			<div class="overflow-hidden rounded-2xl border-4 border-[#333] bg-white shadow-2xl">
-				<div
-					class="flex items-center justify-between border-b border-black/10 bg-slate-100 px-6 py-4"
+		<div transition:fly={{ y: 50, duration: 300 }} class="w-full max-w-4xl mx-auto">
+			{#if step === 1}
+				<AcnhBubble
+					title={dalStore.systemMode === 'DAL' ? 'Orville [Tour Guide]' : 'Luna [Dream Guide]'}
+					dialogText="Let's build your shipment manifest. First, what items are you putting up For Trade [FT]?"
+					onDismiss={() => { playSound('beep'); handleClose(); }}
 				>
-					<h2 class="text-xl font-black uppercase tracking-wide text-slate-800">Create Listing</h2>
-					<button
-						onclick={handleClose}
-						class="rounded-full p-2 text-slate-500 hover:bg-black/5 hover:text-slate-800"
-					>
-						<X size={20} />
-					</button>
-				</div>
-
-				<form onsubmit={handleSubmit} class="p-6">
-					<div class="flex flex-row gap-3">
-						<!-- LF Items -->
-						<div class="mb-5">
-							<label class="mb-2 block text-sm font-bold text-sky-700 dark:text-sky-400"
-								>[LF] Looking For</label
-							>
-							<ItemAutocomplete
-								bind:selectedItems={tradeStore.formLfItems}
-								placeholder="Items, villagers, DIYs..."
-							/>
-						</div>
-
-						<!-- FT Items -->
-						<div class="mb-6">
-							<label class="mb-2 block text-sm font-bold text-emerald-700 dark:text-emerald-400"
-								>[FT] For Trade</label
-							>
+					<div class="mt-4 relative z-10 pr-4 md:pr-10">
+						<div class="mb-4">
 							<ItemAutocomplete
 								bind:selectedItems={tradeStore.formFtItems}
-								placeholder="Items, villagers, DIYs..."
+								placeholder="Search items, villagers, or DIYs to offer..."
 							/>
 						</div>
+						<div class="flex justify-between pt-2">
+							<Button variant="secondary" onclick={handleClose}>Cancel</Button>
+							<Button variant="primary" onclick={nextStep}>Next Step</Button>
+						</div>
 					</div>
-					<!-- Travel Preference -->
-					<div class="mb-8">
-						<label class="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-300"
-							>Travel Preference</label
-						>
-						<div class="grid grid-cols-2 gap-3">
+				</AcnhBubble>
+
+			{:else if step === 2}
+				<AcnhBubble
+					title={dalStore.systemMode === 'DAL' ? 'Orville [Tour Guide]' : 'Luna [Dream Guide]'}
+					dialogText="Got it! Now, what are you Looking For [LF] in return?"
+					onDismiss={() => { playSound('beep'); handleClose(); }}
+				>
+					<div class="mt-4 relative z-10 pr-4 md:pr-10">
+						<div class="mb-4">
+							<ItemAutocomplete
+								bind:selectedItems={tradeStore.formLfItems}
+								placeholder="Search items, villagers, or DIYs you want..."
+							/>
+						</div>
+						<div class="flex justify-between pt-2">
+							<Button variant="secondary" onclick={prevStep}>Back</Button>
+							<Button variant="primary" onclick={nextStep}>Next Step</Button>
+						</div>
+					</div>
+				</AcnhBubble>
+
+			{:else if step === 3}
+				<AcnhBubble
+					title={dalStore.systemMode === 'DAL' ? 'Orville [Tour Guide]' : 'Luna [Dream Guide]'}
+					dialogText="Almost done! How do you want to handle the travel logistics for this trade?"
+					onDismiss={() => { playSound('beep'); handleClose(); }}
+				>
+					<div class="mt-4 relative z-10 pr-4 md:pr-10">
+						<div class="grid grid-cols-2 gap-3 mb-6">
 							<button
 								type="button"
-								onclick={() => (tradeStore.formTravel = 'will_travel')}
-								class="flex items-center gap-2 rounded-lg border-2 p-3 text-left transition-all {formTravel ===
+								onclick={() => { playSound('beep'); tradeStore.formTravel = 'will_travel'; }}
+								class="flex items-center gap-2 rounded-xl border-4 p-4 text-left transition-all {formTravel ===
 								'will_travel'
-									? 'border-sky-500 bg-sky-500/10 text-sky-700 dark:text-sky-400'
-									: 'border-black/10 text-slate-600 hover:border-black/20 dark:border-white/10 dark:text-slate-400 dark:hover:border-white/20'}"
+									? 'border-[#0084CC] bg-[#FFCC00] text-[#006094]'
+									: 'border-[#E6DFC7] bg-white text-slate-600 hover:-translate-y-1 hover:border-[#FFCC00]'}"
 							>
-								<PlaneTakeoff size={18} />
-								<span class="text-sm font-bold">I'll Travel</span>
+								<PlaneTakeoff size={24} />
+								<span class="text-sm font-bold font-system">I'll Travel</span>
 							</button>
 							<button
 								type="button"
-								onclick={() => (tradeStore.formTravel = 'will_host')}
-								class="flex items-center gap-2 rounded-lg border-2 p-3 text-left transition-all {formTravel ===
+								onclick={() => { playSound('beep'); tradeStore.formTravel = 'will_host'; }}
+								class="flex items-center gap-2 rounded-xl border-4 p-4 text-left transition-all {formTravel ===
 								'will_host'
-									? 'border-sky-500 bg-sky-500/10 text-sky-700 dark:text-sky-400'
-									: 'border-black/10 text-slate-600 hover:border-black/20 dark:border-white/10 dark:text-slate-400 dark:hover:border-white/20'}"
+									? 'border-[#0084CC] bg-[#FFCC00] text-[#006094]'
+									: 'border-[#E6DFC7] bg-white text-slate-600 hover:-translate-y-1 hover:border-[#FFCC00]'}"
 							>
-								<PlaneLanding size={18} />
-								<span class="text-sm font-bold">I'll Host</span>
+								<PlaneLanding size={24} />
+								<span class="text-sm font-bold font-system">I'll Host</span>
 							</button>
 							<button
 								type="button"
-								onclick={() => (tradeStore.formTravel = 'flexible')}
-								class="flex items-center gap-2 rounded-lg border-2 p-3 text-left transition-all {formTravel ===
+								onclick={() => { playSound('beep'); tradeStore.formTravel = 'flexible'; }}
+								class="flex items-center gap-2 rounded-xl border-4 p-4 text-left transition-all {formTravel ===
 								'flexible'
-									? 'border-sky-500 bg-sky-500/10 text-sky-700 dark:text-sky-400'
-									: 'border-black/10 text-slate-600 hover:border-black/20 dark:border-white/10 dark:text-slate-400 dark:hover:border-white/20'}"
+									? 'border-[#0084CC] bg-[#FFCC00] text-[#006094]'
+									: 'border-[#E6DFC7] bg-white text-slate-600 hover:-translate-y-1 hover:border-[#FFCC00]'}"
 							>
-								<Handshake size={18} />
-								<span class="text-sm font-bold">Flexible</span>
+								<Handshake size={24} />
+								<span class="text-sm font-bold font-system">Flexible</span>
 							</button>
 							<button
 								type="button"
-								onclick={() => (tradeStore.formTravel = 'mm_required')}
-								class="flex items-center gap-2 rounded-lg border-2 p-3 text-left transition-all {formTravel ===
+								onclick={() => { playSound('beep'); tradeStore.formTravel = 'mm_required'; }}
+								class="flex items-center gap-2 rounded-xl border-4 p-4 text-left transition-all {formTravel ===
 								'mm_required'
-									? 'border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-400'
-									: 'border-black/10 text-slate-600 hover:border-black/20 dark:border-white/10 dark:text-slate-400 dark:hover:border-white/20'}"
+									? 'border-[#CC3300] bg-[#FF9900] text-white'
+									: 'border-[#E6DFC7] bg-white text-slate-600 hover:-translate-y-1 hover:border-[#FF9900]'}"
 							>
-								<ShieldCheck size={18} />
-								<span class="text-sm font-bold">MM Required</span>
+								<ShieldCheck size={24} />
+								<span class="text-sm font-bold font-system">MM Required</span>
 							</button>
+						</div>
+						<div class="flex justify-between pt-2">
+							<Button variant="secondary" onclick={prevStep}>Back</Button>
+							<Button variant="primary" onclick={nextStep}>Review Manifest</Button>
 						</div>
 					</div>
+				</AcnhBubble>
 
-					{#if tradeStore.error}
-						<div
-							class="mb-4 rounded-lg bg-red-500/10 p-3 text-sm font-bold text-red-600 dark:text-red-400"
-						>
-							{tradeStore.error}
+			{:else if step === 4}
+				<AcnhBubble
+					title={dalStore.systemMode === 'DAL' ? 'Orville [Tour Guide]' : 'Luna [Dream Guide]'}
+					dialogText="Here is your shipment manifest! Verify the quantities and items. If everything looks good, we'll clear you for the trading post."
+					onDismiss={() => { playSound('beep'); handleClose(); }}
+				>
+					<div class="mt-4 relative z-10 pr-4 md:pr-10">
+						{#if error}
+							<div class="bg-red-50 text-red-600 border border-red-200 p-3 mb-4 rounded-xl text-sm font-bold font-system">
+								{error}
+							</div>
+						{/if}
+
+						<div class="bg-[#FAF8F2] p-4 rounded-2xl border-4 border-[#E6DFC7] flex flex-col gap-3 font-system max-h-[30vh] overflow-y-auto hide-scrollbar mb-4">
+							{#if formFtItems.length > 0}
+								<div>
+									<span class="text-xs font-black text-emerald-600 uppercase tracking-wide block mb-1">For Trade [FT]:</span>
+									<div class="flex flex-wrap gap-2">
+										{#each formFtItems as item}
+											<span class="font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 text-sm">
+												{item.quantity && item.quantity != 1 ? `${item.quantity}x ` : ''}{item.name}
+											</span>
+										{/each}
+									</div>
+								</div>
+							{:else}
+								<div>
+									<span class="text-xs font-black text-emerald-600 uppercase tracking-wide block mb-1">For Trade [FT]:</span>
+									<span class="text-sm font-bold text-slate-400 italic">Nothing offered.</span>
+								</div>
+							{/if}
+
+							<div class="w-full h-0.5 bg-slate-200 my-1"></div>
+
+							{#if formLfItems.length > 0}
+								<div>
+									<span class="text-xs font-black text-sky-600 uppercase tracking-wide block mb-1">Looking For [LF]:</span>
+									<div class="flex flex-wrap gap-2">
+										{#each formLfItems as item}
+											<span class="font-bold text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 text-sm">
+												{item.quantity && item.quantity != 1 ? `${item.quantity}x ` : ''}{item.name}
+											</span>
+										{/each}
+									</div>
+								</div>
+							{:else}
+								<div>
+									<span class="text-xs font-black text-sky-600 uppercase tracking-wide block mb-1">Looking For [LF]:</span>
+									<span class="text-sm font-bold text-slate-400 italic">Nothing requested.</span>
+								</div>
+							{/if}
+
+							<div class="w-full h-0.5 bg-slate-200 my-1"></div>
+
+							<div class="flex items-center gap-3">
+								<span class="text-xs font-black text-[#0084CC] uppercase tracking-wide">Logistics:</span>
+								<span class="font-bold text-[#006094] bg-[#FFCC00] px-3 py-1 rounded-full text-xs uppercase tracking-wide border-2 border-[#CC9900]">
+									{#if formTravel === 'will_travel'} I'll Travel {:else if formTravel === 'will_host'} I'll Host {:else if formTravel === 'flexible'} Flexible {:else} Middleman Required {/if}
+								</span>
+							</div>
 						</div>
-					{/if}
 
-					<button
-						type="submit"
-						disabled={isSubmitting || (formLfItems.length === 0 && formFtItems.length === 0)}
-						class="w-full rounded-xl bg-emerald-500 py-3.5 text-center font-bold text-white shadow-lg transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:hover:bg-emerald-500"
-					>
-						{isSubmitting ? 'Posting...' : 'Post Listing'}
-					</button>
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<!-- Fixed Bottom ACNH Bubble -->
-	<div class="pointer-events-none fixed bottom-0 left-0 right-0 p-4 sm:p-8" style="z-index: 110;">
-		<div class="pointer-events-auto mx-auto w-full max-w-7xl">
-			<AcnhBubble
-				title={dalStore.systemMode === 'DAL' ? 'Orville' : 'Luna'}
-				isIntro={true}
-				dialogText="What are you looking to trade today? Need to clear out some storage or hunt for your dreamie?"
-				bind:textDone
-				onDismiss={() => {}}
-			/>
+						<div class="flex justify-between pt-2">
+							<Button variant="secondary" onclick={prevStep}>Make Changes</Button>
+							<Button
+								variant="primary"
+								onclick={handleSubmit}
+								disabled={isSubmitting || (formLfItems.length === 0 && formFtItems.length === 0)}
+							>
+								{isSubmitting ? 'Posting...' : 'Post Listing'}
+							</Button>
+						</div>
+					</div>
+				</AcnhBubble>
+			{/if}
 		</div>
 	</div>
 {/if}
+
+<style>
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>

@@ -70,7 +70,8 @@ export interface StandbyRequest {
 export interface AcnhItem {
 	name: string;
 	imageUrl: string;
-	category: 'item' | 'villager' | 'recipe';
+	category: 'item' | 'villager' | 'recipe' | 'currency';
+	quantity?: number | string;
 }
 
 export interface TradeListing {
