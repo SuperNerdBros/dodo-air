@@ -77,6 +77,19 @@
     onClaimStamp(`${challengeId}_${levelIndex}`, miles);
   }
 
+  function formatStampDate(isoString?: string) {
+    if (!isoString) return '03/20/20';
+    try {
+      const d = new Date(isoString);
+      const m = (d.getMonth() + 1).toString(); // remove leading zeros to match ACNH style: 3/20/20
+      const day = d.getDate().toString();
+      const y = d.getFullYear().toString().slice(-2);
+      return `${m}/${day}/${y}`;
+    } catch {
+      return '03/20/20';
+    }
+  }
+
   const bgMap: Record<string, string> = {
     create: 'event', 
     board: 'communication', 
@@ -200,6 +213,11 @@
                       {@const canClaim = progress >= level.target && !isClaimed}
 
                       <div class={`stamp-wrapper stamp-wrapper--${lIdx + 1}`}>
+                        <div class="stamp-reward stamp-reward--{category}">
+                          <span class="stamp-reward__value">{level.miles}</span>
+                          Miles
+                        </div>
+
                         {#if canClaim}
                           <button class="absolute -top-16 left-1/2 -translate-x-1/2 bg-[#5C73FF] text-white font-bold px-4 py-2 rounded shadow-lg border-b-4 border-[#3346B0] whitespace-nowrap hover:scale-110 active:scale-95 z-50 animate-bounce" onclick={() => claimLevel(challenge.id, lIdx, level.miles)}>
                             Claim {level.miles}!
@@ -208,7 +226,7 @@
                         {#if isClaimed}
                           <div class={`stamp stamp--${lIdx + 1}`}>
                             <img src="{baseUrl}/img/stamp-{category}.png" class="stamp__image drop-shadow-md" alt="stamped" />
-                            <StampDate {category} dateText="03/20/20" />
+                            <StampDate {category} dateText={formatStampDate(passport?.stampDates?.[`${challenge.id}_${lIdx}`])} />
                           </div>
                         {:else if canClaim}
                           <div class="absolute inset-0 bg-yellow-300/50 rounded-full animate-pulse blur-md w-24 h-24 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"></div>
@@ -259,7 +277,7 @@
                   {#if isClaimed}
                     <div class="stamp stamp--{lIdx + 1}">
                       <img src="{baseUrl}/img/stamp-{category}.png" class="stamp__image drop-shadow-sm" alt="stamped" />
-                      <StampDate {category} dateText="03/20/20" />
+                      <StampDate {category} dateText={formatStampDate(passport?.stampDates?.[`${challenge.id}_${lIdx}`])} />
                     </div>
                   {:else if canClaim}
                     <div class="stamp">
@@ -268,9 +286,11 @@
                       </div>
                     </div>
                   {/if}
-                  <div class={`stamp-wrapper__tier stamp-wrapper__tier--${lIdx + 1} stamp-wrapper__tier--${category}`}>
-                    {level.miles}
-                  </div>
+                  {#if tiers > 1 || level.target > 1}
+                    <div class={`stamp-wrapper__tier stamp-wrapper__tier--${lIdx + 1} stamp-wrapper__tier--${category}`}>
+                      {level.target}
+                    </div>
+                  {/if}
                 </div>
               {/each}
               
@@ -647,9 +667,68 @@
   }
 
   .card-badges .stamp-wrapper {
-    height: 145px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
+    height: 145px; aspect-ratio: 1 / 1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
   }
   .card-badges .stamp { height: 100%; position: relative; }
+
+  /* STAMP REWARD PILL */
+  .stamp-reward {
+    position: absolute;
+    bottom: calc(100% + 15px);
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 40px;
+    padding: 6px 16px 4px;
+    font-size: 16px;
+    color: rgba(245,248,228, 0.7);
+    display: flex;
+    white-space: nowrap;
+    z-index: 20;
+  }
+  .achievements .stamp-reward { display: none; }
+  
+  .stamp-reward--event { background-color: #E89469; }
+  .stamp-reward--fish { background-color: #33B3B4; }
+  .stamp-reward--insect { background-color: #99BD2B; }
+  .stamp-reward--communication { background-color: #f1a400; }
+  .stamp-reward--diy { background-color: #C3963E; }
+  .stamp-reward--hha { background-color: #C5B058; }
+  .stamp-reward--plant { background-color: #5CBB5F; }
+  .stamp-reward--smartphone { background-color: #8A7BD0; }
+  .stamp-reward--money { background-color: #B4AA28; }
+  .stamp-reward--negative { background-color: #7f73ba; }
+  .stamp-reward--landmaking { background-color: #4fae6a; }
+  .stamp-reward--mydesign { background-color: #eb8396; }
+
+  .stamp-reward::after {
+    content: '';
+    width: 0;
+    height: 20px;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 4px dashed #399e5f;
+  }
+
+  .stamp-reward--event::after { border-color: #E89469; }
+  .stamp-reward--fish::after { border-color: #33B3B4; }
+  .stamp-reward--insect::after { border-color: #99BB2A; }
+  .stamp-reward--communication::after { border-color: #f1a400; }
+  .stamp-reward--diy::after { border-color: #C3963E; }
+  .stamp-reward--hha::after { border-color: #C5B058; }
+  .stamp-reward--plant::after { border-color: #5CBB5F; }
+  .stamp-reward--smartphone::after { border-color: #8A7BD0; }
+  .stamp-reward--money::after { border-color: #B4AA28; }
+  .stamp-reward--negative::after { border-color: #7f73ba; }
+  .stamp-reward--landmaking::after { border-color: #4fae6a; }
+  .stamp-reward--mydesign::after { border-color: #eb8396; }
+
+  .stamp-reward__value {
+    color: #f5f8e4;
+    margin-right: 4px;
+    font-weight: 700;
+  }
 
   /* positioning stamps on carousel track */
   .card-badges--1 .stamp-wrapper { height: 155px; }

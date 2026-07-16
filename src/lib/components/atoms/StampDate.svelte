@@ -48,7 +48,7 @@
 </script>
 
 <svg
-  class="stamp__date"
+  class="stamp__date date-svg--{category}"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   viewBox="0 0 144 144"
@@ -56,7 +56,7 @@
 >
   <rect width="144" height="144" fill="none" />
   <path {id} d={pathData} fill="none" />
-  <text fill={fillColor} font-weight="700" font-size="22">
+  <text fill={fillColor}>
     <textPath href="#{id}" startOffset="50%" text-anchor="middle">
       {dateText}
     </textPath>
@@ -71,5 +71,26 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    font-weight: 700;
   }
+  
+  text {
+    font-family: inherit;
+  }
+
+  .date-svg--event text { font-size: 21px; letter-spacing: -1px; }
+  .date-svg--fish text { font-size: 23px; font-weight: 600; }
+  .date-svg--insect text { font-size: 23px; font-weight: 600; }
+  .date-svg--communication text { font-size: 22px; letter-spacing: -1px; }
+  .date-svg--diy text { font-size: 22px; }
+  .date-svg--hha text { font-size: 23px; }
+  .date-svg--plant text { font-size: 22px; letter-spacing: -1px; }
+  .date-svg--smartphone text { font-size: 23px; }
+  .date-svg--money text { font-size: 21px; letter-spacing: -1px; }
+  .date-svg--negative text { font-size: 21px; letter-spacing: -1px; }
+  .date-svg--landmaking text { font-size: 23px; }
+  .date-svg--mydesign text { font-size: 24px; }
+
+  :global(.card-badges--6) .date-svg--event text,
+  :global(.achievement__spaces--6) .date-svg--event text { font-size: 19px; }
 </style>

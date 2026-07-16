@@ -261,6 +261,8 @@ export class DalState {
 
 		this.passport.miles = (this.passport.miles || 0) + amount;
 		this.passport.claimedStampIds = [...currentClaimed, stampId];
+		if (!this.passport.stampDates) this.passport.stampDates = {};
+		this.passport.stampDates[stampId] = new Date().toISOString();
 
 		if (typeof window !== 'undefined') {
 

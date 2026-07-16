@@ -79,6 +79,7 @@ export interface Passport {
 	colorIndex: number;
 	miles?: number;
 	claimedStampIds?: string[];
+	stampDates?: Record<string, string>;
 	hasBoarded?: boolean;
 	hasHosted?: boolean;
 	hasChatted?: boolean;
