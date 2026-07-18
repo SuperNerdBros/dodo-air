@@ -76,7 +76,10 @@
 		const unsubUpdate = updated.subscribe((value) => {
 			if (value) {
 				console.log('[Diagnostic] New app version detected. Forcing reload to bust cache.');
-				window.location.reload();
+				if (!sessionStorage.getItem('dal_version_reloaded')) {
+					sessionStorage.setItem('dal_version_reloaded', 'true');
+					window.location.reload();
+				}
 			}
 		});
 
