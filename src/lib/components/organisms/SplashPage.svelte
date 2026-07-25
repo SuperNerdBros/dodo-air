@@ -18,6 +18,9 @@
 	let hoveredSide = $state<'dal' | 'luna' | null>(null);
 	let mounted = $state(false);
 
+	const pluginVersion: string =
+		(typeof window !== 'undefined' && (window as any).wpApiSettings?.version) || '';
+
 	$effect(() => {
 		const t = setTimeout(() => (mounted = true), 50);
 		return () => clearTimeout(t);
@@ -136,6 +139,10 @@
 					class="hover:text-white transition-colors underline decoration-white/30 hover:decoration-white"
 					>Privacy Policy</a
 				>
+				{#if pluginVersion}
+					<span class="mx-2 text-white/30">&bull;</span>
+					<span class="font-mono text-white/50">v{pluginVersion}</span>
+				{/if}
 			</div>
 		</footer>
 	{/if}
