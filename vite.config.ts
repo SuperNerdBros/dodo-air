@@ -60,18 +60,18 @@ export default defineConfig(({ mode }) => {
 		},
 		plugins: [sveltekit(), wpHotFileManager()],
 		server: {
-			port: 5173,
+			port: 8083,
 			host: '0.0.0.0',
 			cors: true,
 			allowedHosts: true, // Allow dev server to answer to domain requests
-			origin: `http://${devHost}:5173`,
+			origin: `http://${devHost}:8083`,
 			headers: {
 				'Access-Control-Allow-Origin': '*',
 				'Access-Control-Allow-Private-Network': 'true'
 			},
 			hmr: {
 				host: env.VITE_HMR_HOST || devHost,
-				port: 5173
+				port: 8083
 			}
 		},
 		test: {
