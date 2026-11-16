@@ -28,8 +28,11 @@
 
 # Agent Directives & Operational Standards
 
-## [01] Environment & Tooling
+## [01] Environment & Tooling: The ChemX Master Gateway
 
+- **Master Gateway Rule**: When operating inside environments with per-tool permission controls (e.g., Google Antigravity, Claude Desktop, Cursor), AI agents MUST invoke the unified master tool `chemx` (MCP tool `chemical-x` / `chemx` or CLI `pnpm chemx <cmd>`) rather than invoking fragmented tools or dropping down to bash subshells.
+- **Antigravity Tool Mapping**: In Google Antigravity, `chemx` is registered under server name `chemical-x` (`call_mcp_tool` with `ServerName: "chemical-x"`, `ToolName: "chemx"`). Always pass `projectRoot`.
+- **Strict Ban on Primitive Inspection**: Never use raw `sed`, `grep`, `head`, `tail`, `cat`, or full-file viewers when inspecting code. Always use `chemx` with `action: "read"` (`outline`, `symbol`, or line slices) or `action: "q"`.
 - **Package & Runtime Management:** Always utilize the project's standardized package manager and runtime environment.
 - **Styling & Theming:** Exclusively use the project's established styling framework (e.g., utility classes, CSS-in-JS, or global modules) to keep styles reusable and instantly recognizable. Avoid rogue inline styles.
 
