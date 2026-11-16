@@ -112,3 +112,5 @@ Thumbs.db
 # SvelteKit
 .svelte-kit
 build/
+# Chemical X local telemetry & audit history
+.chemx/
